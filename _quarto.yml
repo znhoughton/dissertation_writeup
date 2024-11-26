@@ -2,14 +2,13 @@ project:
   type: book
 
 book:
-  title: "dissertation_writeup"
-  author: "Norah Jones"
+  title: "Multi-Word Representations in Minds and Models: Investigating Storage Mechanisms in Humans and Large Language Models"
+  author: "Zachary Nicholas Houghton"
   date: "11/25/2024"
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
+    - Chapters/Introduction/introduction.qmd
+    - Chapters/references.qmd
 
 bibliography: references.bib
 
@@ -18,6 +17,21 @@ format:
     theme: cosmo
   pdf:
     documentclass: scrreprt
-
+    keep-tex: false
+    link-citations: true
+    colorlinks: false
+    classoption: nottoc
+    lot: true
+    lof: true
+    geometry:
+      - left=2in
+      - right=2in
+      - marginparwidth=1.5in
+      - twoside=true
+    include-in-header: 
+      text: | 
+        \usepackage{tocbibind}
 editor: visual
 
+    
+    

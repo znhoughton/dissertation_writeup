@@ -1,0 +1,5 @@
+# Introduction
+
+From a young age, humans are capable of generating sentences that they've never encountered before [@kapatsinskiChangingMindsChanging2018; @berkoChildsLearningEnglish1958]. This ability is largely enabled by our ability to store forms that we've learned and compute new forms by applying knowledge of the grammar to these stored forms [@stembergerAreInflectedForms2004; @stembergerFrequencyLexicalStorage1986; @morganAbstractKnowledgeDirect2016; @morganModelingIdiosyncraticPreferences2015; @berkoChildsLearningEnglish1958]. In theory, these can be complementary forces: if a form is stored, it does not need to be computed, and if a form can be computed, it does not have to be stored. For example, if the word *cats* is stored, then there is no reason to compute it. On the other hand, if it can be computed (e.g., we have learned the word *cat*, and we have learned how to make regular forms plural in English), then there may be no reason to store it. This has been the story told by many of the early linguistic theories, and understandably so.
+
+## Computation and Storage
