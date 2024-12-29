@@ -1,0 +1,391 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{space}{xeCJK}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod,
+  nottoc,
+  oneside]{scrreprt}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+    \setmainfont[]{Crimson}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Serif KR}
+          \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Serif KR}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[left=2in,right=2in,marginparwidth=1.5in,twoside=true]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\usepackage{tocbibind}  % Include TOC, List of Figures, and List of Tables in the TOC
+\usepackage{fontspec}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{sidenotes}{}{\usepackage{sidenotes}}
+\@ifpackageloaded{marginnote}{}{\usepackage{marginnote}}
+\makeatother
+
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Multi-Word Representations in Minds and Models: Investigating Storage Mechanisms in Humans and Large Language Models},
+  pdfauthor={Zachary Nicholas Houghton},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Multi-Word Representations in Minds and Models: Investigating
+Storage Mechanisms in Humans and Large Language Models}
+\author{Zachary Nicholas Houghton}
+\date{2024-11-25}
+
+\begin{document}
+\maketitle
+
+\pagenumbering{roman}
+
+\renewcommand*\contentsname{Table of contents}
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\listoffigures
+\listoftables
+
+\bookmarksetup{startatroot}
+
+\chapter*{Abstract}\label{sec-abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+\markboth{Abstract}{Abstract}
+
+This is my abstract.
+
+\bookmarksetup{startatroot}
+
+\chapter*{Acknowledgements}\label{sec-acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+
+\markboth{Acknowledgements}{Acknowledgements}
+
+I started this journey in the middle of a pandemic that persisted
+through much of my program. It is no exaggeration to say that my success
+in this program is due in large, or perhaps completely, to the people
+below. {\marginnote{\begin{footnotesize}Though I would like to take some
+of the credit for myself.\end{footnotesize}}}
+
+First and foremost, I would not be here if it weren't for my incredible
+advisor, Dr.~Emily Morgan. Emily has been a never-ending source of
+knowledge, a guiding light, and a constant source of reassurance. Emily
+was charged with the non-trivial task of helping to translate my
+incoherent stream of thoughts into a coherent set of ideas. She pushed
+me hard, believed in me, and never let me fall behind. Words can express
+neither the gratitude nor the debt that I owe to you, Emily.
+
+I'd also like to thank many of the other brilliant minds here who have
+been crucial to my development as a researcher. Specifically, I'd like
+to thank Dr.~Fernanda Ferreira, Dr.~Kenji Sagae, Dr.~Santiago Barreda,
+Dr.~Georgia Zellou, and Dr.~Masoud Jasbi. Over my years at UC Davis,
+each of these professors has volunteered countless hours of their time
+and wisdom to me, indulging my endless stream of questions.
+
+Many of the ideas presented here have benefited in some form or another
+from feedback from many brilliant graduate students. I would especially
+like to thank Casey Felton, Harvey Qiu, Skyler Reese, Nicole Dodd, and
+Penny Pan for their feedback on much of the work included here.
+
+I'd also like to thank Casey, Felix, and Nora for being a strong support
+system during my time here. Our Sunday shenanigans were a welcomed
+escape from the tireless work of completing a PhD.
+
+My journey in linguistics started at the University of Oregon, and I
+want to thank all of the professors that supported the beginning of my
+journey. I particularly want to acknowledge Dr.~Vsevolod Kapatsinski.
+Volya has donated countless hours of his time to me even after his role
+as my undergraduate thesis advisor was long over. He continues to be an
+endless source of knowledge and inspiration and much of my knowledge and
+interest in language learning comes from him. Perhaps more importantly,
+however, he is a constant reminder that linguistics is \emph{fun}! Had
+it not been for our meetings over the years that devolved into
+ridiculous linguistic tangents, I would have burnt out long ago. I would
+not be here without you, Volya.
+
+I would also like to thank Kim 선생님. Her words of encouragement and
+faith in me helped me believe in myself.
+
+In addition, I want to thank Dr.~Melissa Baese-Berk, Dr.~Misaki Kato,
+and Dr.~Zara Harmon. Aside from being both exceptional researchers and
+inspirational people, each one of them was crucial to my development as
+a researcher, as a linguist, and as a person. If I can become even half
+the linguist they are, I'll be incredibly proud of myself.
+
+Along with the technical and academic guidance, it also would have been
+impossible to complete this PhD without the unending support I received
+from my many close friends. It would take up too much space to name all
+of them, but they surely know who they are.
+
+I have been fortunate to have a strong support system in the form of of
+my two sisters, Kayla and Lily. We've been through so much together. I
+don't know where I would be, not just academically, but more generally
+in life, had you two not been by my side.
+
+This work would also have not been completed without the influence of my
+parents. Specifically, I want to thank my mom for teaching me that the
+ability to find the answer is far more important than knowing the
+answer, and my dad, for teaching me the discipline and practical skills
+to achieve my goals.
+
+Last but certainly not least, thank you 보미 for being an endless source
+of positivity and encouragement.
+
+The number of people who have been indispensable in me getting here is
+undoubtedly larger than is feasible to include here. To those that I
+have inevitably left out, I apologize.
+
+\bookmarksetup{startatroot}
+
+\chapter{Introduction}\label{introduction}
+
+\pagenumbering{arabic}
+
+From a young age, humans are capable of generating sentences that
+they've never encountered before
+(\citeproc{ref-kapatsinskiChangingMindsChanging2018}{Kapatsinski 2018};
+\citeproc{ref-berkoChildsLearningEnglish1958}{Berko 1958}). This ability
+is largely enabled by our ability to store forms that we've learned and
+compute new forms by applying knowledge of the grammar to these stored
+forms (\citeproc{ref-stembergerAreInflectedForms2004}{Joseph P.
+Stemberger and MacWhinney 2004};
+\citeproc{ref-stembergerFrequencyLexicalStorage1986}{Joseph Paul
+Stemberger and MacWhinney 1986};
+\citeproc{ref-morganAbstractKnowledgeDirect2016}{Morgan and Levy 2016},
+\citeproc{ref-morganModelingIdiosyncraticPreferences2015}{2015};
+\citeproc{ref-berkoChildsLearningEnglish1958}{Berko 1958}). In theory,
+these can be complementary forces: if a form is stored, it does not need
+to be computed, and if a form can be computed, it does not have to be
+stored. For example, if the word \emph{cats} is stored, then there is no
+reason to compute it. On the other hand, if it can be computed (e.g., we
+have learned the word \emph{cat}, and we have learned how to make
+regular forms plural in English), then there may be no reason to store
+it. This has been the story told by many of the early linguistic
+theories, and understandably so.
+
+\section{Computation and Storage}\label{computation-and-storage}
+
+\section{What is Storage?}\label{what-is-storage}
+
+\bookmarksetup{startatroot}
+
+\chapter*{References}\label{references}
+\addcontentsline{toc}{chapter}{References}
+
+\markboth{References}{References}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-berkoChildsLearningEnglish1958}
+Berko, Jean. 1958. {``The Child's Learning of English Morphology.''}
+\emph{{\emph{WORD}}} 14 (2-3): 150--77.
+\url{https://doi.org/10.1080/00437956.1958.11659661}.
+
+\bibitem[\citeproctext]{ref-kapatsinskiChangingMindsChanging2018}
+Kapatsinski, Vsevolod. 2018. \emph{Changing Minds Changing Tools: From
+Learning Theory to Language Acquisition to Language Change}. MIT Press.
+\url{https://books.google.com/books?hl=en&lr=&id=YZxjDwAAQBAJ&oi=fnd&pg=PR5&dq=kapatsinski+changing+minds&ots=9bGhgkCaY0&sig=MHfWF9cbhbtMmx33a0FYSM6AMAs}.
+
+\bibitem[\citeproctext]{ref-morganModelingIdiosyncraticPreferences2015}
+Morgan, Emily, and Roger Levy. 2015. {``Modeling Idiosyncratic
+Preferences : How Generative Knowledge and Expression Frequency Jointly
+Determine Language Structure,''} 1649--54.
+
+\bibitem[\citeproctext]{ref-morganAbstractKnowledgeDirect2016}
+---------. 2016. {``Abstract Knowledge Versus Direct Experience in
+Processing of Binomial Expressions.''} \emph{Cognition} 157: 384--402.
+\url{https://doi.org/10.1016/j.cognition.2016.09.011}.
+
+\bibitem[\citeproctext]{ref-stembergerFrequencyLexicalStorage1986}
+Stemberger, Joseph Paul, and Brian MacWhinney. 1986. {``Frequency and
+the Lexical Storage of Regularly Inflected Forms.''} \emph{Memory \&
+Cognition} 14 (1): 17--26. \url{https://doi.org/10.3758/BF03209225}.
+
+\bibitem[\citeproctext]{ref-stembergerAreInflectedForms2004}
+Stemberger, Joseph P., and Brian MacWhinney. 2004. {``Are Inflected
+Forms Stored in the Lexicon.''} \emph{Morphology: Critical Concepts in
+Linguistics} 6: 107122.
+\url{https://books.google.com/books?hl=en&lr=&id=bGl0aKBld3cC&oi=fnd&pg=PA107&dq=stemberger+2004+inflected&ots=RdvzVaC_NS&sig=0DJV8gUVaoZv_COZqcLXOu5_evU}.
+
+\end{CSLReferences}
+
+
+
+
+\end{document}

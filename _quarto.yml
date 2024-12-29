@@ -16,22 +16,30 @@ format:
   html:
     theme: cosmo
   pdf:
-    documentclass: scrreprt
-    keep-tex: false
-    link-citations: true
-    colorlinks: false
-    classoption: nottoc
-    lot: true
-    lof: true
-    geometry:
+    latex-engine: lualatex 
+    #font:
+      #text: "Times New Roman"     # Default font for body text
+      #heading: "Times New Roman"  # Default font for headings
+    documentclass: scrreprt       # LaTeX document class
+    mainfont: "Crimson" # Main font
+    CJKmainfont: "Noto Serif KR"  # Font for Korean text
+    keep-tex: true                # Save the intermediate .tex file for debugging
+    link-citations: true          # Enable hyperlinked citations
+    colorlinks: false             # Disable colored hyperlinks
+    classoption: nottoc           # Prevent the Table of Contents from appearing in the TOC
+    lot: true                     # Enable List of Tables
+    lof: true                     # Enable List of Figures
+    geometry:                     # Page geometry settings
       - left=2in
       - right=2in
       - marginparwidth=1.5in
       - twoside=true
+    include-before-body: 
+      text: |
+        \pagenumbering{roman}
     include-in-header: 
-      text: | 
-        \usepackage{tocbibind}
+      - text: |
+          \usepackage{tocbibind}  % Include TOC, List of Figures, and List of Tables in the TOC
+          \usepackage{fontspec}
+#          \setmainfont{C:/Windows/Fonts/NanumGothic-Regular.ttf}
 editor: visual
-
-    
-    
