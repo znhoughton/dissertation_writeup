@@ -2,8 +2,62 @@
 
 # Introduction
 
-From a young age, humans are capable of generating sentences that they've never encountered before [@kapatsinskiChangingMindsChanging2018; @berkoChildsLearningEnglish1958]. This ability is largely enabled by our ability to store forms that we've learned and compute new forms by applying knowledge of the grammar to these stored forms [@stembergerAreInflectedForms2004; @stembergerFrequencyLexicalStorage1986; @morganAbstractKnowledgeDirect2016; @morganModelingIdiosyncraticPreferences2015; @berkoChildsLearningEnglish1958]. In theory, these can be complementary forces: if a form is stored, it does not need to be computed, and if a form can be computed, it does not have to be stored. For example, if the word *cats* is stored, then there is no reason to compute it. On the other hand, if it can be computed (e.g., we have learned the word *cat*, and we have learned how to make regular forms plural in English), then there may be no reason to store it. This has been the story told by many of the early linguistic theories, and understandably so.
-
 ## Computation and Storage
 
+From a young age, humans are capable of generating sentences that they've never encountered before [@kapatsinskiChangingMindsChanging2018; @berkoChildsLearningEnglish1958]. This ability is largely enabled by our ability to store forms that we've learned and compute new forms by applying knowledge of the grammar to these stored forms [@stembergerAreInflectedForms2004; @stembergerFrequencyLexicalStorage1986; @morganAbstractKnowledgeDirect2016; @morganModelingIdiosyncraticPreferences2015; @berkoChildsLearningEnglish1958]. In theory, these can be complementary forces: if a form is stored, it does not need to be computed, and if a form can be computed, it does not have to be stored. For example, if the word *cats* is stored, then there is not necessarily a reason to compute it (e.g., by combining the lexical root, *cat*, with a general plural rule, -*s*). On the other hand, if it can be computed (e.g., we have learned the word *cat*, and we have learned how to make regular forms plural in English), then there may be no reason to store it. This has been the story told by many of the early linguistic theories [e.g., @chomsky1965], and understandably so.
+
+Early theories argued for a strict division between items that are stored and items that are computed [@chomsky1965]. These theories often prioritized efficiency and minimizing memory consumption. Storing items that could be generated computationally was considered redundant.
+
+-What is computation? What is storage?
+
+-Chomsky accounts (minimal storage)
+
+-Bybeean accounts (frequent items stored)
+
+-Evidence for storage
+
+     -Evidence from phonology, learning, semantics, processing, regular vs irregular forms
+
+-Storage at a syllable-level, word-level, phrasal-level, and sentence-level.
+
+-Evidence for computation
+
+     -less important to show, taken for granted, can mention Berko-Gleason
+
 ## What is Storage?
+
+-What does it mean for something to be stored?
+
+     -Exemplar theories
+
+     -Abstractions
+
+-What happens to stored items?  
+
+      -How are they stored (internal structure)
+
+      -How are they processed?
+
+      -Potential competition effects 
+
+## **Models of Storage**
+
+-Fragment grammars
+
+-LLMs
+
+-What can we learn from them?
+
+## **Q**uestions
+
+-What drives storage?
+
+    -Confident about frequency effects, but what about predictability?
+
+-How are stored units processed?
+
+    -language processing is inherently linear, how does this interact with holistic storage?
+
+-What happens to the internal structure of stored units?
+
+     -e.g., Kapatsinski & Radicke

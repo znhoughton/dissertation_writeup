@@ -8,6 +8,7 @@ book:
   chapters:
     - index.qmd
     - Chapters/Introduction/introduction.qmd
+    - Chapters/Compound Nouns/staub_rep_ext.qmd
     - Chapters/references.qmd
 
 bibliography: references.bib
