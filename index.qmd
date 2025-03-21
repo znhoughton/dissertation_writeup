@@ -4,13 +4,13 @@ This is my abstract.
 
 # Acknowledgements {#sec-acknowledgements .unnumbered}
 
-I started this journey in the middle of a pandemic that persisted through much of my program. It is no exaggeration to say that my success in this program is due in large, or perhaps completely, to the people below. [Though I would like to take some of the credit for myself.]{.aside}
+I started this journey in the middle of a pandemic that persisted through much of my program. It is no exaggeration to say that my success in this program is due in large, or perhaps completely, to the people below.
 
 First and foremost, I would not be here if it weren’t for my incredible advisor, Dr. Emily Morgan. Emily has been a never-ending source of knowledge, a guiding light, and a constant source of reassurance. Emily was charged with the non-trivial task of helping to translate my incoherent stream of thoughts into a coherent set of ideas. She pushed me hard, believed in me, and never let me fall behind. Words can express neither the gratitude nor the debt that I owe to you, Emily.
 
 I’d also like to thank many of the other brilliant minds here who have been crucial to my development as a researcher. Specifically, I’d like to thank Dr. Fernanda Ferreira, Dr. Kenji Sagae, Dr. Santiago Barreda, Dr. Georgia Zellou, and Dr. Masoud Jasbi. Over my years at UC Davis, each of these professors has volunteered countless hours of their time and wisdom to me, indulging my endless stream of questions.
 
-Many of the ideas presented here have benefited in some form or another from feedback from many brilliant graduate students. I would especially like to thank Casey Felton, Harvey Qiu, Skyler Reese, Nicole Dodd, and Penny Pan for their feedback on much of the work included here.
+Many of the ideas presented here have benefited in some form or another from feedback from many brilliant graduate students. I would especially like to thank Dingyi (Penny) Pan and Casey Felton for their feedback on much of the work included here.
 
 I’d also like to thank Casey, Felix, and Nora for being a strong support system during my time here. Our Sunday shenanigans were a welcomed escape from the tireless work of completing a PhD.
 
@@ -18,7 +18,7 @@ My journey in linguistics started at the University of Oregon, and I want to tha
 
 I would also like to thank Kim 선생님. Her words of encouragement and faith in me helped me believe in myself.
 
-In addition, I want to thank Dr. Melissa Baese-Berk, Dr. Misaki Kato, and Dr. Zara Harmon. Aside from being both exceptional researchers and inspirational people, each one of them was crucial to my development as a researcher, as a linguist, and as a person. If I can become even half the linguist they are, I’ll be incredibly proud of myself.
+In addition, I want to thank Dr. Melissa Baese-Berk, Dr. Misaki Kato, and Dr. Zara Harmon. Aside from being exceptional researchers and inspirational people, each one of them was crucial to my development as a researcher, as a linguist, and as a person.
 
 Along with the technical and academic guidance, it also would have been impossible to complete this PhD without the unending support I received from my many close friends. It would take up too much space to name all of them, but they surely know who they are.
 
