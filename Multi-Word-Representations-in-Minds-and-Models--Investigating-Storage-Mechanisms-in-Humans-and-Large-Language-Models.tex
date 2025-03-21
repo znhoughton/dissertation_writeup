@@ -304,8 +304,9 @@ ability to find the answer is far more important than knowing the
 answer, and my dad, for teaching me the discipline and practical skills
 to achieve my goals.
 
-Last but certainly not least, thank you 보미 for being an endless source
-of positivity and encouragement.
+Finally, I would like to thank Addy, Charles, Spencer, Paul, Wyatt, and
+보미 for being my very strong support network. Despite being thousands
+of miles away I could always count on all of you when times were tough.
 
 The number of people who have been indispensable in me getting here is
 undoubtedly larger than is feasible to include here. To those that I
@@ -316,6 +317,8 @@ have inevitably left out, I apologize.
 \chapter{Introduction}\label{introduction}
 
 \pagenumbering{arabic}
+
+\section{Computation and Storage}\label{computation-and-storage}
 
 From a young age, humans are capable of generating sentences that
 they've never encountered before
@@ -332,16 +335,651 @@ Stemberger and MacWhinney 1986};
 \citeproc{ref-berkoChildsLearningEnglish1958}{Berko 1958}). In theory,
 these can be complementary forces: if a form is stored, it does not need
 to be computed, and if a form can be computed, it does not have to be
-stored. For example, if the word \emph{cats} is stored, then there is no
-reason to compute it. On the other hand, if it can be computed (e.g., we
-have learned the word \emph{cat}, and we have learned how to make
-regular forms plural in English), then there may be no reason to store
-it. This has been the story told by many of the early linguistic
-theories, and understandably so.
+stored. For example, if the word \emph{cats} is stored, then there is
+not necessarily a reason to compute it (e.g., by combining the lexical
+root, \emph{cat}, with a general plural rule, -\emph{s}). On the other
+hand, if it can be computed (e.g., we have learned the word \emph{cat},
+and we have learned how to make regular forms plural in English), then
+there may be no reason to store it. This has been the story told by many
+of the early linguistic theories (e.g.,
+\citeproc{ref-chomsky1965}{Chomsky 1965}), and understandably so.
 
-\section{Computation and Storage}\label{computation-and-storage}
+Early theories argued for a strict division between items that are
+stored and items that are computed (\citeproc{ref-chomsky1965}{Chomsky
+1965}). These theories often prioritized efficiency and minimizing
+memory consumption. Storing items that could be generated
+computationally was considered redundant.
+
+-What is computation? What is storage?
+
+-Chomsky accounts (minimal storage)
+
+-Bybeean accounts (frequent items stored)
+
+-Evidence for storage
+
+~ ~ ~-Evidence from phonology, learning, semantics, processing, regular
+vs irregular forms
+
+-Storage at a syllable-level, word-level, phrasal-level, and
+sentence-level.
+
+-Evidence for computation
+
+~ ~ ~-less important to show, taken for granted, can mention
+Berko-Gleason
 
 \section{What is Storage?}\label{what-is-storage}
+
+-What does it mean for something to be stored?
+
+~ ~ ~-Exemplar theories
+
+~ ~ ~-Abstractions
+
+-What happens to stored items?~~
+
+~ ~ ~ -How are they stored (internal structure)
+
+~ ~ ~ -How are they processed?
+
+~ ~ ~ -Potential competition effects~
+
+\section{\texorpdfstring{\textbf{Models of
+Storage}}{Models of Storage}}\label{models-of-storage}
+
+-Fragment grammars
+
+-LLMs
+
+-What can we learn from them?
+
+\section{\texorpdfstring{\textbf{Q}uestions}{Questions}}\label{questions}
+
+-What drives storage?
+
+~ ~ -Confident about frequency effects, but what about predictability?
+
+-How are stored units processed?
+
+~ ~ -language processing is inherently linear, how does this interact
+with holistic storage?
+
+-What happens to the internal structure of stored units?
+
+~ ~ ~-e.g., Kapatsinski \& Radicke
+
+\bookmarksetup{startatroot}
+
+\chapter{staub\_replication\_and\_extension}\label{staub_replication_and_extension}
+
+The results from our previous experiments could be a task-specific
+property of the maze task, since it forces participants to make a
+decision which may commit them to a specific interpretation in a way
+that more naturalistic reading may not. Thus, in this Experiment we
+replicate the previous experiment using eye-tracking.
+
+\section{Methods}\label{methods}
+
+\subsection{Participants}\label{participants}
+
+56 native English speakers were recruited from the University of
+California, Davis subjects pool. They were given course credit in
+exchange for their participation. All participants had normal or
+corrected vision.
+
+\subsection{Materials}\label{materials}
+
+The materials here were identical to those in Experiment 2.
+
+\subsection{Procedure}\label{procedure}
+
+We recorded participants' eye movements using the Eyelink 1000 Plus. We
+recorded pupil movements from the right eye. Participants were seated
+850mm away from the screen. Our screen resolution was 1920x1080, 531.3mm
+in width, and 298.8mm in height.
+
+Comprehension was checked for non-experimental trials and participants
+below 80\% accuracy were excluded. Out of our 56 participants, 0 were
+excluded for falling below the accuracy threshold.
+
+\subsection{Analyses}\label{analyses}
+
+Prior to our analyses, sentences with blinks were excluded and fixations
+less than 80ms in duration and within one character of the nearest
+fixation were merged into that fixation (following
+\citeproc{ref-staubTimeCoursePlausibility2007}{Staub et al. 2007}). For
+our regions of interest (the first noun and the second noun
+independently in the compound n oun), we computed first fixation
+duration, first pass time, and go-past time.
+
+For each analysis, our independent variables were plausibility (high or
+low) and (log) predictability (high or low) and their interaction. We
+also included random slopes for condition and predictability by subject
+and plausibility by compound noun as well as intercepts for subject and
+compound noun. For each of our models, we used sum-coded, where the
+intercept represents the grand mean and the fixed-effect coefficient
+estimates represent the distance from the grand mean.
+
+\section{Results}\label{results}
+
+\subsection{First Fixation Times}\label{first-fixation-times}
+
+\subsubsection{N1}\label{n1}
+
+First, we examined the effects of plausibility and predictability on
+first fixation times for the first noun. Note that in our case, since
+plausibility was codes as -1 for plausible and 1 for implausible, a
+positive coefficient estimate of plausibility corresponds to longer
+fixation times for implausible items. Additionally, following Houghton
+et al.
+(\citeproc{ref-houghtonTaskdependentConsequencesDisfluency2024}{2024})
+we also report the percentage of posterior samples greater than zero.
+Our model results can be found below in Table~\ref{tbl-firstfixn1} and a
+visualization can be found in Figure~\ref{fig-firstfixn1}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3636}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1299}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}@{}}
+
+\caption{\label{tbl-firstfixn1}Model results examining the effect of
+plausibility and predictability on first fixation times for the N1
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 231.016 & 4.433 & 222.356 & 239.502 & 100.00 \\
+Plausibility & 1.661 & 2.020 & -2.289 & 5.695 & 78.95 \\
+Predictability & 2.782 & 2.870 & -2.804 & 8.532 & 83.75 \\
+Plausibility:Predictability & -3.473 & 2.012 & -7.418 & 0.522 & 4.15 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstfixn1-1.pdf}
+
+}
+
+\caption{\label{fig-firstfixn1}Visualization of the effects of
+plausibility and predictability on first fixation times for the N1
+region.}
+
+\end{figure}%
+
+Our results for first-fixation times, while non-significant, do show an
+interesting trend, with the effect of plausibility in the expected
+direction (although with only \textasciitilde78\% samples greater than
+zero). While 96\% of the samples less than zero for the interaction
+effect, the effect size is so small that it's not particularly
+meaningful.
+
+\subsubsection{N2}\label{n2}
+
+Next we examine the effects of plausibility and predictability on the
+first fixation times of the second noun in the compound.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3636}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1299}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}@{}}
+
+\caption{\label{tbl-firstfixn2}Model results examining the effect of
+plausibility and predictability on first fixation times for the N2
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 234.448 & 4.864 & 224.479 & 243.767 & 100.000 \\
+Plausibility & -2.151 & 2.973 & -8.132 & 3.685 & 23.225 \\
+Predictability & -4.136 & 2.988 & -9.887 & 1.887 & 8.575 \\
+Plausibility:Predictability & -2.928 & 3.012 & -8.920 & 2.967 &
+16.075 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstfixn2-1.pdf}
+
+}
+
+\caption{\label{fig-firstfixn2}Visualization of the effects of
+plausibility and predictability on first fixation times for the N2
+region.}
+
+\end{figure}%
+
+Unsurprisingly, our results demonstrate an effect of predictability on
+the first fixation times of the second noun in the compound noun. This
+is rather unsurprising because in the present study predictability is a
+measure of how expected the second noun is given the first. There also
+is not much of a plausibility effect on the N2, which is also not
+particularly surprising because the second noun eliminates the local
+implausibility. That is, both sentences are plausible at the N2 region.
+
+\subsection{Gaze/First-Pass Time}\label{gazefirst-pass-time}
+
+\subsubsection{N1}\label{n1-1}
+
+Our results for the effects of plausibility and predictability on
+gaze/first-pass times on the N1 region are presented in
+\textbf{?@tbl-exp1m2} and visualized in \textbf{?@fig-exp1m2}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3636}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1299}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}@{}}
+
+\caption{\label{tbl-gazen1}Model results examining the effect of
+plausibility and predictability on Gaze/first-pass times for the N1
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 264.141 & 8.422 & 246.898 & 280.601 & 100.000 \\
+Plausibility & -0.001 & 0.203 & -0.385 & 0.413 & 49.075 \\
+Predictability & 0.005 & 0.198 & -0.394 & 0.387 & 51.475 \\
+Plausibility:Predictability & -0.010 & 0.202 & -0.411 & 0.382 &
+48.100 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gazen1-1.pdf}
+
+}
+
+\caption{\label{fig-gazen1}Visualization of the effects of plausibility
+and predictability on Gaze/first-pass times for the N1 region.}
+
+\end{figure}%
+
+Our results demonstrate no effect of either plausibility or
+predictability on the gaze times at the N1 region. We further examined
+our filler items to rule out an error with the eye-tracker. Our filler
+items contain a frequency manipulation and an analysis of the filler
+items demonstrated that the frequency manipulation did effect gaze times
+in our filler items, suggesting that the results here are not due to any
+malfunction of the eye-tracker or cleaning procedure.
+
+\subsubsection{N2}\label{n2-1}
+
+Our results for the N2 region are presented in Table~\ref{tbl-gazen2}
+and visualized in Figure~\ref{fig-gazen2}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3636}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1299}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}@{}}
+
+\caption{\label{tbl-gazen2}Model results examining the effect of
+plausibility and predictability on Gaze/first-pass times for the N2
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 253.757 & 6.071 & 241.726 & 265.767 & 100.000 \\
+Plausibility & -0.003 & 0.100 & -0.196 & 0.192 & 48.825 \\
+Predictability & -0.003 & 0.101 & -0.207 & 0.190 & 48.625 \\
+Plausibility:Predictability & 0.003 & 0.100 & -0.199 & 0.202 & 51.625 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gazen2-1.pdf}
+
+}
+
+\caption{\label{fig-gazen2}Visualization of the effects of plausibility
+and predictability on Gaze/first-pass times for the N2 region.}
+
+\end{figure}%
+
+The results of the N2 region also show a lack of effect of plausibility
+and predictability on gaze times.
+
+\subsection{Go-Past Time}\label{go-past-time}
+
+\subsubsection{N1}\label{n1-2}
+
+Our results for the effects of plausibility and predictability on
+go-past times are presented in Table~\ref{tbl-gopastn1} and visualized
+in Figure~\ref{fig-gopastn1}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3636}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1299}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}@{}}
+
+\caption{\label{tbl-gopastn1}Model results examining the effect of
+plausibility and predictability on go-past times for the N1 region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 357.207 & 16.452 & 325.205 & 388.957 & 100.00000 \\
+Plausibility & 0.018 & 0.197 & -0.367 & 0.400 & 54.05000 \\
+Predictability & 0.005 & 0.200 & -0.390 & 0.394 & 50.10000 \\
+Plausibility:Predictability & -0.000 & 0.200 & -0.392 & 0.393 &
+49.76667 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gopastn1-1.pdf}
+
+}
+
+\caption{\label{fig-gopastn1}Visualization of the effect of plausibility
+and predictability on go-past times for the N1 region.}
+
+\end{figure}%
+
+Our results for go-past times similarly show no effect of predictability
+and plausibility.
+
+\subsubsection{N2}\label{n2-2}
+
+Our results for the N2 region are presented in Table~\ref{tbl-gopastn2}
+and visualized in Figure~\ref{fig-gopastn2}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3636}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1299}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1039}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}@{}}
+
+\caption{\label{tbl-gopastn2}Model results examining the effect of
+plausibility and predictability on go-past times for the N2 region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 342.737 & 12.866 & 317.685 & 367.649 & 100.000 \\
+Plausibility & -0.005 & 0.099 & -0.202 & 0.195 & 47.600 \\
+Predictability & -0.001 & 0.100 & -0.198 & 0.195 & 50.000 \\
+Plausibility:Predictability & -0.002 & 0.100 & -0.192 & 0.198 &
+49.025 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gopastn2-1.pdf}
+
+}
+
+\caption{\label{fig-gopastn2}Visualization of the effect of plausibility
+and predictability on go-past times for the N2 region.}
+
+\end{figure}%
+
+Our results for the N2 region similarly show no effect of predictability
+and plausibility on go-past times.
+
+\subsection{First-Pass Regression}\label{first-pass-regression}
+
+\subsubsection{N1}\label{n1-3}
+
+Our results for the effects of predictability and plausibility on the
+first-pass regression times on the N1 region are presented in
+Table~\ref{tbl-firstpassn1} and visualized in
+Figure~\ref{fig-firstpassn1}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3733}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0933}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0933}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1867}}@{}}
+
+\caption{\label{tbl-firstpassn1}Model results examining the effect of
+plausibility and predictability on first-pass regression for the N1
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & -1.645 & 0.151 & -1.948 & -1.358 & 0.000 \\
+Plausibility & 0.199 & 0.080 & 0.041 & 0.357 & 99.375 \\
+Predictability & -0.049 & 0.086 & -0.214 & 0.123 & 27.750 \\
+Plausibility:Predictability & 0.128 & 0.075 & -0.019 & 0.275 & 96.025 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstpassn1-1.pdf}
+
+}
+
+\caption{\label{fig-firstpassn1}Visualization of the effect of
+plausibility and predictability on first-pass regression for the N1
+region.}
+
+\end{figure}%
+
+Our results suggest that readers are more likely to regress after the
+first fixation in the implausible condition compared to the plausible
+condition. Further, this plausibility effect is larger for
+high-predictability items than low predictability items. This is
+surprising because predictability is a measure of the N2, not the N1 and
+if readers are anticipating the N2 then it should alleviate the local
+implausibility at the N1 (which would result in a negative interaction
+effect, i.e.~the opposite trend from what we see here). Instead, we see
+\ldots{}
+
+\subsubsection{N2}\label{n2-3}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3733}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0933}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0933}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1867}}@{}}
+
+\caption{\label{tbl-firstpassn2}Model results examining the effect of
+plausibility and predictability on first-pass regression for the N2
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & -2.061 & 0.176 & -2.426 & -1.728 & 0.000 \\
+Plausibility & -0.026 & 0.106 & -0.241 & 0.184 & 40.625 \\
+Predictability & -0.022 & 0.102 & -0.223 & 0.177 & 41.100 \\
+Plausibility:Predictability & 0.049 & 0.097 & -0.136 & 0.239 & 69.975 \\
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstpassn2-1.pdf}
+
+}
+
+\caption{\label{fig-firstpassn2}Visualization of the effect of
+plausibility and predictability on first-pass regression for the N2
+region.}
+
+\end{figure}%
+
+Our results at the N2 region show no effect of predictability or
+plausibility.
+
+\section{Discussion}\label{discussion}
 
 \bookmarksetup{startatroot}
 
@@ -357,6 +995,17 @@ Berko, Jean. 1958. {``The Child's Learning of English Morphology.''}
 \emph{{\emph{WORD}}} 14 (2-3): 150--77.
 \url{https://doi.org/10.1080/00437956.1958.11659661}.
 
+\bibitem[\citeproctext]{ref-chomsky1965}
+Chomsky, Noam. 1965. {``Aspects of the Theory of Syntax Special
+Technical Report No. 11.''}
+\url{https://ntrs.nasa.gov/api/citations/19670002070/downloads/19670002070.pdf}.
+
+\bibitem[\citeproctext]{ref-houghtonTaskdependentConsequencesDisfluency2024}
+Houghton, Zachary, Misaki Kato, Melissa Baese-Berk, and Charlotte
+Vaughn. 2024. {``Task-Dependent Consequences of Disfluency in Perception
+of Native and Non-Native Speech.''} \emph{Applied Psycholinguistics},
+January, 1--17. \url{https://doi.org/10.1017/S0142716423000486}.
+
 \bibitem[\citeproctext]{ref-kapatsinskiChangingMindsChanging2018}
 Kapatsinski, Vsevolod. 2018. \emph{Changing Minds Changing Tools: From
 Learning Theory to Language Acquisition to Language Change}. MIT Press.
@@ -371,6 +1020,13 @@ Determine Language Structure,''} 1649--54.
 ---------. 2016. {``Abstract Knowledge Versus Direct Experience in
 Processing of Binomial Expressions.''} \emph{Cognition} 157: 384--402.
 \url{https://doi.org/10.1016/j.cognition.2016.09.011}.
+
+\bibitem[\citeproctext]{ref-staubTimeCoursePlausibility2007}
+Staub, Adrian, Keith Rayner, Alexander Pollatsek, Jukka Hyönä, and Helen
+Majewski. 2007. {``The Time Course of Plausibility Effects on Eye
+Movements in Reading: Evidence from Noun-Noun Compounds.''}
+\emph{Journal of Experimental Psychology: Learning Memory and Cognition}
+33 (6): 1162--69. \url{https://doi.org/10.1037/0278-7393.33.6.1162}.
 
 \bibitem[\citeproctext]{ref-stembergerFrequencyLexicalStorage1986}
 Stemberger, Joseph Paul, and Brian MacWhinney. 1986. {``Frequency and
