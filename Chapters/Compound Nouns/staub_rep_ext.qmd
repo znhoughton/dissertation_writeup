@@ -111,7 +111,7 @@ first_fixation_filler =
        data = data_filler_first_fixation_filler, 
        chains = 4, 
        cores = 4, 
-       warmup = 6000, 
+       warmup = 6000,  
        init = 0,
        iter = 12000, 
        thin = 4,
@@ -262,9 +262,9 @@ model_n2_regression_staub =
 
 ```
 
-The results from our previous experiments could be a task-specific property of the maze task, since it forces participants to make a decision which may commit them to a specific interpretation in a way that more naturalistic reading may not. Thus, in this Experiment we replicate the previous experiment using eye-tracking.
-
 # Experiment 3
+
+The results from our previous experiments could be a task-specific property of the maze task, since it forces participants to make a decision which may commit them to a specific interpretation in a way that more naturalistic reading may not. Thus, in this Experiment we replicate the previous experiment using eye-tracking.
 
 ## Methods
 
@@ -329,6 +329,7 @@ knitr::kable(fixefsm1, booktabs = T)
 ```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
 #| label: fig-firstfixn1
 #| fig-cap: "Visualization of the effects of plausibility and predictability on first fixation times for the N1 region."
+#| fig-cap-location: top
 
 
 model_n1_binary_plot = plot(conditional_effects(model_n1_binary), plot = F)[[3]] +
@@ -346,7 +347,7 @@ model_n1_binary_plot = model_n1_binary_plot +
 model_n1_binary_plot
 ```
 
-Our results for first-fixation times, while non-significant, do show an interesting trend, with the effect of plausibility in the expected direction (although with only \~78% samples greater than zero). While 96% of the samples less than zero for the interaction effect, the effect size is so small that it's not particularly meaningful.
+Our results for first-fixation times, while non-significant, do show an interesting trend, with the effect of plausibility in the expected direction (although with only \~78% samples greater than zero). While 96% of the samples were less than zero for the interaction effect, the effect size is so small that it's not particularly meaningful.
 
 #### N2
 
@@ -403,13 +404,13 @@ model_n2_binary_plot
 
 ```
 
-Unsurprisingly, our results demonstrate an effect of predictability on the first fixation times of the second noun in the compound noun. This is rather unsurprising because in the present study predictability is a measure of how expected the second noun is given the first. There also is not much of a plausibility effect on the N2, which is also not particularly surprising because the second noun eliminates the local implausibility. That is, both sentences are plausible at the N2 region.
+Our results demonstrate an effect of predictability on the first fixation times of the second noun in the compound noun. This is rather unsurprising because in the present study predictability is a measure of how expected the second noun is given the first. There also is not much of a plausibility effect on the N2, which is also not particularly surprising because the second noun eliminates the local implausibility making both sentences plausible at the N2 region.
 
 ### Gaze/First-Pass Time
 
 #### N1
 
-Our results for the effects of plausibility and predictability on gaze/first-pass times on the N1 region are presented in @tbl-exp1m2 and visualized in @fig-exp1m2.
+Our results for the effects of plausibility and predictability on gaze/first-pass times on the N1 region are presented in @tbl-gazen1 and visualized in @fig-gazen1.
 
 ```{r, echo = F, message = F}
 #| label: tbl-gazen1
@@ -692,7 +693,7 @@ model_n1_binary_first_pass_plot
 
 ```
 
-Our results suggest that readers are more likely to regress after the first fixation in the implausible condition compared to the plausible condition. Further, this plausibility effect is larger for high-predictability items than low predictability items. This is surprising because predictability is a measure of the N2, not the N1 and if readers are anticipating the N2 then it should alleviate the local implausibility at the N1 (which would result in a negative interaction effect, i.e. the opposite trend from what we see here). Instead, we see ...
+Our results suggest that readers are more likely to regress after the first fixation in the implausible condition compared to the plausible condition. Further, this plausibility effect is larger for high-predictability items than low predictability items. This is surprising because predictability is a measure of the N2, not the N1 and if readers are anticipating the N2 then it should alleviate the local implausibility at the N1 (which would result in a negative interaction effect, i.e. the opposite trend from what we see here).
 
 #### N2
 
@@ -756,6 +757,8 @@ Our filler items contained a frequency manipulation. As such, we can sanity chec
 
 #### First Fixation Times
 
+First fixation times for our filler items are presented below in @tbl-firstfixationfiller and visualized in @fig-firstfixationfiller.
+
 ```{r, echo = F, message = F}
 #| label: tbl-firstfixationfiller
 #| tbl-cap: "Model results examining the effect of frequency on first fixation times in our filler materials."
@@ -798,7 +801,7 @@ model_first_fixation_filler_plot = plot(conditional_effects(first_fixation_fille
 model_first_fixation_filler_plot = model_first_fixation_filler_plot +
   ylab('First Fixation') +
   xlab('Frequency') +
-  scale_x_discrete(breaks = c(0, 1), labels = c("High", "Low")) +
+  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
         axis.title=element_text(size  = 14)) 
@@ -807,7 +810,11 @@ model_first_fixation_filler_plot
 
 ```
 
+Our results demonstrate longer first fixation times for low frequency items compared to high frequency items.
+
 #### Gaze/First-Pass Time
+
+The results for the gaze times of our filler items is reported below in @tbl-gazefiller and visualized in @fig-gazefiller.
 
 ```{r, echo = F, message = F}
 #| label: tbl-gazefiller
@@ -851,7 +858,7 @@ model_gaze_filler_plot = plot(conditional_effects(gaze_filler), plot = F)[[1]] +
 model_gaze_filler_plot = model_gaze_filler_plot +
   ylab('Gaze/First-Pass Times') +
   xlab('Frequency') +
-  scale_x_discrete(breaks = c(0, 1), labels = c("High", "Low")) +
+  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
         axis.title=element_text(size  = 14)) 
@@ -860,7 +867,11 @@ model_gaze_filler_plot
 
 ```
 
+Our results demonstrate longer gaze times for low frequency items compared to high frequency ones.
+
 #### Go-Past Time
+
+The results for the go-past times of our filler items is presented below in @tbl-gopastfiller and visualized in @fig-gopastfiller.
 
 ```{r, echo = F, message = F}
 #| label: tbl-gopastfiller
@@ -905,7 +916,7 @@ model_go_past_filler_plot = plot(conditional_effects(go_past_filler), plot = F)[
 model_go_past_filler_plot = model_go_past_filler_plot +
   ylab('Go-Past Times') +
   xlab('Frequency') +
-  scale_x_discrete(breaks = c(0, 1), labels = c("High", "Low")) +
+  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
         axis.title=element_text(size  = 14)) 
@@ -914,7 +925,11 @@ model_go_past_filler_plot
 
 ```
 
+Our results demonstrate longer go-past times for low frequency items relative to high frequency items.
+
 #### First-Pass Regression
+
+Finally, the results for first-pass regression rates of our filler items is presented in @tbl-firstpassregressionfiller and visualized in @fig-firstpassregressionfiller.
 
 ```{r, echo = F, message = F}
 #| label: tbl-firstpassregressionfiller
@@ -969,7 +984,11 @@ model_first_pass_regression_filler_plot
 
 ```
 
+The results of first-pass regressions demonstrate a greater rate of first-pass regressions for low frequency items relative to high frequency items.
+
 ## Discussion
+
+Our filler items suggest that the results of Experiment 3 are not due to measurement error. In Experiment 4 we directly replicate @staubTimeCoursePlausibility2007 to determine whether the error is with our experimental stimuli.
 
 # Experiment 4
 
@@ -1112,11 +1131,13 @@ model_n2_binary_plot_staub
 
 ```
 
+Our results on the N2 region suggest an effect of familiarity such that familiar items had shorter first fixation times.
+
 ### Gaze/First-Pass Time
 
 #### N1
 
-Our results for the effects of plausibility and familiarity on gaze/first-pass times on the N1 region are presented in @tbl-exp1m2staub and visualized in @fig-exp1m2staub.
+Our results for the effects of plausibility and familiarity on gaze/first-pass times on the N1 region are presented in @tbl-gazen1staub and visualized in @fig-gazen1staub.
 
 ```{r, echo = F, message = F}
 #| label: tbl-gazen1staub
@@ -1319,7 +1340,7 @@ knitr::kable(fixefsm3, booktabs = T)
 ```
 
 ```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gopastn2
+#| label: fig-gopastn2staub
 #| fig-cap: "Visualization of the effect of plausibility and predictability on go-past times for the N2 region."
 
 
@@ -1435,7 +1456,7 @@ knitr::kable(fixefsm4, booktabs = T)
 ```
 
 ```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstpassn2
+#| label: fig-firstpassn2staub
 #| fig-cap: "Visualization of the effect of plausibility and familiarity on first-pass regression for the N2 region."
 
 
@@ -1459,4 +1480,8 @@ Our results at the N2 region similarly show no effect of familiarity or plausibi
 
 ### Filler Items
 
-We don't report them here, but similar to Experiment 3 we found significant effects of frequency on the reading times of our filler items for all four eye-tracking measures here, suggesting that this was not an issue with the data collection process.
+For the sake of brevity, we don't report the filler items for Experiment 4 here, but similar to Experiment 3 we found significant effects of frequency on the reading times of our filler items for all four eye-tracking measures, suggesting that this was not an issue with the data collection process.
+
+## Discussion
+
+The results of Experiment 4 suggest that readers may not be as sensitive to local implausibility effects as we predicted. It's worth reminding readers that our stimuli were normed to confirm that people found the implausible items to indeed be implausible, as was done in @staubTimeCoursePlausibility2007. However, it is possible that our study is underpowered and it may take more data to find evidence for an effect of local implausibility. We look forward to examining this in future work.
