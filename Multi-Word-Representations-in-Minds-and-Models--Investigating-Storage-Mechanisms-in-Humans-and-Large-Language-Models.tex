@@ -7,8 +7,7 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod,
-  nottoc,
-  oneside]{scrreprt}
+  nottoc]{scrreprt}
 
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
@@ -184,10 +183,6 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-\makeatletter
-\@ifpackageloaded{sidenotes}{}{\usepackage{sidenotes}}
-\@ifpackageloaded{marginnote}{}{\usepackage{marginnote}}
-\makeatother
 
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -240,8 +235,7 @@ This is my abstract.
 I started this journey in the middle of a pandemic that persisted
 through much of my program. It is no exaggeration to say that my success
 in this program is due in large, or perhaps completely, to the people
-below. {\marginnote{\begin{footnotesize}Though I would like to take some
-of the credit for myself.\end{footnotesize}}}
+below.
 
 First and foremost, I would not be here if it weren't for my incredible
 advisor, Dr.~Emily Morgan. Emily has been a never-ending source of
@@ -260,8 +254,8 @@ and wisdom to me, indulging my endless stream of questions.
 
 Many of the ideas presented here have benefited in some form or another
 from feedback from many brilliant graduate students. I would especially
-like to thank Casey Felton, Harvey Qiu, Skyler Reese, Nicole Dodd, and
-Penny Pan for their feedback on much of the work included here.
+like to thank Dingyi (Penny) Pan and Casey Felton for their feedback on
+much of the work included here.
 
 I'd also like to thank Casey, Felix, and Nora for being a strong support
 system during my time here. Our Sunday shenanigans were a welcomed
@@ -283,10 +277,9 @@ I would also like to thank Kim 선생님. Her words of encouragement and
 faith in me helped me believe in myself.
 
 In addition, I want to thank Dr.~Melissa Baese-Berk, Dr.~Misaki Kato,
-and Dr.~Zara Harmon. Aside from being both exceptional researchers and
+and Dr.~Zara Harmon. Aside from being exceptional researchers and
 inspirational people, each one of them was crucial to my development as
-a researcher, as a linguist, and as a person. If I can become even half
-the linguist they are, I'll be incredibly proud of myself.
+a researcher, as a linguist, and as a person.
 
 Along with the technical and academic guidance, it also would have been
 impossible to complete this PhD without the unending support I received
@@ -413,6 +406,10 @@ with holistic storage?
 
 \chapter{staub\_replication\_and\_extension}\label{staub_replication_and_extension}
 
+\bookmarksetup{startatroot}
+
+\chapter{Experiment 3}\label{experiment-3}
+
 The results from our previous experiments could be a task-specific
 property of the maze task, since it forces participants to make a
 decision which may commit them to a specific interpretation in a way
@@ -449,15 +446,15 @@ Prior to our analyses, sentences with blinks were excluded and fixations
 less than 80ms in duration and within one character of the nearest
 fixation were merged into that fixation (following
 \citeproc{ref-staubTimeCoursePlausibility2007}{Staub et al. 2007}). For
-our regions of interest (the first noun and the second noun
-independently in the compound n oun), we computed first fixation
-duration, first pass time, and go-past time.
+our regions of interest (the first noun and the second noun in the
+compound noun), we computed first fixation duration, first pass time,
+go-past time, and first-pass regression.
 
 For each analysis, our independent variables were plausibility (high or
 low) and (log) predictability (high or low) and their interaction. We
 also included random slopes for condition and predictability by subject
 and plausibility by compound noun as well as intercepts for subject and
-compound noun. For each of our models, we used sum-coded, where the
+compound noun. For each of our models, we used sum-coding, where the
 intercept represents the grand mean and the fixed-effect coefficient
 estimates represent the distance from the grand mean.
 
@@ -516,7 +513,7 @@ Plausibility:Predictability & -3.473 & 2.012 & -7.418 & 0.522 & 4.15 \\
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
@@ -533,7 +530,7 @@ region.}
 Our results for first-fixation times, while non-significant, do show an
 interesting trend, with the effect of plausibility in the expected
 direction (although with only \textasciitilde78\% samples greater than
-zero). While 96\% of the samples less than zero for the interaction
+zero). While 96\% of the samples were less than zero for the interaction
 effect, the effect size is so small that it's not particularly
 meaningful.
 
@@ -581,11 +578,11 @@ Plausibility:Predictability & -2.928 & 3.012 & -8.920 & 2.967 &
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstfixn2-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstfixn2-1.pdf}
 
 }
 
@@ -595,13 +592,13 @@ region.}
 
 \end{figure}%
 
-Unsurprisingly, our results demonstrate an effect of predictability on
-the first fixation times of the second noun in the compound noun. This
-is rather unsurprising because in the present study predictability is a
-measure of how expected the second noun is given the first. There also
-is not much of a plausibility effect on the N2, which is also not
-particularly surprising because the second noun eliminates the local
-implausibility. That is, both sentences are plausible at the N2 region.
+Our results demonstrate an effect of predictability on the first
+fixation times of the second noun in the compound noun. This is rather
+unsurprising because in the present study predictability is a measure of
+how expected the second noun is given the first. There also is not much
+of a plausibility effect on the N2, which is also not particularly
+surprising because the second noun eliminates the local implausibility
+making both sentences plausible at the N2 region.
 
 \subsection{Gaze/First-Pass Time}\label{gazefirst-pass-time}
 
@@ -609,7 +606,7 @@ implausibility. That is, both sentences are plausible at the N2 region.
 
 Our results for the effects of plausibility and predictability on
 gaze/first-pass times on the N1 region are presented in
-\textbf{?@tbl-exp1m2} and visualized in \textbf{?@fig-exp1m2}.
+Table~\ref{tbl-gazen1} and visualized in Figure~\ref{fig-gazen1}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3636}}
@@ -650,7 +647,7 @@ Plausibility:Predictability & -0.010 & 0.202 & -0.411 & 0.382 &
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
@@ -714,7 +711,7 @@ Plausibility:Predictability & 0.003 & 0.100 & -0.199 & 0.202 & 51.625 \\
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
@@ -776,7 +773,7 @@ Plausibility:Predictability & -0.000 & 0.200 & -0.392 & 0.393 &
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
@@ -835,7 +832,7 @@ Plausibility:Predictability & -0.002 & 0.100 & -0.192 & 0.198 &
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
@@ -898,7 +895,7 @@ Plausibility:Predictability & 0.128 & 0.075 & -0.019 & 0.275 & 96.025 \\
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
@@ -919,8 +916,7 @@ high-predictability items than low predictability items. This is
 surprising because predictability is a measure of the N2, not the N1 and
 if readers are anticipating the N2 then it should alleviate the local
 implausibility at the N1 (which would result in a negative interaction
-effect, i.e.~the opposite trend from what we see here). Instead, we see
-\ldots{}
+effect, i.e.~the opposite trend from what we see here).
 
 \subsubsection{N2}\label{n2-3}
 
@@ -962,7 +958,7 @@ Plausibility:Predictability & 0.049 & 0.097 & -0.136 & 0.239 & 69.975 \\
 
 \end{longtable}
 
-\begin{figure}
+\begin{figure}[htbp]
 
 \centering{
 
@@ -979,7 +975,743 @@ region.}
 Our results at the N2 region show no effect of predictability or
 plausibility.
 
+\subsection{Filler Items}\label{filler-items}
+
+Our filler items contained a frequency manipulation. As such, we can
+sanity check our results to make sure that our lack of an effect for the
+Gaze/First-Pass times and Go-Past time measures are not an error with
+our eye-tracker.
+
+\subsubsection{First Fixation Times}\label{first-fixation-times-1}
+
+First fixation times for our filler items are presented below in
+Table~\ref{tbl-firstfixationfiller} and visualized in
+Figure~\ref{fig-firstfixationfiller}.
+
+\begin{longtable}[]{@{}lllllr@{}}
+
+\caption{\label{tbl-firstfixationfiller}Model results examining the
+effect of frequency on first fixation times in our filler materials.}
+
+\tabularnewline
+
+\toprule\noalign{}
+& Estimate & Est.Error & Q2.5 & Q97.5 & \% Samples \textgreater{} 0 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 227.843 & 3.942 & 220.186 & 235.404 & 100.0 \\
+Frequency & 4.011 & 1.848 & 0.414 & 7.642 & 98.5 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstfixationfiller-1.pdf}
+
+}
+
+\caption{\label{fig-firstfixationfiller}Visualization of the effect of
+frequency on first fixation times in our filler materials.}
+
+\end{figure}%
+
+Our results demonstrate longer first fixation times for low frequency
+items compared to high frequency items.
+
+\subsubsection{Gaze/First-Pass Time}\label{gazefirst-pass-time-1}
+
+The results for the gaze times of our filler items is reported below in
+Table~\ref{tbl-gazefiller} and visualized in
+Figure~\ref{fig-gazefiller}.
+
+\begin{longtable}[]{@{}lllllr@{}}
+
+\caption{\label{tbl-gazefiller}Model results examining the effect of
+frequency on gaze/first-pass times in our filler materials.}
+
+\tabularnewline
+
+\toprule\noalign{}
+& Estimate & Est.Error & Q2.5 & Q97.5 & \% Samples \textgreater{} 0 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 261.710 & 7.805 & 246.338 & 276.992 & 100.00000 \\
+Frequency & 13.825 & 4.371 & 5.179 & 22.322 & 99.88333 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gazefiller-1.pdf}
+
+}
+
+\caption{\label{fig-gazefiller}Visualization of the effect of frequency
+on gaze/first-pass times in our filler materials.}
+
+\end{figure}%
+
+Our results demonstrate longer gaze times for low frequency items
+compared to high frequency ones.
+
+\subsubsection{Go-Past Time}\label{go-past-time-1}
+
+The results for the go-past times of our filler items is presented below
+in Table~\ref{tbl-gopastfiller} and visualized in
+Figure~\ref{fig-gopastfiller}.
+
+\begin{longtable}[]{@{}lllllr@{}}
+
+\caption{\label{tbl-gopastfiller}Model results examining the effect of
+frequency on go-past times in our filler materials.}
+
+\tabularnewline
+
+\toprule\noalign{}
+& Estimate & Est.Error & Q2.5 & Q97.5 & \% Samples \textgreater{} 0 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 368.199 & 17.340 & 334.329 & 402.836 & 100.0 \\
+Frequency & 24.391 & 7.863 & 9.001 & 39.509 & 99.8 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gopastfiller-1.pdf}
+
+}
+
+\caption{\label{fig-gopastfiller}Visualization of the effect of
+frequency on go-past times in our filler materials.}
+
+\end{figure}%
+
+Our results demonstrate longer go-past times for low frequency items
+relative to high frequency items.
+
+\subsubsection{First-Pass Regression}\label{first-pass-regression-1}
+
+Finally, the results for first-pass regression rates of our filler items
+is presented in Table~\ref{tbl-firstpassregressionfiller} and visualized
+in Figure~\ref{fig-firstpassregressionfiller}.
+
+\begin{longtable}[]{@{}lllllr@{}}
+
+\caption{\label{tbl-firstpassregressionfiller}Model results examining
+the effect of frequency on first-pass regressions in our filler
+materials.}
+
+\tabularnewline
+
+\toprule\noalign{}
+& Estimate & Est.Error & Q2.5 & Q97.5 & \% Samples \textgreater{} 0 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & -1.659 & 0.129 & -1.921 & -1.417 & 0.0 \\
+Frequency & 0.156 & 0.058 & 0.044 & 0.271 & 99.6 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstpassregressionfiller-1.pdf}
+
+}
+
+\caption{\label{fig-firstpassregressionfiller}Visualization of the
+effect of frequency on first-pass regressions in our filler materials.}
+
+\end{figure}%
+
+The results of first-pass regressions demonstrate a greater rate of
+first-pass regressions for low frequency items relative to high
+frequency items.
+
 \section{Discussion}\label{discussion}
+
+Our filler items suggest that the results of Experiment 3 are not due to
+measurement error. In Experiment 4 we directly replicate Staub et al.
+(\citeproc{ref-staubTimeCoursePlausibility2007}{2007}) to determine
+whether the error is with our experimental stimuli.
+
+\bookmarksetup{startatroot}
+
+\chapter{Experiment 4}\label{experiment-4}
+
+In Experiment 4, we directly replicate Staub et al.
+(\citeproc{ref-staubTimeCoursePlausibility2007}{2007}) using their
+experimental items.
+
+\section{Methods}\label{methods-1}
+
+\subsection{Participants}\label{participants-1}
+
+46 native English speakers were recruited from the University of
+California, Davis subjects pool. They were given course credit in
+exchange for their participation. All participants had normal or
+corrected vision.
+
+\subsection{Materials}\label{materials-1}
+
+The filler items were identical to Experiment 3 and the experimental
+items were identical to Staub et al.
+(\citeproc{ref-staubTimeCoursePlausibility2007}{2007}).
+
+\subsection{Procedure}\label{procedure-1}
+
+We recorded participants' eye movements using the Eyelink 1000 Plus. We
+recorded pupil movements from the right eye. Participants were seated
+850mm away from the screen. Our screen resolution was 1920x1080, 531.3mm
+in width, and 298.8mm in height.
+
+Comprehension was checked for non-experimental trials and participants
+below 80\% accuracy were excluded. Out of our 46 participants, 2 were
+excluded for falling below the accuracy threshold, leaving a total of 44
+participants.
+
+\subsection{Analyses}\label{analyses-1}
+
+Following Experiment 3, sentences with blinks were excluded and
+fixations less than 80ms in duration and within one character of the
+nearest fixation were merged into that fixation. For our regions of
+interest (the first noun and the second noun independently in the
+compound noun), we computed first fixation duration, first pass time,
+go-past time, and first-pass regressions.
+
+For each analysis, our independent variables were plausibility (high or
+low) and familiarity (familiar or novel) as well as their interaction.
+We also included random slopes for condition and familiarity by subject
+and plausibility by compound noun as well as intercepts for subject and
+compound noun. For each of our models, we used sum-coded, where the
+intercept represents the grand mean and the fixed-effect coefficient
+estimates represent the distance from the grand mean.
+
+\section{Results}\label{results-1}
+
+\subsection{First Fixation Times}\label{first-fixation-times-2}
+
+\subsubsection{N1}\label{n1-4}
+
+Similar to Experiment 3, we begin by examining first-fixation times,
+which are demonstrated in Table~\ref{tbl-firstfixn1staub} and visualized
+in Figure~\ref{fig-firstfixn1staub}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3378}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1216}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1892}}@{}}
+
+\caption{\label{tbl-firstfixn1staub}Model results examining the effect
+of plausibility and frequency on first fixation times for the N1
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 239.234 & 5.536 & 228.463 & 250.049 & 100.000 \\
+Plausibility & 4.188 & 2.156 & -0.022 & 8.378 & 97.400 \\
+Familiarity & -0.866 & 2.399 & -5.589 & 3.784 & 35.525 \\
+Plausibility:Familiarity & 0.027 & 2.398 & -4.843 & 4.782 & 49.675 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstfixn1staub-1.pdf}
+
+}
+
+\caption{\label{fig-firstfixn1staub}Visualization of the effects of
+plausibility and familiarity on first fixation times for the N1 region.}
+
+\end{figure}%
+
+For first-fixation times, we find no significant effect, though the
+direction of plausibility is in the expected direction.
+
+\subsubsection{N2}\label{n2-4}
+
+Next we examine the effects of plausibility and familiarity on the first
+fixation times of the second noun in the compound. The results are
+demonstrated below in Table~\ref{tbl-firstfixn2staub} and visualized in
+Figure~\ref{fig-firstfixn2staub}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3378}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1216}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1892}}@{}}
+
+\caption{\label{tbl-firstfixn2staub}Model results examining the effect
+of plausibility and familiarity on first fixation times for the N2
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 249.615 & 6.468 & 236.382 & 262.346 & 100.000 \\
+Plausibility & -2.094 & 2.652 & -7.400 & 3.120 & 21.575 \\
+Familiarity & -6.973 & 4.270 & -15.430 & 1.443 & 5.425 \\
+Plausibility:Familiarity & -1.055 & 2.365 & -5.669 & 3.620 & 32.475 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstfixn2staub-1.pdf}
+
+}
+
+\caption{\label{fig-firstfixn2staub}Visualization of the effects of
+plausibility and familiarity on first fixation times for the N2 region.}
+
+\end{figure}%
+
+Our results on the N2 region suggest an effect of familiarity such that
+familiar items had shorter first fixation times.
+
+\subsection{Gaze/First-Pass Time}\label{gazefirst-pass-time-2}
+
+\subsubsection{N1}\label{n1-5}
+
+Our results for the effects of plausibility and familiarity on
+gaze/first-pass times on the N1 region are presented in
+\textbf{?@tbl-exp1m2staub} and visualized in \textbf{?@fig-exp1m2staub}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3378}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1216}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1892}}@{}}
+
+\caption{\label{tbl-gazen1staub}Model results examining the effect of
+plausibility and familiarity on gaze/first-pass times for the N1
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 273.963 & 8.562 & 257.093 & 290.927 & 100.000 \\
+Plausibility & 0.037 & 0.195 & -0.334 & 0.422 & 57.825 \\
+Familiarity & -0.003 & 0.199 & -0.399 & 0.381 & 49.725 \\
+Plausibility:Familiarity & 0.009 & 0.199 & -0.376 & 0.404 & 51.925 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gazen1staub-1.pdf}
+
+}
+
+\caption{\label{fig-gazen1staub}Visualization of the effects of
+plausibility and familiarity on Gaze/first-pass times for the N1
+region.}
+
+\end{figure}%
+
+Our results for Gaze times show no effect of plausibility or familiarity
+on reading times for the N1 region.
+
+\subsubsection{N2}\label{n2-5}
+
+Our results for the N2 region are presented in
+Table~\ref{tbl-gazen2staub} and visualized in
+Figure~\ref{fig-gazen2staub}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3425}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1233}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0959}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1096}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1918}}@{}}
+
+\caption{\label{tbl-gazen2staub}Model results examining the effect of
+plausibility and familiarity on gaze/first-pass times for the N2
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 178.212 & 130.012 & -1.454 & 288.437 & 85.500 \\
+Plausibility & 0.004 & 0.198 & -0.385 & 0.390 & 50.700 \\
+Familiarity & -0.013 & 0.200 & -0.406 & 0.383 & 46.950 \\
+Plausibility:Familiarity & -0.014 & 0.201 & -0.415 & 0.367 & 48.025 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gazen2staub-1.pdf}
+
+}
+
+\caption{\label{fig-gazen2staub}Visualization of the effects of
+plausibility and familiarity on gaze/first-pass times for the N2
+region.}
+
+\end{figure}%
+
+The results of the N2 region also show a lack of effect of plausibility
+and familiarity on gaze times.
+
+\subsection{Go-Past Time}\label{go-past-time-2}
+
+\subsubsection{N1}\label{n1-6}
+
+Our results for the effects of plausibility and predictability on
+go-past times are presented in Table~\ref{tbl-gopastn1staub} and
+visualized in Figure~\ref{fig-gopastn1staub}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3378}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1216}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1892}}@{}}
+
+\caption{\label{tbl-gopastn1staub}Model results examining the effect of
+plausibility and familiarity on go-past times for the N1 region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 363.001 & 18.576 & 325.948 & 399.737 & 100.00000 \\
+Plausibility & 16.903 & 6.907 & 3.608 & 30.536 & 99.36667 \\
+Familiarity & -3.748 & 7.888 & -19.444 & 11.847 & 31.34000 \\
+Plausibility:Familiarity & 14.839 & 7.419 & 0.450 & 29.409 & 97.76667 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gopastn1staub-1.pdf}
+
+}
+
+\caption{\label{fig-gopastn1staub}Visualization of the effect of
+plausibility and Familiarity on go-past times for the N1 region.}
+
+\end{figure}%
+
+Our results for go-past times similarly show no effect of familiarity
+and plausibility.
+
+\subsubsection{N2}\label{n2-6}
+
+Our results for the N2 region are presented in
+Table~\ref{tbl-gopastn2staub} and visualized in
+Figure~\ref{fig-gopastn2staub}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3378}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1216}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1351}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1081}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1892}}@{}}
+
+\caption{\label{tbl-gopastn2staub}Model results examining the effect of
+plausibility and familiarity on go-past times for the N2 region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 351.825 & 21.876 & 308.493 & 394.204 & 100.000000 \\
+Plausibility & 6.952 & 8.405 & -9.270 & 23.774 & 79.873333 \\
+Familiarity & -17.433 & 13.362 & -44.885 & 7.492 & 8.966667 \\
+Plausibility:Familiarity & -7.957 & 9.345 & -26.618 & 10.247 &
+19.426667 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-gopastn2staub-1.pdf}
+
+}
+
+\caption{\label{fig-gopastn2staub}Visualization of the effect of
+plausibility and predictability on go-past times for the N2 region.}
+
+\end{figure}%
+
+Our results for the N2 region similarly show no effect of predictability
+and plausibility on go-past times.
+
+\subsection{First-Pass Regression}\label{first-pass-regression-2}
+
+\subsubsection{N1}\label{n1-7}
+
+Our results for the effects of predictability and plausibility on the
+first-pass regression times on the N1 region are presented in
+Table~\ref{tbl-firstpassn1} and visualized in
+Figure~\ref{fig-firstpassn1}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3472}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1389}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0972}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0972}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1944}}@{}}
+
+\caption{\label{tbl-firstpassn1staub}Model results examining the effect
+of plausibility and familiarity on first-pass regression for the N1
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & -1.986 & 0.180 & -2.347 & -1.642 & 0.000 \\
+Plausibility & 0.157 & 0.089 & -0.014 & 0.332 & 96.375 \\
+Familiarity & 0.017 & 0.088 & -0.152 & 0.188 & 57.800 \\
+Plausibility:Familiarity & 0.056 & 0.089 & -0.121 & 0.232 & 74.500 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstpassn1staub-1.pdf}
+
+}
+
+\caption{\label{fig-firstpassn1staub}Visualization of the effect of
+plausibility and familiarity on first-pass regression for the N1
+region.}
+
+\end{figure}%
+
+Our results show no effect of plausibility or familiarity on first pass
+regressions for the N1 region.
+
+\subsubsection{N2}\label{n2-7}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3472}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1389}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0972}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0972}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1944}}@{}}
+
+\caption{\label{tbl-firstpassn2staub}Model results examining the effect
+of plausibility and familiarity on first-pass regression for the N2
+region.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Estimate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Est.Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q2.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Q97.5
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% Samples \textgreater{} 0
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & -2.307 & 0.212 & -2.748 & -1.910 & 0.000 \\
+Plausibility & 0.074 & 0.092 & -0.103 & 0.256 & 78.450 \\
+Familiarity & -0.140 & 0.118 & -0.371 & 0.096 & 11.575 \\
+Plausibility:Familiarity & -0.004 & 0.088 & -0.179 & 0.168 & 48.575 \\
+
+\end{longtable}
+
+\begin{figure}[htbp]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Chapters/Compound Nouns/staub_rep_ext_files/figure-pdf/fig-firstpassn2staub-1.pdf}
+
+}
+
+\caption{\label{fig-firstpassn2staub}Visualization of the effect of
+plausibility and familiarity on first-pass regression for the N2
+region.}
+
+\end{figure}%
+
+Our results at the N2 region similarly show no effect of familiarity or
+plausibility.
+
+\subsection{Filler Items}\label{filler-items-1}
+
+For the sake of brevity, we don't report the filler items for Experiment
+4 here, but similar to Experiment 3 we found significant effects of
+frequency on the reading times of our filler items for all four
+eye-tracking measures, suggesting that this was not an issue with the
+data collection process.
+
+\section{Discussion}\label{discussion-1}
+
+The results of Experiment 4 suggest that readers may not be as sensitive
+to local implausibility effects as we predicted. It's worth reminding
+readers that our stimuli were normed to confirm that people found the
+implausible items to indeed be implausible, as was done in Staub et al.
+(\citeproc{ref-staubTimeCoursePlausibility2007}{2007}). However, it is
+possible that our study is underpowered and it may take more data to
+find evidence for an effect of local implausibility. We look forward to
+examining this in future work.
 
 \bookmarksetup{startatroot}
 

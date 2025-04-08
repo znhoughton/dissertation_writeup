@@ -2,45 +2,83 @@ project:
   type: book
 
 book:
-  title: "Multi-Word Representations in Minds and Models: Investigating Storage Mechanisms in Humans and Large Language Models"
-  author: "Zachary Nicholas Houghton"
+  title: "Multi-Word Representations in Minds and Models"
+  subtitle: "Investigating Storage Mechanisms in Humans and Large Language Models"
+  author: 
+    - name: "Zachary Nicholas Houghton"
+      orcid: "0000-0002-0320-8881"
+      affiliations:
+        - name: "University of California, Davis"
+          department: "Department of Linguistics"
   date: "11/25/2024"
+
+  
   chapters:
     - index.qmd
     - Chapters/Introduction/introduction.qmd
     - Chapters/Compound Nouns/staub_rep_ext.qmd
     - Chapters/references.qmd
+  output-file: houghton_dissertation.pdf
+  #image: dissertation_image.png
 
 bibliography: references.bib
 
 format:
   html:
     theme: cosmo
+
   pdf:
+    template-partials:
+      - before-body.tex
     latex-engine: lualatex 
-    #font:
-      #text: "Times New Roman"     # Default font for body text
-      #heading: "Times New Roman"  # Default font for headings
-    documentclass: scrreprt       # LaTeX document class
-    mainfont: "Crimson" # Main font
+    documentclass: scrreprt   # LaTeX document class for professional formatting
+    
+    number-depth: 2
+    # Caption Formatting
+    fig-cap-location: top      # Figure captions above
+    tbl-cap-location: top      # Table captions above
+    fig-pos: 'htbp'            # Figure positioning hint for LaTeX
+    
+    # Font Settings
+    mainfont: "Crimson"        # Primary text font
     CJKmainfont: "Noto Serif KR"  # Font for Korean text
-    keep-tex: true                # Save the intermediate .tex file for debugging
-    link-citations: true          # Enable hyperlinked citations
-    colorlinks: false             # Disable colored hyperlinks
-    classoption: nottoc           # Prevent the Table of Contents from appearing in the TOC
-    lot: true                     # Enable List of Tables
-    lof: true                     # Enable List of Figures
-    geometry:                     # Page geometry settings
-      - left=2in
-      - right=2in
-      - marginparwidth=1.5in
-      - twoside=true
+
+    # Citations & References
+    link-citations: true       # Enable hyperlinked citations
+    colorlinks: false          # Disable colored hyperlinks
+    lot: true                  # Enable List of Tables
+    lof: true                  # Enable List of Figures
+
+    # Page Layout
+    geometry:
+      - inner=3cm
+      - outer=4cm
+      - top=3cm
+      - bottom=4cm
+      - headsep=22pt
+      - headheight=11pt
+      - footskip=40pt
+      #- ignorehead
+      #- ignorefoot
+      - heightrounded
+    
+    # LaTeX Customization
     include-before-body: 
       text: |
-        \pagenumbering{roman}
+        \pagenumbering{roman}  % Use Roman numerals for front matter
+    
     include-in-header: 
       - text: |
           \usepackage{tocbibind}  % Include TOC, List of Figures, and List of Tables in the TOC
-          \usepackage{fontspec}
-#          \setmainfont{C:/Windows/Fonts/NanumGothic-Regular.ttf}
+          \usepackage{fontspec}    % Ensure font support
+          \usepackage{placeins}
+          \usepackage{float}
+          \FloatBarrier
+          \renewcommand{\topfraction}{0.85}  % Allow more space for figures at the top
+          \renewcommand{\bottomfraction}{0.5} % Restrict figures from dominating the bottom
+          \renewcommand{\textfraction}{0.15}  % Ensure enough text appears per page
+          \renewcommand{\floatpagefraction}{0.7} % Avoid too many figure-only pages
+          \setlength{\textfloatsep}{15pt} % Increase space between text and floats
+
+
 editor: visual
