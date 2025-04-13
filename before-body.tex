@@ -1,35 +1,84 @@
+\pagenumbering{roman}
 $if(has-frontmatter)$
 \frontmatter
 $endif$
 $if(title)$
 \cleardoublepage
-\thispagestyle{empty}
-{\centering
-\hbox{}\vskip 0cm plus 1fill
-{\Huge\bfseries $title$ \par}
-$if(subtitle)$
-\vspace{3ex}
-{\Large\bfseries $subtitle$ \par}
-$endif$
-\vspace{12ex}
+\thispagestyle{plain}
+\begin{center}
+   \null\vfill
+   \textbf{%
+      $title$:\\
+	  $subtitle$
+   }%
+   \\
 $for(by-author)$
-{\Large\bfseries $by-author.name.literal$ \par}
-\vspace{3ex}
-{\Large ORCID: $by-author.orcid$ \par}
-\vskip 0cm plus 2fill
-{\bfseries\large Doctor of Philosophy \par}
-\vspace{3ex}
-{\bfseries\large $date$ \par}
-\vspace{12ex}
-$for(by-author.affiliations)$%
-$if(it.department)$%
-{\bfseries\large $it.department$ \par}
-\vspace{3ex}
-$endif$%
-{\bfseries\large $it.name$ \par}
-$endfor$$endfor$%
-\vspace{12ex}
-{\small Submitted in total fulfilment of the requirements
-of the degree of Doctor of Philosophy \par}
-}
+   \bigskip
+   By \\
+   \bigskip
+   {$by-author.name.literal$}
+\\   
+   %2020 EDIT: Removed double-spacing btwn name and DISSERTATION   
+   %\bigskip
+   %B.S. (University of California, Davis) 2001 \\
+   %\bigskip
+   %2019 EDIT: Removed line for previous degree.
+   DISSERTATION \\
+   \bigskip
+   Submitted in partial satisfaction of the requirements for the
+   degree of \\
+   \bigskip
+   DOCTOR OF PHILOSOPHY \\
+   \bigskip
+   in \\
+   \bigskip
+   {$degree$} \\ 
+   $endfor$
+   \bigskip
+   in the \\
+   \bigskip
+   OFFICE OF GRADUATE STUDIES \\
+   \bigskip        
+   of the \\
+   \bigskip
+   UNIVERSITY OF CALIFORNIA \\
+   \bigskip
+   DAVIS \\
+   \bigskip
+   Approved: \\
+   \bigskip
+   \bigskip
+   \makebox[3in]{\hrulefill} \\
+   $committee_member_1$ \\
+   \bigskip
+   \bigskip
+   \makebox[3in]{\hrulefill} \\
+   $committee_member_2$ \\
+   \bigskip
+   \bigskip
+   \makebox[3in]{\hrulefill} \\
+   $committee_member_3$ \\
+   \bigskip
+   Committee in Charge \\
+   \bigskip
+   2024 \\
+   \vfill
+\end{center}
 $endif$
+
+
+\newpage
+\newcounter{savedpage}
+\setcounter{savedpage}{\value{page}}
+
+\thispagestyle{empty}
+\begin{titlepage}
+\vspace*{\stretch{1}}
+\begin{center}
+  Copyright \copyright\ 2025 by Zachary Nicholas Houghton. \\
+  \textit{All rights reserved.}
+\end{center}
+\end{titlepage}
+
+\setcounter{page}{\value{savedpage}} % Reset the counter
+\clearpage

@@ -3,25 +3,33 @@ project:
 
 book:
   title: "Multi-Word Representations in Minds and Models"
-  subtitle: "Investigating Storage Mechanisms in Humans and Large Language Models"
-  author: 
+  subtitle: "Investigating the Storage of Multi-Word Phrases in Humans and Large Language Models"
+  author:
     - name: "Zachary Nicholas Houghton"
       orcid: "0000-0002-0320-8881"
+      degree: "Linguistics"
       affiliations:
         - name: "University of California, Davis"
           department: "Department of Linguistics"
-  date: "11/25/2024"
-
-  
   chapters:
     - index.qmd
     - Chapters/Introduction/introduction.qmd
     - Chapters/Compound Nouns/staub_rep_ext.qmd
+    - Chapters/Recognizability/Write-up/quarto-writeup.qmd
     - Chapters/references.qmd
-  output-file: houghton_dissertation.pdf
+  
+  output-file: houghton_dissertation
   #image: dissertation_image.png
+  
+degree: "Linguistics"
+dissertation_name: "Dissertation Name"
+author_name: "Zachary Nicholas Houghton"
+field_of_study: "Linguistics"
+committee_member_1: "Dr. Emily Morgan, Chair"
+committee_member_2: "Dr. Masoud Jasbi"
+committee_member_3: "Dr. Fernanda Ferreira"
+submission_year: "2025"
 
-bibliography: references.bib
 
 format:
   html:
@@ -32,53 +40,46 @@ format:
       - before-body.tex
     latex-engine: lualatex 
     documentclass: scrreprt   # LaTeX document class for professional formatting
-    
+
     number-depth: 2
     # Caption Formatting
     fig-cap-location: top      # Figure captions above
     tbl-cap-location: top      # Table captions above
-    fig-pos: 'htbp'            # Figure positioning hint for LaTeX
-    
+    fig-pos: 'htbp'        # Let LaTeX decide where to place the figures
+    #fig-width: 6            # Set a reasonable default width
+    #fig-height: 6           # Or set a safe height for your figure
+    fig-align: center       # Centering figures
+    #out.width: '\\linewidth'  # Use LaTeX defaults
+    #out.height: ''           # This explicitly avoids setting height
+    keep-tex: true             # Optional: for debugging TeX
     # Font Settings
+    fontsize: 12pt
     mainfont: "Crimson"        # Primary text font
     CJKmainfont: "Noto Serif KR"  # Font for Korean text
 
     # Citations & References
     link-citations: true       # Enable hyperlinked citations
     colorlinks: false          # Disable colored hyperlinks
+    toc: true
+    toc-depth: 3
+    toc-title: "Table of contents"
     lot: true                  # Enable List of Tables
     lof: true                  # Enable List of Figures
 
     # Page Layout
     geometry:
-      - inner=3cm
-      - outer=4cm
-      - top=3cm
-      - bottom=4cm
-      - headsep=22pt
-      - headheight=11pt
-      - footskip=40pt
-      #- ignorehead
-      #- ignorefoot
-      - heightrounded
-    
-    # LaTeX Customization
-    include-before-body: 
-      text: |
-        \pagenumbering{roman}  % Use Roman numerals for front matter
-    
+      - left=1in
+      - right=1in
+      - top=1in
+      - bottom=1in
+
     include-in-header: 
-      - text: |
-          \usepackage{tocbibind}  % Include TOC, List of Figures, and List of Tables in the TOC
-          \usepackage{fontspec}    % Ensure font support
-          \usepackage{placeins}
-          \usepackage{float}
-          \FloatBarrier
-          \renewcommand{\topfraction}{0.85}  % Allow more space for figures at the top
-          \renewcommand{\bottomfraction}{0.5} % Restrict figures from dominating the bottom
-          \renewcommand{\textfraction}{0.15}  % Ensure enough text appears per page
-          \renewcommand{\floatpagefraction}{0.7} % Avoid too many figure-only pages
-          \setlength{\textfloatsep}{15pt} % Increase space between text and floats
+      - include-in-header.tex
 
-
+echo: false
+warning: false
+message: false
+        
+bibliography: references.bib          
+csl: apa.csl
 editor: visual
