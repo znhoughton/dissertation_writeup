@@ -1,0 +1,115 @@
+---
+title: "cloze_preds_for_recognizability"
+author: "Zachary Houghton"
+date: "2023-12-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(reticulate)
+library(tidyverse)
+```
+
+## Getting Cloze Preds for the Recognizability Experiment
+
+First let's get our function to get the cloze probabilities:
+
+```{python}
+#load packages
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import numpy as np
+from torch import nn
+from collections import defaultdict
+import pandas as pd
+
+tokenizer = AutoTokenizer.from_pretrained("gpt2-xl") #we'll use chat-gpt2, but we could use another model if we wanted
+model = AutoModelForCausalLM.from_pretrained("gpt2-xl") #load the model
+
+def next_prob(seq, topk = True, show_probs = False):
+  
+  inputs = tokenizer(seq, return_tensors="pt") #tokenize our input
+  prob_dist = {} #create empty dictionary
+  input_ids = inputs["input_ids"]  # just IDS, no attn mask
+  
+  with torch.no_grad():
+    logits = model(**inputs).logits[:, -1, :] #get the probability for the last word in logits
+    probs = nn.functional.softmax(model(**inputs).logits[:, -1, :], dim = -1) #get the probability for the last word in probability
+    
+  if topk == True:
+    
+    #print(logits.size())
+  
+    pred_id = torch.topk(logits, k = 20000) #prediction in logits
+    pred_id2 = torch.topk(probs, k = 20000) #prediction in probabilities
+    
+  else:
+    
+    pred_id = torch.topk(logits, k = len(logits[0]))
+    pred_id2 = torch.topk(probs, k = len(probs[0]))
+  
+  if show_probs == False:
+  
+    for prob, word in zip(pred_id[0].squeeze(), pred_id[1].squeeze()): #might be a better implementation but I'm still learning pytorch
+      
+      #pred_id2[0] is the probability
+      #pred_id2[1] is the word (encoded, so needs to be encoded)
+      word_prob = prob.item() #probability/logt of word depending on which we chose
+      pred_word = tokenizer.decode(word.item()).strip() #predicted word (technically might not be a word, since bpe encoding)
+      prob_dist[pred_word] = word_prob #store the probability of the word in a dictionary
+  
+  else:
+    
+    for prob, word in zip(pred_id2[0].squeeze(), pred_id2[1].squeeze()): #might be a better implementation but I'm still learning pytorch
+      
+      #pred_id2[0] is the probability
+      #pred_id2[1] is the word (encoded, so needs to be encoded)
+      word_prob = prob.item() #probability/logt of word depending on which we chose
+      pred_word = tokenizer.decode(word.item()).strip() #predicted word (technically might not be a word, since bpe encoding)
+      prob_dist[pred_word] = word_prob #store the probability of the word in a dictionary
+    
+  return(prob_dist)
+  #print(f"\nPredicted next word for sequence is {pred_word} with probability {word_logit}")
+```
+
+Define our function:
+
+```{r}
+recognizability_stimuli = read_csv('../Data/Recognizability_stimuli.csv')
+
+recognizability_stimuli = recognizability_stimuli %>%
+  filter(Condition == 'Experimental' & Type == 'Phrasal Verb') %>%
+  mutate(sentences_for_cloze = gsub(" up .*", '', Sentences))
+
+r_to_py(recognizability_stimuli)
+```
+
+We'll opt to use logits for cloze probabilities, since that's what we used for the predictability metric.
+
+```{python}
+r.recognizability_stimuli = r.recognizability_stimuli['sentences_for_cloze']
+#r.recognizability_stimuli = r.recognizability_stimuli[1:4] #just used this for troubleshooting before I ran this function on the entire set of stimuli
+
+recognizability_cloze_preds = {}
+for i in r.recognizability_stimuli:
+  prob_dist_all = next_prob(i)
+  sentence = i
+  target_segment = 'up'
+  cloze_pred = prob_dist_all[target_segment]
+  recognizability_cloze_preds[i] = cloze_pred
+  
+  
+L = [(k,x) for k, x in recognizability_cloze_preds.items()]
+
+recognizability_cloze_preds_df = pd.DataFrame(L, columns=['sentences_for_cloze', 'cloze_probs']) 
+#test_seq = ['the boy went outside to fly his']
+#test = next_prob(test_seq)
+```
+
+```{r}
+cloze_probs = py$recognizability_cloze_preds_df
+
+write_csv(cloze_probs, '../Data/cloze_probs.csv')
+```

@@ -1,0 +1,308 @@
+# Frequency-dependent preference extremity arises from a noisy-channel processing model
+
+```{r echo = F, warning = F, message = F}
+library(tidyverse)
+library(furrr)
+library(ggpubr)
+library(ggh4x)
+
+corpus = read_csv("corpus.csv") %>%
+  mutate('FrequencyPer350Mil' = OverallFreq / 323592921465 * 350000000) %>% #Frequency per 350 million, per that Levy paper
+  mutate(FrequencyPer350Mil = as.integer(FrequencyPer350Mil))
+
+file_path = 'Sims Data/corpus_sim_results.csv'
+
+simulations_of_corpus = read_csv('Sims Data/corpus_sim_results.csv')
+
+plot_data = simulations_of_corpus 
+
+our_model_p1 = ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  #facet_grid(generation ~ Overall.Frequency) +
+  xlab('Proportion of occurrences in alpahbetical order')+
+  ylab('Density') +
+  theme(plot.margin = unit(c(0.5,1,0.5,1), 'cm')) +
+  scale_y_continuous(breaks = c(0, 0.5, 1, 1.5, 2), limits = c(0, 2)) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 8)) #
+
+corpus_p1 = ggplot(data = corpus, aes(x = RelFreq, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  xlab('Proportion of occurrences in alpahbetical order') +
+  ylab('Density') +
+  theme(plot.margin = unit(c(0.5,1,0.5,1), 'cm')) +
+  scale_y_continuous(breaks = c(0, 0.5, 1, 1.5, 2, 2.5, 3), limits = c(0, 3)) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 8))
+
+corpus_p2 = ggplot(data = corpus, aes(x = GenPref, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  xlab('Generative ordering preferences') +
+  ylab('Density') +
+  theme(plot.margin = unit(c(0.5,1,0.5,1), 'cm')) +
+  scale_y_continuous(breaks = c(0, 0.5, 1, 1.5, 2, 2.5, 3), limits = c(0, 3)) +
+  scale_x_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(0, 1)) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 8))
+
+
+new_df = read_csv('Sims Data/nsims_1000_genpref_0.6_pnoise_0_producer_nonoise.csv')
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+new_df2 = read_csv('Sims Data/full_graph_smallerN.csv')
+
+plot_data2 = new_df2
+
+
+
+n_labs = c('N = 10', 'N = 100', 'N = 1000')
+#prior_prob_noise_labs = c(bquote(P[noise] = 0), bquote(P[noise] = 0.02), bquote(P[noise] = 0.04), bquote(P[noise] = 0.06), bquote(P[noise] = 0.08), bquote(P[noise] = 0.1))
+
+plot_data2 = plot_data2 %>%
+  mutate_if(is.numeric, round, 4)
+
+plot_data2$Overall.Frequency = factor(plot_data2$Overall.Frequency, levels = c('10', '100', '1000'),
+                                     labels = c('N == 10', 'N == 100', 'N == 1000'))
+
+plot_data2$p_noise = factor(plot_data2$p_noise, levels = c('0', '0.0333', '0.0667', '0.1'),
+                           labels = c('P[noise] == 0', 'P[noise] == 0.033', 'P[noise] == 0.066', 'P[noise] == 0.1'))
+
+plot_data2$prior_prob_noise = factor(plot_data2$prior_prob_noise, levels = c('0', '0.0333', '0.0667', '0.1'),
+                           labels = c('P[SpeakerNoise] == 0', 'P[SpeakerNoise] == 0.033', 'P[SpeakerNoise] == 0.066', 'P[SpeakerNoise] == 0.1'))
+
+#names(n_labs) = c('100', '1000', '10000')
+#names(prior_prob_noise_labs) = c('0', '0.02', '0.04', '0.06', '0.08', '0.1')
+#names(p_noise_labs) = c('0', '0.02', '0.04', '0.06', '0.08', '0.1')
+
+
+
+```
+
+## Introduction
+
+Speakers are often confronted with many different ways to express the same meaning. A customer might ask whether a store sells *radios and televisions* but they could have just as naturally asked whether the store sells *televisions and radios*. However, despite conveying the same meaning, speakers sometimes have strong preferences for one choice over competing choices [e.g., a preference for \emph{men and women} over \emph{women and men}; @benorChickenEggProbabilistic2006; @morganAbstractKnowledgeDirect2016]. These preferences are driven to some extent by generative preferences (e.g., preference for short words before long words), however they are sometimes violated by idiosyncratic preferences [e.g., \emph{ladies and
+gentlemen} preferred despite a general men-before-women generative preference; @morganAbstractKnowledgeDirect2016].
+
+Interestingly, ordering preferences for certain constructions, such as binomial expressions, are often more extreme for higher frequency items (e.g., \emph{bread and butter}). That is, higher-frequency items typically have more polarized preferences [@liuFrequencydependentRegularizationConstituent2020; @liuFrequencyDependentRegularizationSyntactic2021; @morgan2015; @morganAbstractKnowledgeDirect2016; @morganFrequencydependentRegularizationIterated2016a]. This phenomenon is called \emph{frequency-dependent preference extremity}, and while there is evidence of it in several different constructions, it is still unclear what processes this phenomenon is driven by. For example, it could be a consequence of learning processes or a consequence of sentence processing more broadly. In the present paper we examine whether a noisy-channel processing model [@gibsonRationalIntegrationNoisy2013] combined with transmission across generations [@kirbyCumulativeCulturalEvolution2008; @realiEvolutionFrequencyDistributions2009] can account for frequency-dependent preference extremity.
+
+### Frequency-Dependent Preference Extremity
+
+Frequency-dependent preference extremity has been documented for a variety of different constructions in English [@liuFrequencydependentRegularizationConstituent2020; @liuFrequencyDependentRegularizationSyntactic2021; @morganFrequencydependentRegularizationIterated2016a; @morgan2015]. For example, @morgan2015 demonstrated that more frequent binomial expressions (e.g., \emph{bread and butter}) are more polarized (i.e., are preferred in one order overwhelmingly more than the alternative). These ordering preferences are also not simply a result of generative ordering preferences [e.g., short words before long words; @morganAbstractKnowledgeDirect2016]. Interestingly, @morganFrequencydependentRegularizationIterated2016a even showed that the distribution of binomial orderings at the corpus-wide level are different than what would be expected given the generative preferences for the binomials (see @fig-corpusplot1).
+
+::: {#fig-corpusplot1}
+```{r echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
+
+ggarrange(corpus_p1, corpus_p2, nrow = 1)
+```
+
+The left plot is a plot of the relative orderings of binomials in the corpus data from @morgan2015, the right is the plot of the generative preferences of binomials in the same corpus. The x-axis is proportion of occurrences in alphabetical order and the y-axis is the probability density. The plot is reproduced from @morganFrequencydependentRegularizationIterated2016a.
+:::
+
+Additionally, @liuFrequencydependentRegularizationConstituent2020 demonstrated that the dative alternation in English also shows evidence of frequency-dependent preference extremity (e.g., \emph{give} \emph{the ball to him} vs \emph{give him the ball}). Specifically, they demonstrated that higher frequency verbs have more polarized preferences with respect to the dative alternation. Similarly, @liuFrequencyDependentRegularizationSyntactic2021 showed that in adjective-adjective-noun constructions, the adjective orderings also show frequency-dependent preference extremity. That is, adjectives in adjective-adjective-noun constructions with higher overall frequencies (i.e., the summed counts of both orderings) show stronger ordering preferences, even after taking into account generative preferences of adjective orderings.
+
+Interestingly, frequency-dependent preference extremity patterns differently from rule-following regularization processes (e.g., morphological regularization) where it is the low-frequency items that become more regular [rather than the high-frequency items; @singletonWhenLearnersSurpass2004]. For example, @schneiderNoisyChannelModel2020 demonstrated through a noisy-channel processing model that regularization can arise from learners attributing variation in the low-frequency items to noise. On the other hand, frequency-dependent preference extremity patterns more similarly to other processes, such as semantic entrenchment, where it is the high-frequency items that develop strict preferences [@harmonPuttingOldTools2017; @theakstonRoleEntrenchmentChildren2004]. For example, people are generally more willing to accept a low-frequency intransitive verb in a transitive context than a high-frequency intransitive verb [e.g., \emph{He vanished it} is judged to be more acceptable than \emph{He disappeared it}; @kapatsinski2018; @robenaltJudgmentEvidenceStatistical2015; @theakstonRoleEntrenchmentChildren2004].
+
+Why is it that it is the high-frequency items that develop more polarized preferences in frequency-dependent preference extremity? One possibility is that it occurs as an interaction between imperfect learning and transmission across generations. For example, it's possible that while learners of a language are in general very good at learning the statistical patterns in the language [e.g., @saffranStatisticalLearning8MonthOld1996; @yuRapidWordLearning2007], they may do so imperfectly and with a bias towards preference extremity. If a learner hears 70 tokens of \emph{bread and butter} and 30 tokens of \emph{butter and bread}, they may imperfectly infer the ordering preference and transmit the language with a more skewed distribution (e.g., 75 tokens \emph{bread and butter} and 25 tokens of \emph{butter and bread}). Indeed, previous studies have shown that learners will reproduce the more frequent item at an even higher rate than they heard it [@harmonPuttingOldTools2017; @hudsonkamGettingItRight2009]. As the language is transmitted from generation to generation, it is possible this compounds until the highest-frequency items develop polarized ordering preferences.
+
+Following this logic, @morganFrequencydependentRegularizationIterated2016a investigated whether frequency-dependent preference extremity can arise as a result of imperfect learning across generations. They found that a data generation model with a frequency-\emph{independent} bias can result in frequency-\emph{dependent} preference extremity across generations of learners in a 2-alternative iterated learning paradigm. They argued that frequency-dependent preference extremity emerges because for low-frequency items, the preference extremity bias cannot overcome the learner's generative preferences for maintaining variation, but for high-frequency items, it can. In other words, for lower frequency items, learners may rely more on their generative preferences because they haven't heard the item very much. As the language is transmitted across many generations, it may result in frequency-dependent preference extremity.
+
+While there is good evidence that a frequency-\emph{independent} preference extremity bias can account for frequency-dependent preference extremity across generations, it remains unclear what processes in language transmission are analogous to this preference extremity bias.
+
+### Noisy-Channel Processing
+
+One possibility is that the frequency-independent preference extremity bias is a product of noisy-channel processing [@gibsonRationalIntegrationNoisy2013]. Listeners are confronted with a great deal of noise in the form of perception errors (e.g., a noisy environment) and even production errors [speakers don't always say what they intended to; @gibsonRationalIntegrationNoisy2013]. In order to overcome these errors, a processing system must take into account the noise of the system, for example by probabilistically determining whether the perceived utterance was infact intended by the speaker.
+
+Indeed, there is evidence that our processing system does take noise into account. For example, @ganongPhoneticCategorizationAuditory1980 found that people will process a non-word as being a word under noisy conditions. Additionally, @feltyMisperceptionsSpokenWords demonstrated that when listeners do misperceive a word, the word that they believe to have heard tends to be higher frequency than the target word. Further, @keshevNoisyBetterRare2021 found that in Arabic, readers will even process ambiguous subject/object relative clauses as the more frequent interpretation, even if this interpretation compromises subject-verb agreement. These results taken together suggest that misperceptions may sometimes actually be a consequence of noisy-channel processing [although it's worth noting that good-enough processing theories also make very similar predictions, e.g., @ferreiraGoodEnoughApproach2007].
+
+Further, people will even process \emph{grammatical} utterances, as a more frequent or plausible interpretation [@christiansonThematicRolesAssigned2001; @levyNoisychannelModelHuman2008; @poppelsStructuresensitiveNoiseInference2016]. This can even arise in two interpretations that cannot both be consistent with the original sentence. For example, @christiansonThematicRolesAssigned2001 demonstrated that when people read the sentence \emph{While the man hunted the deer ran into the woods}, people will answer in the affirmative for both \emph{Did the man hunt the deer?} and \emph{Did the dear run into the woods?}. @levyNoisychannelModelHuman2008 argued that this phenonenon was explained by noisy-channel processing, since a single insertion results in plausible, grammatical constructions for both meanings (\emph{While the man hunted it the deer ran into the woods} vs \emph{While the man hunted the deer it ran into the woods}).
+
+In order to account for findings like these, @gibsonNoisyChannelAccountCrosslinguistic2013 developed a computational model that demonstrated how a system might take into account noise [see @levyNoisychannelModelHuman2008 for a similar approach]. Specifically, their model operationalizes noisy-channel processing as a Bayesian process where a listener estimates the probability of the speaker's intended utterance given what they perceived. Specifically, this is operationlized as being proportional to the prior probability of the intended utterance multiplied by the probability of the intended utterance being corrupted to the perceived utterance (See @eq-gibsonnoisy):
+
+$$
+P(S_i|S_p) \propto P(S_i) P(S_i \to S_p)
+$$ {#eq-gibsonnoisy}
+
+\noindent where $P(S_i|S_p)$ is the probability of the intended utterance given the perceived utterance, $P(S_i)$ is the prior probability of the intended utterance, and $P(S_i \to S_p)$ is the probability of the perceived utterance ($S_p$) given the intended utterance ($S_i$). If the perceived utterance is \emph{butter and bread}, for example, the listener can infer the probability that the intended utterance was \emph{bread and butter} or \emph{butter and bread}.
+
+@gibsonNoisyChannelAccountCrosslinguistic2013's model made a variety of interesting predictions. For example, the model predicted that when people are presented with an implausible sentence (e.g., \emph{the mother gave the candle the daughter}), they should be more likely to interpret the plausible version of the sentence (e.g., \emph{the mother gave the candle to the
+daughter}) if there is increased noise (e.g., by adding syntactic errors to the filler items, such as a deleted function word). Their model also predicted that increasing the likelihood of implausible events (e.g., by adding more filler items that were implausible, such as \emph{the girl was kicked by the ball}) should increase the rate of implausible interpretations of the sentence. Interestingly both of these results were born out in their experimental data. In a follow up study, @poppelsStructuresensitiveNoiseInference2016 further demonstrated that word-exchanges (e.g., \emph{The
+ball kicked the girl} vs \emph{The girl kicked the ball}) are also taken into account by comprehenders. These results taken together suggest that humans do utilize a noisy-channel system in processing.
+
+In addition to @gibsonNoisyChannelAccountCrosslinguistic2013, previous research has demonstrated that noisy-channel processing models may also account for certain types of regularization [e.g., @ferdinandCognitiveRootsRegularization2019; @schneiderNoisyChannelModel2020]. For example, as mentioned earlier, @schneiderNoisyChannelModel2020 demonstrated that a noisy-channel model can account for some rule-following regularization processes (e.g., morphological regularization). However, it is unclear whether noisy-channel processing models can also account for frequency-dependent preference extremity.
+
+### Present Study
+
+Given the evidence of noisy-channel processing, it is possible that the frequency-dependent preference extremity that @morganFrequencydependentRegularizationIterated2016a saw is a product of listeners' noisy-channel processing. Perhaps when learners hear the phrase \emph{butter and bread}, they think the speaker intended \emph{bread and butter}, which results in an activation of \emph{bread and butter} even though they didn't hear it. This activation could potentially even be stronger for \emph{bread and butter} than \emph{butter and bread} in cases where the listener thinks the speaker made a mistake. Further, this may compound over time for high frequency items, but not for low frequency items. Thus, the present study examines whether @gibsonNoisyChannelAccountCrosslinguistic2013's noisy-channel processing model can also predict frequency-dependent preference extremity across generations of language transmission.
+
+## Dataset
+
+Following @morganAbstractKnowledgeDirect2016, we use @morgan2015's corpus of 594 Noun-Noun binomial expressions (e.g., \emph{bread and butter}). There is evidence that human binomial ordering preferences are driven by a combination of generative preferences and observed preferences. Generative preferences are abstract constraints on ordering preferences, such as a preference for short words before long words, or male-coded terms before female-coded terms. The observed preference for a given binomial is the percentage that a given binomial occurs in alphabetical vs nonalphabetical form. That is, if \emph{cats and dogs} appears 40 times in a corpus, and \emph{dogs and cats} appears 60 times, then the observed preference for the alphabetical form is 0.4. The corpus also contains the overall frequency (total count of alphabetical and nonalphabetical forms for a given binomial) which has been shown to affect the strength of ordering preferences [@morganAbstractKnowledgeDirect2016]. A detailed description of the constraints is listed below:
+
+1.  The estimated generative preferences for each binomial, which are values between 0 and 1 representing the alphabetical ordering preferences (a neutral reference order), estimated from various phonological and semantic features that are known to influence binomial ordering preferences [@morgan2015]. The generative constraints are calculated using @morgan2015's model. Values closer to zero represent a generative preference for the nonalphabetical order, while values closer to 1 represent a generative preference for the alphabetical order.
+
+2.  The observed binomial orderings preferences (hereafter: observed preferences) which are the proportion of binomial orderings that are in alphabetical order for a given binomial. A visualization of the distribution of observed preferences and generative preferences is included below in @fig-corpusplot1.
+
+3.  The overall frequency of a binomial expression (the frequency of AandB plus the frequency of BandA). Frequencies were obtained from the Google Books \emph{n}-grams corpus [@linSyntacticAnnotationsGoogle2012], which is orders of magnitude larger than the language experience of an individual speaker, and thus provides reliable frequency estimates for these expressions.
+
+## Model
+
+Following @morganFrequencydependentRegularizationIterated2016a, we use a 2-alternative iterated learning paradigm. In our iterated learning paradigm, at each generation, learners hear N tokens of a given binomial with some in alphabetical (AandB) and some in nonalphabetical (BandA) order. The learner's goal is to learn the ordering preferences for each binomial. After hearing all N tokens, the learner then produces N tokens to the next generation. This process then repeats. @morganFrequencydependentRegularizationIterated2016a used a beta-binomial model: A learner has some prior over binomial ordering preferences, which can be expressed as pseudocounts favoring each order (e.g.\~3 pseudocounts for AandB and 7 for BandA). Each time the learner hears a binomial, they update their beliefs by adding 1 count to the perceived order, e.g., if they heard AandB, adding 1 AandB count. We modify this by instead having the learner update their beliefs in proportion to what they believe the intended order was: e.g., if they believe the intended utterance was AandB with 50% probability and BandA with 50% probability, they will add 0.5 to each count. These updated beliefs then influence their beliefs about future intended utterances (@eq-gibsonnoisy).
+
+Specifically, the prior probability over the binomial ordering preferences, ($P(S_i)$), follows @eq-psi and @eq-ptheta. $\alpha_1$ and $\alpha_2$ are pseudocounts of the alphabetical and nonalphabetical forms respectively.
+
+$$
+S_i \sim Bernoulli(p_{theta})
+$$ {#eq-psi}
+
+$$
+p_{theta} \sim Beta(\alpha_1, \alpha_2)
+$$ {#eq-ptheta}
+
+After hearing a token, learners compute $P(S_i = AandB|S_p)$ according to @eq-gibsonnoisy. $P(S_i \to S_p)$ is determined by a fixed noise parameter, which we will call $p_{noise}$. $p_{noise}$ represents the learner's belief of how likely a binomial ordering is to have been swapped (i.e., AandB being swapped to BandA or vice versa).
+
+To initialize $p_{theta}$, and thus $P(S_i)$, before the learner hears any data, we used the mean and concentration parametrization of the beta distribution. The mean ($\mu$) represents the expectation of the distribution (the mean value of draws from the distribution). The concentration parameter ($\nu$) describes how dense the distribution is. Before the learner hears any data, $\mu$ is equal to the generative preference for the binomial [taken from @morganFrequencydependentRegularizationIterated2016a]. $\nu$ is a free parameter, set to 10 for all simulations in this paper.[^frequency-dependent-preference-extremity-1] $\alpha_1$ and $\alpha_2$ can also be expressed in terms of $\mu$ and $\nu$:
+
+[^frequency-dependent-preference-extremity-1]: Changing $\nu$ does not qualitatively change the pattern of the results for any simulations in the paper, as long as it's greater than 2.
+
+$$
+\alpha_1 = \mu \cdot \nu
+$$ {#eq-alpha1}
+
+$$
+\alpha_2 = (1-\mu) \cdot \nu
+$$ {#eq-alpha2}
+
+For all future tokens, learners will use the updated $P(S_i)$ from the previous token, where $P(S_i = AandB)$ is the expectation of $p_\theta$. Crucially, this value will be different for each token of learning due to the update that occurs on the previous token.
+
+$$
+P(S_i = AandB) = \mathbb{E}(p_\theta)
+$$ {#eq-expectationptheta}
+
+We then use $P(S_i)$ and $p_{noise}$ to compute $P(S_i|S_p)$, following @eq-gibsonnoisy. If the perceived binomial is alphabetical (AandB), we compute the unnormalized probability of the alphabetical and nonalphabetical orderings according to the below equations. Note that the process is comparable if the perceived binomial is nonalphabetical.
+
+$$
+P_{raw}(S_i = AandB|S_p = AandB) = P(S_i = AandB) \cdot (1 -  p_{noise})
+$$ {#eq-praw}
+
+$$
+P_{raw}(S_i = BandA|S_p = AandB) = (1 - P(S_i = AandB)) \cdot p_{noise}
+$$ {#eq-praw2}
+
+After calculating the unnormalized (raw) probabilities, they are then normalized:
+
+$$
+\hat{p}_{\alpha} = \frac{P_{raw}(S_i = AandB|S_p = AandB)}{P_{raw}(S_i = AandB | S_p = AandB) + P_{raw}(S_i = BandA|S_p = AandB)}
+$$ {#eq-phatalpha}
+
+$$
+\hat{p}_{\neg\alpha} = 1 - \hat{p}_\alpha
+$$ {#eq-phatnotalpha}
+
+\noindent where $\hat{p}\alpha$ is the probability that the intended binomial order was the alphabetical order, and $\hat{p}{\neg\alpha}$ is the probability that the intended binomial order was the nonalphabetical order.
+
+We then update $\alpha_1'$ and $\alpha2'$to be used as the parameters of $p\theta$, and thus $P(S_i)$, when the learner hears the next token. This update is done according to the following equation:
+
+$$
+\alpha_1' = \alpha_1 + \hat{p}_\alpha
+$$ {#eq-alpha1prime}
+
+$$
+\alpha_2' = \alpha_2 + \hat{p}_{\neg\alpha}
+$$ {#eq-alpha2prime}
+
+Note that when the learner hears any binomial, they update their beliefs about the probability of both the alphabetical \emph{and} nonalphabetical forms of the binomial (in proportion to how likely they believe each ordering was intended by the speaker).
+
+When the learner is done hearing N tokens and updating their beliefs of $P(S_i)$ for a given binomial, they then produce N tokens for the next generation of learners. These are generated binomially, where $\theta = \mathbb{E}(p_\theta)$ is the inferred probability of the alphabetical form of a given binomial. For the first generation of speakers (before any learning has occurred), $\theta$ is initialized at 0.5.
+
+When producing each token, there is also a possibility that the speaker makes an error and produces an unintended ordering of the binomial. The speaker error is analogous to a speaker choosing to produce a binomial ordering (AandB or BandA), and then accidentally flipping it. For example, perhaps they intended to say \emph{butter and bread}, but accidentally said \emph{bread and butter} (or vice versa). Note that the "unintended ordering" is whichever order the speaker did not choose to produce on that trial, regardless of the overall preference for the binomial. In order to model this, the speaker produces a token in the unintended order with probability $p_{SpeakerNoise}$. This is a fixed parameter in the model and remains constant across binomials and generations.
+
+This process continues iteratively for $ngen$ generations.
+
+## Results
+
+We present our results in two main sections. The first section demonstrates the effects of the speaker and listener noise parameters ($p_{noise}$ and $p_{SpeakerNoise}$ respectively) on simulations of individual binomials. The aim of this section is to examine whether the model can account for frequency-dependent preference extremity across individual binomials varying in frequency.
+
+The second section compares our model's predicted binomial orderings across a range of binomials to the real-world corpus-wide distribution. In this section, rather than simulating individual binomials, we simulate the distribution of binomial orderings across the entire dataset of binomials from @morgan2015 with the intent of examining whether our model can capture the corpus-wide distribution.
+
+### Speaker vs Listener Noise
+
+First we demonstrate that frequency-dependent preference extremity does not arise when there is no listener or speaker noise. Instead we see convergence to the prior, which is expected following @griffithsLanguageEvolutionIterated2007. They demonstrated that when learners sample from the posterior in an iterated learning paradigm, the stationary distribution converges to the prior. To confirm this, we simulated the evolution of a single binomial across 500 generations with various N (50, 100, 500, 1000, and 10,000). The generative preference was 0.6. 1000 chains were run. We then examined the model's inferred ordering preference in the final generation. A visualization of the results is presented in @fig-noNoisePlot.
+
+
+
+```{r echo = F, out.width = '100%', fig.align = 'center', warning = F, message = F}
+#| fig-cap: A plot of the distribution of simulated binomials at the 500th generation, varying in frequency. The top value represents N, which is the overall frequency of a binomial regardless of ordering (i.e., count(AandB) + count(BandA)). On the x-axis is the predicted probability of producing the binomial in alphabetical form. On the y-axis is probability density. Speaker and listener noise was set to 0. The generative preference was 0.6, and nu was set to 10. 1000 chains were run. Note that all values of N produce dense distributions clustered around 0.6 (i.e., there is no frequency-dependent preference extremity).
+#| label: fig-noNoisePlot
+
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  xlab(bquote(P(S[i])))+
+  ylab('Density') +
+  scale_x_continuous(breaks = c(0, 0.5, 1), limits = c(0, 1)) +
+  facet_wrap(~Overall.Frequency, nrow = 1) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 12))
+```
+
+We then systematically manipulated N, listener noise ($p_{noise}$) and speaker noise ($p_{SpeakerNoise}$). Specifically, we varied N across 100, 1000, and 10000, and listener and speaker noise were varied across 0, 0.033, 0.066, and 0.1. We ran simulations for every combination of these values (@fig-fullsimsplot). For these simulations, the generative preference was set to 0.6 and 1000 chains were run across 500 generations.
+
+Our results suggest that frequency-dependent preference extremity does arise from the model when noise is introduced, but only if listener noise is greater than speaker noise. Further our results demonstrate that if listener noise is greater than speaker noise, then the greater the difference between the listener and speaker noise, the stronger the preference extremity effect (this is demonstrated by moving vertically down the column labeled $p_{SpeakerNoise} = 0$ in @fig-fullsimsplot).
+
+Interestingly this preference extremity disappears if the listener's noise parameter is less than or equal to the speaker's noise parameter. For example, notice how if you split the plot along the diagonal, all the plots on the top half, including the diagonal, show no evidence of preference extremity. These graphs are all visualizations where the speaker noise is greater than or equal to the listener noise.
+
+::: landscape
+```{r echo = F, fig.align = 'center', warning = F, message = F}
+#| fig-cap: Our simulation results for every combination of speaker noise, listener noise, and N. Note that there is an increase in ordering preference extrmity as N increases when listener noise is greater than speaker noise. N corresponds to the overall frequency of the binomial (count of AandB plus count of BandA) and varies across 10, 100, and 1000. Both speaker and listener noise were varied across 0, 0.033, 0.066, and 0.1. The distributions in the plot demonstrate the inferred ordering preference at the 500th generation.
+#| label: fig-fullsimsplot
+#| fig-width: 10
+#| fig-height: 6
+
+full_plot = ggplot(plot_data2, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  facet_nested(p_noise ~ prior_prob_noise + Overall.Frequency,
+             labeller = label_parsed) + #speaker noise and N on x-axis, listener noise on y-axis
+  ylab('Density') +
+  xlab(bquote(P(S[i]))) +
+  scale_x_continuous(breaks = c(0, 0.5, 1), labels = c('0', '0.5', '1')) +
+  theme_bw() +
+  theme(strip.text = element_text(
+    size = 11, color = "black"),
+        axis.title = element_text(size = 13))
+    #,
+    #panel.spacing = unit(0.3, 'lines')) #+
+  #theme_bw()
+  
+full_plot
+
+```
+:::
+
+It is useful to revisit here what the speaker and listener noise parameters represent. The speaker noise parameter is how often the speaker produces an error and the listener noise parameter is the listeners' belief of how noisy the environment is. Note that a speaker error here is not whether the speaker produces the more frequent binomial ordering, but rather whether the speaker produces the intended binomial ordering. In other words, if a speaker intends to produce \emph{butter and bread}, and instead produces \emph{bread and butter}, this is an error in our model. Framed this way, one explanation for our results is that when the listener is inferring more noise than the speakers are producing, they are relying more on their inferences, which can become more and more extreme. On the other hand, if they're not inferring enough noise, then they are relying more on the data. The greater the speaker noise, due to how we operationalized speaker noise, the more balanced the data will be.
+
+Thus our model makes a novel prediction: In order to account for frequency-dependent preference extremity, listeners must be inferring more noise than speakers are actually producing.
+
+### Corpus Data
+
+Finally, we now demonstrate that our model also predicts the language-wide distribution of binomial preference strengths seen in the corpus data. In order to demonstrate this, we simulated model predictions for all 594 binomials from Morgan & Levy (2015). The model estimated the ordering preference across 500 generations with 10 chains each. Values for the generative preference and N for each binomial were taken from @morgan2015's corpus. Listener noise was set to 0.02 and speaker noise to 0.005. Note that we scale N based on an estimated lifetime exposure of 300 million tokens [@levyProcessingExtraposedStructures2012].
+
+Our results demonstrate that our model can approximate the distribution in the corpus data (See @fig-corpusourmodel). In other words, the corpus-wide distribution of binomial orderings according to our model is similar to the ordering we see in actual corpus data. Further, the distribution is qualitatively similar regardless of listener and speaker noise parameters, as long as listener noise is greater than speaker noise. Altogether, this suggests that our model both captures the phenomenon of frequency-dependent preference extremity, but also in capturing it our model also predicts a similar distribution of binomial orderings to what we see in corpus data.
+
+```{r echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
+#| fig-cap: A plot of the stationary distribution of ordering preferences in the corpus data from @morgan2015 and the distribution of ordering preferences after 500 generations of our iterated learning model (left and right respectively). For our simulations, the binomial frequencies and generative preferences were matched with the corpus data. Listener noise was set to 0.02, and speaker noise was set to 0.005.
+#| label: fig-corpusourmodel
+ggarrange(corpus_p1, our_model_p1)
+```
+
+## Conclusion
+
+The present study examined whether a noisy-channel processing model [@gibsonNoisyChannelAccountCrosslinguistic2013] integrated in an iterated learning model [@morganFrequencydependentRegularizationIterated2016a] can capture the effects of frequency-dependent preference extremity. Our results demonstrate that frequency-dependent preference extremity can emerge from a noisy-channel processing model when listeners infer more noise in the environment than the speakers actually produce. Our results also make novel predictions. For example, if our current model is accurate, it suggests that listeners assume more noise than the speakers produce. Further, it suggests that for high-frequency binomials, such as \emph{butter and bread}, hearing \emph{butter and bread} may activate \emph{bread and butter} more strongly than \emph{butter and bread}. Finally, it seems more unlikely that a speaker would unintentionally produce the unintended ordering for high-frequency binomials than low-frequency binomials (e.g., producing \emph{butter and bread,} when they mean to say \emph{bread and butter)}. Thus it will also be interesting to examine models that don't use a fixed speaker-noise parameter.

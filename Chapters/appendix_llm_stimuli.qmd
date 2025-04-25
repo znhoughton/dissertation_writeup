@@ -1,0 +1,46 @@
+```{r, echo = F}
+library(tidyverse)
+library(brms)
+library(here)
+library(ggh4x)
+
+corpus = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), '/nonce_binoms.csv'))
+
+combined_df = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), "/combined_df.csv"))
+
+checkpoint_tokens_key = combined_df %>%
+  group_by(checkpoint) %>%
+  slice_head(n=1) %>%
+  select(checkpoint, num_tokens, n_billion_tokens)
+
+fixefs_m3 = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), "/fixefs_m3.csv"))
+```
+
+# Full List of Stimuli {#sec-full-list-of-stimuli .appendix}
+
+\tiny
+
+
+```{r echo = F, message = F}
+#| label: tbl-stimuli
+#| tbl-cap: "Full list of binomials as well as their constraints."
+
+stimuli_list = corpus %>%
+  mutate(y_vals = 0.02191943 + 0.23925834*Form +  0.24889543*Percept +  0.41836997*Culture +   0.25967334*Power +  0.01867604*Intense +  1.30365980*Icon +   0.08553552*Freq +  0.15241566*Len - 0.19381657*Lapse +  0.36019221*`*BStress`) %>%
+  mutate(GenPref = 1/(1+exp(-1*y_vals))) %>%
+  select(Word1, Word2, Form, Percept, Culture, Power, Intense, Icon, Freq, Len, Lapse, `*BStress`, GenPref) %>%
+  mutate_if(is.numeric,
+            round,
+            digits=2) %>%
+  rename('AbsPref' = GenPref)
+
+stimuli_list = rename(stimuli_list, 'Final Stress' = `*BStress`)
+
+knitr::kable(stimuli_list, booktabs = T)
+```
+
+
+\normalsize
+
+
+\clearpage

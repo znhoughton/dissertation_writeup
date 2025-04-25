@@ -1,0 +1,770 @@
+---
+title: "Representations of Binomials"
+author: "Zachary Houghton"
+date: "2024-04-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(reticulate)
+#Sys.setenv(PATH = paste("C:/Users/zacha/anaconda3/envs", Sys.getenv("PATH"), sep = ";"))
+# myenvs = conda_list()
+# envname = myenvs$name[2]
+# use_condaenv(envname)
+use_condaenv("PRenv", conda="C:/Users/zacha/anaconda3/envs/PRenv")
+```
+
+## Loading Data
+
+```{r}
+
+
+binomial_data = read_csv('../Data/all_sentences.csv')#[1:5,] #for debugging
+
+sentences = binomial_data$Sentence
+word1 = binomial_data$Word1
+word2 = binomial_data$Word2
+```
+
+## Semantic Representations
+
+### Olmo 7b
+
+```{python}
+
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, logging
+#from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig
+import numpy as np
+#from hf_olmo import OLMoForCausalLM, OLMoTokenizerFast
+from hf_olmo import OLMoForCausalLM, OLMoTokenizerFast
+#device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+device = 'cpu' #can't fit olmo onto my gpu memory unfortunately
+#model_name_or_path = "allenai/OLMo-7B" #let's replicate with Olmo-1b, llama-3 , and 
+model_name_or_path = "gpt2-xl"
+model_basename = "model"
+
+#use_triton = False
+
+#model = AutoModelForCausalLM.from_pretrained("allenai/OLMo-7B")
+#tokenizer = OLMoTokenizerFast.from_pretrained("allenai/OLMo-7B")
+
+tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, trust_remote_code = True)
+tokenizer.pad_token = tokenizer.eos_token
+
+
+
+model = AutoModelForCausalLM.from_pretrained(model_name_or_path, trust_remote_code=True)
+
+model.config.output_hidden_states = True
+
+model.config.pad_token_id = model.config.eos_token_id
+model = model.to(device)
+
+```
+
+Batch vs single run
+
+```{python eval = F}
+# from sklearn.metrics.pairwise import cosine_similarity
+# 
+# word1 = 'bread'
+# word2 = 'butter'
+# input_texts = 'Jimmy likes bread and butter'
+# 
+# input_ids = tokenizer(input_texts, padding = True, return_tensors = 'pt').input_ids
+# input_ids = input_ids.to(device)
+# 
+# start_index = input_ids[0].tolist().index(tokenizer.encode(word1)[1])
+# end_index = input_ids[0].tolist().index(tokenizer.encode(word2)[-1])
+# 
+# with torch.no_grad():
+#   outputs = model(input_ids, output_hidden_states = True)
+#   hidden_states = outputs[2]
+# 
+# token_vecs = hidden_states[-2][0]
+# 
+#   
+# phrase_embedding = token_vecs[start_index:end_index+1, :]
+# 
+# phrase_embedding = torch.mean(phrase_embedding, dim = 0)
+# 
+# ##If batch running:
+# 
+# word1 = ['bread', 'radios']
+# word2 = ['butter', 'televisions']
+# input_texts = ['Jimmy likes bread and butter']
+# 
+# 
+# # Tokenize the batch
+# input_ids = tokenizer(input_texts, padding=True, return_tensors='pt').input_ids
+# input_ids = input_ids.to(device)
+# 
+# 
+# # Get the hidden states from the model
+# with torch.no_grad():
+#   outputs = model(input_ids, output_hidden_states=True)
+#   hidden_states = outputs[2]
+# 
+# second_to_last_layer = hidden_states[-2] #second to last hidden state
+# 
+# phrase_embeddings_batch_list = []
+# 
+# # Iterate over each input text in the batch
+# for i, (input_text, w1, w2) in enumerate(zip(input_texts, word1, word2)):
+#     
+#     
+# 
+#     # Find the indices of the words in the input text
+#     start_index = input_ids[i].tolist().index(tokenizer.encode(w1)[1])
+#     end_index = input_ids[i].tolist().index(tokenizer.encode(w2)[-1])
+#     print(start_index)
+#     print(end_index)
+#     
+# 
+#     # Select the batch
+#     token_vecs = second_to_last_layer[i]
+# 
+#     # Extract the phrase embedding
+#     phrase_embedding_batch = token_vecs[start_index:end_index + 1, :]
+# 
+#     # Compute the mean of the phrase embedding along the tokens dimension
+#     phrase_embedding_batch = torch.mean(phrase_embedding_batch, dim=0)
+# 
+#     # Append the phrase embedding to the list
+#     phrase_embeddings_batch_list.append(phrase_embedding_batch)
+# 
+# # Convert the list of tensors to a single tensor
+# phrase_embeddings_batch_list = torch.stack(phrase_embeddings_batch_list)
+# 
+# phrase_embeddings_batch_list.size()
+# 
+# # Print the semantic representations for the batch
+# print(phrase_embeddings_batch_list)
+# 
+# 
+# ###Compare batch to individual runs
+# 
+# phrase_embeddings_batch_list = np.array(phrase_embeddings_batch_list.cpu())
+# phrase_embedding = np.array(phrase_embedding.cpu())
+# cosine_similarities = cosine_similarity([phrase_embeddings_batch_list[0]], [phrase_embedding])
+# print(cosine_similarities)
+#0.99999 similarity, so they're doing the same thing
+```
+
+Let's make them functions:
+
+```{python}
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+
+#device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
+# input_text = 'Jimmy likes bread and butter'
+# input_texts = ['Jimmy likes bread and butter']
+# 
+# 
+# def get_semantic_representation(model, tokenizer, input_text, word1, word2):
+#   
+#     word1 = word1
+#     word2 = word2
+#     input_text = input_text
+#     
+#     input_ids = tokenizer(input_text, padding = True, return_tensors = 'pt').input_ids
+#     input_ids = input_ids.to(device)
+#     
+#     start_index = input_ids[0].tolist().index(tokenizer.encode(word1)[1])
+#     end_index = input_ids[0].tolist().index(tokenizer.encode(word2)[-1])
+#     
+#     with torch.no_grad():
+#       outputs = model(input_ids, output_hidden_states = True)
+#       hidden_states = outputs[2]
+#     
+#     token_vecs = hidden_states[-2][0]
+#     
+#       
+#     phrase_embedding = token_vecs[start_index:end_index+1, :]
+#     
+#     phrase_embedding = torch.mean(phrase_embedding, dim = 0)
+#     
+#     return phrase_embedding
+def get_semantic_representation_batch(model, tokenizer, input_texts, word1, word2):
+    # Tokenize the input texts with offsets for locating words
+    inputs = tokenizer(input_texts, padding=True, return_tensors='pt', return_offsets_mapping=True)
+    input_ids = inputs.input_ids.to(device)
+    offset_mappings = inputs.offset_mapping
+  
+    with torch.no_grad():
+        outputs = model(input_ids, output_hidden_states=True)
+        hidden_states = outputs.hidden_states[-2]
+  
+    phrase_embeddings_batch_list = []
+  
+    # Process each sentence and its respective word pairs
+    for i, (input_text, w1, w2) in enumerate(zip(input_texts, word1, word2)):
+        token_vecs = hidden_states[i]
+        offsets = offset_mappings[i]
+        
+        # Find the start and end character indices of w1 and w2
+        w1_start = input_text.find(w1)
+        w1_end = w1_start + len(w1)
+        w2_start = input_text.find(w2)
+        w2_end = w2_start + len(w2)
+        
+        # Locate the token indices that correspond to w1 and w2
+        start_index, end_index = None, None
+        for j, (start, end) in enumerate(offsets):
+            # Find the start index for w1
+            if start_index is None and start == w1_start:
+                start_index = j
+            # Find the end index for w2
+            if end_index is None and end == w2_end:
+                end_index = j
+            # If both indices are found, break out of the loop
+            if start_index is not None and end_index is not None:
+                break
+        
+        # Calculate the phrase embedding if both indices are found
+        try:
+            phrase_embedding_batch = torch.mean(token_vecs[start_index:end_index + 1, :], dim=0)
+            phrase_embeddings_batch_list.append(phrase_embedding_batch)
+        except:
+            print(f"Could not locate tokens for '{w1}' or '{w2}' in input_text '{input_text}'. Skipping this pair.")
+  
+    # Convert the list of embeddings to a single tensor if it's not empty
+    if phrase_embeddings_batch_list:
+        phrase_embeddings_batch_tensor = torch.stack(phrase_embeddings_batch_list)
+    else:
+        phrase_embeddings_batch_tensor = None
+    
+    return phrase_embeddings_batch_tensor
+
+#test1 = get_semantic_representation(model, tokenizer, input_text, 'bread', 'butter')  
+# minibatch = ['The violinist played with abandon and fervor even though he had just recovered from an accident.', 'They questioned his ability and age in the interview, which he thought was unfair.']
+# word1 = ['abandon', 'ability']
+# word2 = ['fervor', 'age']
+# input_texts = minibatch
+# test2 = get_semantic_representation_batch(model, tokenizer, minibatch, word1, word2)
+# 
+# 
+# inputs = tokenizer(input_texts, padding=True, return_tensors='pt', return_offsets_mapping=True)
+# input_ids = inputs.input_ids.to(device)
+# offset_mappings = inputs.offset_mapping
+# 
+# with torch.no_grad():
+#     outputs = model(input_ids, output_hidden_states=True)
+#     hidden_states = outputs.hidden_states[-2]
+# 
+# phrase_embeddings_batch_list = []
+# 
+# # Process each sentence and its respective word pairs
+# for i, (input_text, w1, w2) in enumerate(zip(input_texts, word1, word2)):
+#     token_vecs = hidden_states[i]
+#     offsets = offset_mappings[i]
+#     
+#     # Find the start and end character indices of w1 and w2
+#     w1_start = input_text.find(w1)
+#     w1_end = w1_start + len(w1)
+#     w2_start = input_text.find(w2)
+#     w2_end = w2_start + len(w2)
+#     
+#     # Locate the token indices that correspond to w1 and w2
+#     start_index, end_index = None, None
+#     for j, (start, end) in enumerate(offsets):
+#         # Find the start index for w1
+#         if start_index is None and start == w1_start:
+#             start_index = j
+#         # Find the end index for w2
+#         if end_index is None and end == w2_end:
+#             end_index = j
+#         # If both indices are found, break out of the loop
+#         if start_index is not None and end_index is not None:
+#             break
+#     
+#     # Calculate the phrase embedding if both indices are found
+#     if start_index is not None and end_index is not None:
+#         phrase_embedding_batch = torch.mean(token_vecs[start_index:end_index + 1, :], dim=0)
+#         phrase_embeddings_batch_list.append(phrase_embedding_batch)
+#     else:
+#         print(f"Could not locate tokens for '{w1}' or '{w2}' in input_text '{input_text}'. Skipping this pair.")
+# 
+# # Convert the list of embeddings to a single tensor if it's not empty
+# if phrase_embeddings_batch_list:
+#     phrase_embeddings_batch_tensor = torch.stack(phrase_embeddings_batch_list)
+# else:
+#     phrase_embeddings_batch_tensor = None
+# 
+# 
+# 
+#  
+
+#phrase_embeddings_batch_list = np.array(test2.cpu())
+#phrase_embedding = np.array(test1.cpu())
+#cosine_similarities = cosine_similarity([phrase_embeddings_batch_list[0]], [phrase_embedding])
+#print(cosine_similarities)
+#cosine similarity of 0.99999 so the functions are doing the same thing 
+
+#test = [test[0].cpu().numpy(), test[1].cpu().numpy(), test[2].cpu().numpy()]
+
+#cosine_similarities = cosine_similarity(test)
+
+#print(cosine_similarities)
+
+# Labels for each pair of tensors
+#labels = ['bread and butter', 'bread and butter (idiomatic)', 'butter and bread']
+
+# Create a DataFrame with cosine similarities and labels
+#df = pd.DataFrame(cosine_similarities, index=labels, columns=labels)
+
+# Print the labeled table
+#print(df)
+
+
+
+
+def get_semantic_embedding_single_word(model, tokenizer, word):
+    
+    input_ids = tokenizer(word, return_tensors = 'pt').input_ids
+    input_ids = input_ids.to(device)
+    #word_embeddings_batch_list = []
+    # Get the hidden states from the model
+    with torch.no_grad():
+      outputs = model(input_ids, output_hidden_states=True)
+      hidden_states = outputs[2]
+    
+    second_to_last_layer = hidden_states[-2] #second to last hidden state
+    second_to_last_layer = second_to_last_layer[0]
+    word_embedding = torch.mean(second_to_last_layer, dim=0)
+    return word_embedding
+  
+  
+def get_compositional_semantic_embeddings(model, tokenizer, multi_word_phrase): #this will take in a phrase (as a list) and return its compositional representation (returns the representations of each individual word then takes the mean of those representations)
+  inputs = tokenizer(multi_word_phrase, padding=True, return_tensors='pt', return_offsets_mapping=True).to(device)
+  input_ids = inputs.input_ids
+  offset_mapping = inputs.offset_mapping
+  attention_mask = inputs.attention_mask
+  with torch.no_grad():
+    outputs = model(input_ids, output_hidden_states=True)
+    hidden_states = outputs.hidden_states[-2]
+  
+  word_embeddings = []
+  
+  for i, word in enumerate(multi_word_phrase):
+    word_offsets = offset_mapping[i].tolist()
+    token_embeddings = hidden_states[i]
+    
+    word_token_embeddings = []
+    
+    for j, (start, end) in enumerate(word_offsets):
+      if attention_mask[i][j] == 1 and start != end:  # skip padding and non-token parts
+        word_token_embeddings.append(token_embeddings[j])
+    
+    if word_token_embeddings:
+      word_embedding = torch.mean(torch.stack(word_token_embeddings), dim=0)
+      word_embeddings.append(word_embedding) 
+  
+  combined_embedding = torch.mean(torch.stack(word_embeddings),dim=0)
+  
+  return [combined_embedding]
+ 
+# 
+# bread = get_semantic_embedding_single_word(model, tokenizer, 'bread')
+# annnd = get_semantic_embedding_single_word(model, tokenizer, 'and')
+# butter = get_semantic_embedding_single_word(model, tokenizer, 'butter')
+# 
+# ind_embs = torch.mean(torch.stack([bread, annnd, butter]), dim = 0)
+# 
+# embs = get_compositional_semantic_embeddings(model, tokenizer, ['bread', 'and', 'butter'])
+# embs2 = get_compositional_semantic_embeddings(model, tokenizer, ['bread', 'and', 'cheese'])
+# embs3 = get_compositional_semantic_embeddings(model, tokenizer, ['the', 'the', 'the'])
+
+def get_semantic_embedding_single_word_in_context(model, tokenizer, context, word):
+    
+    word = word
+    input_text = context
+    
+    input_ids = tokenizer(input_text, padding = True, return_tensors = 'pt').input_ids
+    input_ids = input_ids.to(device)
+    
+    # Get the hidden states from the model
+    with torch.no_grad():
+      outputs = model(input_ids, output_hidden_states=True)
+      hidden_states = outputs[2]
+    
+    second_to_last_layer = hidden_states[-2] #second to last hidden state
+    
+    phrase_embeddings_batch_list = []
+    
+    # Iterate over each input text in the batch
+    for i, (input_text, word) in enumerate(zip(input_text, word)):
+    
+        # Find the indices of the words in the input text
+        start_index = input_ids[i].tolist().index(tokenizer.encode(word)[1])
+        end_index = input_ids[i].tolist().index(tokenizer.encode(word)[-1])
+        #print(start_index)
+        #print(end_index)
+        
+    
+        # Select the batch
+        token_vecs = second_to_last_layer[i]
+    
+        # Extract the phrase embedding
+        phrase_embedding_batch = token_vecs[start_index:end_index + 1, :]
+    
+        # Compute the mean of the phrase embedding along the tokens dimension
+        phrase_embedding_batch = torch.mean(phrase_embedding_batch, dim=0)
+    
+        # Append the phrase embedding to the list
+        phrase_embeddings_batch_list.append(phrase_embedding_batch)
+    
+    # Convert the list of tensors to a single tensor
+    phrase_embeddings_batch_list = torch.stack(phrase_embeddings_batch_list)
+    
+    return phrase_embeddings_batch_list
+  
+# sentences = ['bank robber', 'river bank', 'vault', 'shore', 'bank']
+# 
+# words = ['bank', 'bank', 'vault', 'shore', 'bank']
+# 
+# test1 = get_semantic_embedding_single_word(model, tokenizer, ['bank'])
+# test2 = get_semantic_embedding_single_word_in_context(model, tokenizer, sentences, words)
+# 
+# 
+# test = [test2[0].cpu().numpy(), test2[1].cpu().numpy(), test2[2].cpu().numpy(), test2[3].cpu().numpy(), test2[4].cpu().numpy(), test1[0].cpu().numpy()]
+# 
+# cosine_similarities = cosine_similarity(test)
+# 
+# print(cosine_similarities)
+# 
+# labels = ['bank (robber)', 'bank (river)', 'vault', 'shore', 'bank (without context)', 'bank (without context single word function)']
+# 
+# # Create a DataFrame with cosine similarities and labels
+# df = pd.DataFrame(cosine_similarities, index=labels, columns=labels)
+# 
+# print(df)
+```
+
+```{python}
+#debugging
+minibatch = ["He's so good at eating bread and butter.", 'I like bread and butter']
+word1 = ['bread', 'bread']
+word2 = ['butter', 'butter']
+batch_run = get_semantic_representation_batch(model, tokenizer, minibatch, word1, word2)
+```
+
+
+## Collecting Data
+
+Now we'll put everything together. We need a function that gets the semantic embeddings of the binomial, then gets the cosine distance to the individual word embeddings.
+
+```{python}
+
+sentence = r.sentences
+word1 = r.word1
+word2 = r.word2
+
+n_batches = len(sentence) / 1 #
+
+input_texts_sentences = np.array_split(sentence, n_batches)
+input_texts_sentences = [x.tolist() for x in [*input_texts_sentences]]
+
+input_texts_word1 = np.array_split(word1, n_batches)
+input_texts_word1 = [x.tolist() for x in [*input_texts_word1]]
+
+input_texts_word2 = np.array_split(word2, n_batches)
+input_texts_word2 = [x.tolist() for x in [*input_texts_word2]]
+
+
+sentence_binom_order = [[]]
+batch_sentences = [[]]
+timer = 0
+
+for minibatch, word1, word2 in zip(input_texts_sentences, input_texts_word1, input_texts_word2):
+  assert len(input_texts_sentences) == len(input_texts_word1) == len(input_texts_word2), "Input lists must be the same length"
+  timer += 1
+  #print(word1, word2)
+  #print(minibatch)
+  
+  if len(word1) != len(word2):
+    raise ValueError("word1 and word2 lists must be the same length")
+  
+  #if timer % 100 == 0:
+    #print(timer)
+  binom = [word1[i] + ' and ' + word2[i] for i in range(len(word1))]
+  #print(binom)
+  #print(f"Processing batch: {minibatch}, word1: {word1}, word2: {word2}")
+  batch_run = get_semantic_representation_batch(model, tokenizer, minibatch, word1, word2)
+  
+  batch_sentences.extend(batch_run)
+  sentence_binom_order.extend(binom)
+  
+
+batch_sentences = batch_sentences[1:]
+sentence_representations = torch.stack(batch_sentences)
+sentence_binom_order = sentence_binom_order[1:]
+
+#sentence_representations
+
+binom_order = [[]]
+binomial_representations = [[]]
+timer = 0
+for word1, word2 in zip(input_texts_word1, input_texts_word2):
+  #print(f"{word1}\n{word2}") #for troubleshooting
+  minibatch = [word1[i] + ' and ' + word2[i] for i in range(len(word1))]
+  timer += 1
+  if timer % 100 == 0:
+    print(timer)
+  batch_run_binoms = get_semantic_representation_batch(model, tokenizer, minibatch, word1, word2)
+  
+  binomial_representations.extend(batch_run_binoms)
+  binom_order.extend(minibatch)
+
+
+
+
+binomial_representations = binomial_representations[1:]
+binomial_representations = torch.stack(binomial_representations)
+binom_order = binom_order[1:]
+
+binom_order == sentence_binom_order
+
+
+binom_order = [[]]
+compositional_representations = [[]]
+timer = 0
+for word1, word2 in zip(input_texts_word1, input_texts_word2):
+    phrase = [word1[i] + ' and ' + word2[i] for i in range(len(word1))]
+    timer += 1
+
+    if timer % 100 == 0:
+        print(timer)
+    
+    # Get the compositional semantic embeddings for the current batch
+    batch_run_binoms = get_compositional_semantic_embeddings(model, tokenizer, phrase)
+    
+    # Process the embeddings
+    compositional_representations.extend(batch_run_binoms)
+    
+    # Extend the binom order with the current phrase
+    binom_order.extend(phrase)
+
+binom_order = binom_order[1:]
+compositional_representations = torch.stack(compositional_representations[1:], dim=0)
+#compositional_representations
+#binom_order
+#sanity check
+# random_word_representations = [[]]
+# 
+# input_texts_word1 = [['abandon'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the'], ['the']]
+# input_texts_word2 = [['fervor'], ['the'], ['the'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor'], ['fervor']]
+# for word1, word2 in zip(input_texts_word1, input_texts_word2):
+#   minibatch = [word1[i] + ' the ' + word2[i] for i in range(len(word1))]
+#   timer += 1
+#   print(timer)
+#   random_run_binoms = get_semantic_representation_batch(model, tokenizer, minibatch, word1, word2)
+#   
+#   random_word_representations.extend(random_run_binoms)
+# 
+# random_word_representations = random_word_representations[1:]
+# random_word_representations = torch.stack(random_word_representations)
+#print(sentence_binom_order)
+#print(binom_order)
+```
+
+Pairwise Cosine similarity:
+
+```{python}
+import pandas as pd
+
+
+
+cosi = torch.nn.CosineSimilarity(dim=0)
+cosine_diffs = [[]]
+
+
+
+for rep1, rep2 in zip(sentence_representations, binomial_representations):
+  
+  cosine_similarities = cosi(rep1, rep2)
+  #print(cosine_similarities)
+  cosine_similarities = cosine_similarities.item()
+  
+  cosine_diffs.append(cosine_similarities)
+  
+cosine_diffs = cosine_diffs[1:]
+
+cosine_diffs_df = pd.DataFrame({'cosine_diffs': cosine_diffs})
+
+cosine_diffs_df['binom'] = binom_order
+
+
+####sentence vs compositional representations #####
+
+cosine_diffs_comp = [[]]
+
+compositional_representations.shape
+
+
+for rep1, rep2 in zip(sentence_representations, compositional_representations):
+  
+  cosine_similarities = cosi(rep1, rep2)
+  #print(cosine_similarities)
+  cosine_similarities = cosine_similarities.item()
+  
+  cosine_diffs_comp.append(cosine_similarities)
+  
+cosine_diffs_comp = cosine_diffs_comp[1:]
+
+cosine_diffs_comp_df = pd.DataFrame({'cosine_diffs': cosine_diffs_comp})
+
+cosine_diffs_comp_df['binom'] = binom_order
+
+
+#cosine_diffs_baseline
+# cosine_diffs_baseline = [[]]
+# 
+# for sen_rep, random_rep in zip(sentence_representations, random_word_representations):
+# 
+# 
+# 
+#   cosine_similarities = cosi(sen_rep, random_rep)
+#   #print(cosine_similarities)
+# 
+#   cosine_diffs_baseline.append(cosine_similarities.item())
+# 
+# cosine_diffs_baseline = cosine_diffs_baseline[1:]
+# 
+# 
+# cosine_diffs
+# cosine_diffs_baseline
+  
+```
+
+A few representations gave NAs, so we'll re-run them to see what the issue is:
+
+```{python}
+
+sentence = ["The house welcomes the city's derelicts and outcasts to eat and converse.", "The house welcomes the city's outcasts and derelicts to eat and converse.", "She is now freed from pettiness and greed by leading a simple life in the countryside."]
+word1 = ["derelicts", "outcasts", "pettiness"]
+word2 = ["outcasts", "derelicts", "greed"]
+
+n_batches = len(sentence) / 1
+
+input_texts_sentences = np.array_split(sentence, n_batches)
+input_texts_sentences = [x.tolist() for x in [*input_texts_sentences]]
+
+input_texts_word1 = np.array_split(word1, n_batches)
+input_texts_word1 = [x.tolist() for x in [*input_texts_word1]]
+
+input_texts_word2 = np.array_split(word2, n_batches)
+input_texts_word2 = [x.tolist() for x in [*input_texts_word2]]
+
+
+#sentence_binom_order = [[]]
+batch_sentences = [[]]
+timer = 0
+
+for minibatch, word1, word2 in zip(input_texts_sentences, input_texts_word1, input_texts_word2):
+  timer += 1
+  if timer % 100 == 0:
+    print(timer)
+  binom = [word1[i] + ' and ' + word2[i] for i in range(len(word1))]
+  batch_run = get_semantic_representation_batch(model, tokenizer, minibatch, word1, word2)
+  
+  batch_sentences.extend(batch_run)
+  #sentence_binom_order.extend(binom)
+  
+
+batch_sentences = batch_sentences[1:]
+sentence_representations = torch.stack(batch_sentences)
+#sentence_binom_order = sentence_binom_order[1:]
+
+sentence_representations
+
+#binom_order = [[]]
+binomial_representations = [[]]
+timer = 0
+for word1, word2 in zip(input_texts_word1, input_texts_word2):
+  minibatch = [word1[i] + ' and ' + word2[i] for i in range(len(word1))]
+  timer += 1
+  if timer % 100 == 0:
+    print(timer)
+  batch_run_binoms = get_semantic_representation_batch(model, tokenizer, minibatch, word1, word2)
+  
+  binomial_representations.extend(batch_run_binoms)
+  #binom_order.extend(minibatch)
+
+
+
+
+binomial_representations = binomial_representations[1:]
+binomial_representations = torch.stack(binomial_representations)
+#binom_order = binom_order[1:]
+
+#binom_order == sentence_binom_order
+```
+
+```{r}
+cosine_diffs = py$cosine_diffs_df
+cosine_diffs_comp = py$cosine_diffs_comp_df
+
+write_csv(cosine_diffs, '../Data/olmo_cosine_diffs.csv')
+write_csv(cosine_diffs_comp, '../Data/olma_compositional_cosine_diffs.csv')
+```
+
+## Visualization
+
+```{python}
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from scipy.spatial import distance
+
+input_texts = ['I like to eat bread and butter', "Running a competition smoothly is his bread and butter", "Jimmy's favorite foods are butter and bread"]
+
+word1 = ['bread', 'bread', 'butter']
+word2 = ['butter', 'butter', 'bread']
+
+test = get_semantic_representation_batch(model, tokenizer, input_texts, word1, word2)
+
+
+test_np = test.cpu().numpy()
+
+
+
+
+pca = PCA(n_components=2)
+reduced_features = pca.fit_transform(test_np)
+
+#labels
+labels = ['bread and butter', 'bread and butter (idiomatic)', 'butter and bread']
+
+# Plot PCA with labels and arrows
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.scatter(reduced_features[:, 0], reduced_features[:, 1])
+for i, label in enumerate(labels):
+    plt.text(reduced_features[i, 0], reduced_features[i, 1], label, fontsize=10, ha='right')
+
+# Plot arrows connecting each pair of points with labels denoting the distance
+for i in range(len(reduced_features)):
+    for j in range(i + 1, len(reduced_features)):
+        plt.arrow(reduced_features[i, 0], reduced_features[i, 1],
+                  reduced_features[j, 0] - reduced_features[i, 0],
+                  reduced_features[j, 1] - reduced_features[i, 1],
+                  color='gray', alpha=0.5, head_width=0.05, width=0.005)
+
+        # Calculate the Euclidean distance between the points
+        dist = distance.euclidean(reduced_features[i], reduced_features[j])
+        # Annotate the arrow with the distance
+        plt.text((reduced_features[i, 0] + reduced_features[j, 0]) / 2,
+                 (reduced_features[i, 1] + reduced_features[j, 1]) / 2,
+                 f'{dist:.2f}', fontsize=8, ha='center', va='center')
+
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('2D Visualization of All Features')
+
+plt.show()
+```

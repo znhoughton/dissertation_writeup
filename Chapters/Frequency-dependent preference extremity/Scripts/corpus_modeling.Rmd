@@ -1,0 +1,207 @@
+---
+title: "Corpus Modeling"
+author: "Zach"
+date: "2024-01-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(furrr)
+library(ggpubr)
+source('iterated_learning.R')
+```
+
+## Corpus Modeling
+
+In this script we will apply our iterative learning function to the corpus of binomials from [cite morgan and levy evolang paper].
+
+### Load Corpus
+
+```{r}
+corpus = read_csv("../Corpus Data/corpus.csv") %>%
+  mutate('FrequencyPer350Mil' = OverallFreq / 323592921465 * 350000000) %>% #Frequency per 350 million, per that Levy paper
+  mutate(FrequencyPer350Mil = as.integer(FrequencyPer350Mil))
+```
+
+### Apply iterated learning function to corpus data
+
+We'll use p_noise = 0.05 and prior_prob_noise = 0.01
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 10 #small number of sims because I don't want to wait 10 years for results
+nu = 10 #reasonable prior
+p_noise = 0.05
+prior_prob_noise = 0.01 #we only get regularization if the listeners' inferred noise is greater than the producers' noise
+
+file_path = '../Sims Data/corpus_sim_results.csv'
+#corpus = corpus[1:2,] # for debugging
+
+
+if (!file.exists(file_path)) {
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+simulations_of_corpus = future_pmap_dfr(corpus, ~data.frame(iterated_learning(n_gen = n_gen, 
+                                                            n_sims = n_sims, 
+                                                            p_theta = 0.5, 
+                                                            N = ..16, 
+                                                            prior_mu = ..15, 
+                                                            nu = nu, 
+                                                            p_noise = p_noise,
+                                                            prior_prob_noise = prior_prob_noise, 
+                                                                       last_gen_only = T), 'FrequencyPer350Mil' = ..16, 'WordA' = ..1, 'WordB' = ..2, 'RelFreq' = ..14, 'GenPref' = ..15)) #we use future_map_dfr() to parralelize the function, since it doesn't matter what order the function is run in.
+
+write_csv(simulations_of_corpus, '../Sims Data/corpus_sim_results.csv')
+
+} else {
+simulations_of_corpus = read_csv('../Sims Data/corpus_sim_results.csv')
+}
+
+plot_data = simulations_of_corpus 
+
+our_model_p1 = ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  #facet_grid(generation ~ Overall.Frequency) +
+  xlab('Proportion of occurrences in alpahbetical order')+
+  ylab('Density') +
+  theme(plot.margin = unit(c(0.5,1,0.5,1), 'cm')) +
+  scale_y_continuous(breaks = c(0, 0.5, 1, 1.5, 2), limits = c(0, 2)) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 11)) #
+
+corpus_p1 = ggplot(data = corpus, aes(x = RelFreq, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  xlab('Proportion of occurrences in alpahbetical order') +
+  ylab('Density') +
+  theme(plot.margin = unit(c(0.5,1,0.5,1), 'cm')) +
+  scale_y_continuous(breaks = c(0, 0.5, 1, 1.5, 2, 2.5, 3), limits = c(0, 3)) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 11))
+
+corpus_p2 = ggplot(data = corpus, aes(x = GenPref, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  xlab('Generative ordering preferences') +
+  ylab('Density') +
+  theme(plot.margin = unit(c(0.5,1,0.5,1), 'cm')) +
+  scale_y_continuous(breaks = c(0, 0.5, 1, 1.5, 2, 2.5, 3), limits = c(0, 3)) +
+  scale_x_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(0, 1)) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 11))
+
+ggarrange(corpus_p1, corpus_p2, nrow = 1)
+#ggsave('./Write-up/Figures/corpus_plots.png', width = 20, height = 7, units = 'cm')
+
+ggarrange(corpus_p1, our_model_p1)
+
+#ggsave('./Write-up/Figures/corpus_plot_and_ours.png', width = 20, height = 7, units = 'cm')
+
+```
+
+### p_noise = 0.02 and prior_prob_noise = 0.01
+
+```{r}
+n_gen = 500
+n_sims = 10 #small number of sims because I don't want to wait 10 years for results
+nu = 10 #reasonable prior
+p_noise = 0.02
+prior_prob_noise = 0.01 #we only get regularization if the listeners' inferred noise is greater than the producers' noise
+
+file_path = '../Sims Data/corpus_sim_results2.csv'
+#corpus = corpus[1:2,] # for debugging
+
+
+if (!file.exists(file_path)) {
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+simulations_of_corpus = future_pmap_dfr(corpus, ~data.frame(iterated_learning(n_gen = n_gen, 
+                                                            n_sims = n_sims, 
+                                                            p_theta = 0.5, 
+                                                            N = ..16, 
+                                                            prior_mu = ..15, 
+                                                            nu = nu, 
+                                                            p_noise = p_noise,
+                                                            prior_prob_noise = prior_prob_noise, 
+                                                                       last_gen_only = T), 'FrequencyPer350Mil' = ..16, 'WordA' = ..1, 'WordB' = ..2, 'RelFreq' = ..14, 'GenPref' = ..15)) #we use future_map_dfr() to parralelize the function, since it doesn't matter what order the function is run in.
+
+write_csv(simulations_of_corpus, '../Sims Data/corpus_sim_results2.csv')
+
+} else {
+simulations_of_corpus = read_csv('../Sims Data/corpus_sim_results2.csv')
+}
+
+plot_data = simulations_of_corpus 
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  #facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = corpus, aes(x = RelFreq, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  theme_bw()
+```
+
+### p_noise = 0.02 and prior_prob_noise = 0.005
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 10 #small number of sims because I don't want to wait 10 years for results
+nu = 10 #reasonable prior
+p_noise = 0.02
+prior_prob_noise = 0.005 #we only get regularization if the listeners' inferred noise is greater than the producers' noise
+
+file_path = '../Sims Data/corpus_sim_results3.csv'
+#corpus = corpus[1:2,] # for debugging
+
+
+if (!file.exists(file_path)) {
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+simulations_of_corpus = future_pmap_dfr(corpus, ~data.frame(iterated_learning(n_gen = n_gen, 
+                                                            n_sims = n_sims, 
+                                                            p_theta = 0.5, 
+                                                            N = ..16, 
+                                                            prior_mu = ..15, 
+                                                            nu = nu, 
+                                                            p_noise = p_noise,
+                                                            prior_prob_noise = prior_prob_noise, 
+                                                                       last_gen_only = T), 'FrequencyPer350Mil' = ..16, 'WordA' = ..1, 'WordB' = ..2, 'RelFreq' = ..14, 'GenPref' = ..15)) #we use future_map_dfr() to parralelize the function, since it doesn't matter what order the function is run in.
+
+write_csv(simulations_of_corpus, '../Sims Data/corpus_sim_results3.csv')
+
+} else {
+simulations_of_corpus = read_csv('../Sims Data/corpus_sim_results3.csv')
+}
+
+plot_data = simulations_of_corpus 
+
+our_model_p1 = ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  #facet_grid(generation ~ Overall.Frequency) +
+  xlab(expression(mu[posterior]))+
+  ylab('Density') +
+  theme_bw()
+
+corpus_p1 = ggplot(data = corpus, aes(x = RelFreq, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  xlab('Relative Frequency') +
+  ylab('Density') +
+  theme_bw()
+
+
+ggarrange(corpus_p1, our_model_p1)
+
+#ggsave('./Write-up/Figures/corpus_plot_and_ours.png')
+#dev.off()
+```
+
+### 
