@@ -1,0 +1,1109 @@
+---
+title: "more_noisy_channel"
+author: "Zachary Houghton"
+date: "2023-12-13"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(profvis)
+#nstall.packages("microbenchmark")
+library(microbenchmark)
+library(furrr)
+library(tictoc)
+```
+
+## Source our functions:
+
+For an explanation of the function, see the `noisy_channel_sims.rmd` file.
+
+```{r}
+source('iterated_learning.R')
+```
+
+## Getting to the stationary distribution with gen_pref = 0.6 (varying N)
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+#df = as.data.frame(c(50, 100, 500, 1000, 10000))
+
+#no_cores = availableCores() - 1
+#plan(multisession, workers = no_cores)
+
+
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that 
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.6.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6.csv')
+
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+## Getting to the stationary distribution with gen_pref = 0.75 (varying N)
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) #to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.75.csv')
+
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df #%>%
+  #filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+## Same as above but with p_noise = 0.1
+
+### genpref = 0.6
+
+```{r message = F, warning = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+nu = 10
+p_noise = 1/10
+prior_prob_noise = 1/10
+
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+#df = as.data.frame(c(50, 500, 1000, 10000))
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+#toc()
+
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6_pnoise_0.1.csv')
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+```
+
+### Genpref = 0.75
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/10
+prior_prob_noise = 1/10
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.75_pnoise_0.1.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75_pnoise_0.1.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df 
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### Genpref = 0.5
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/10
+prior_prob_noise = 1/10
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 3
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = F), 'Overall Frequency' = ..1))
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.5_pnoise_0.1.csv')
+#test_df = df %>% group_by(word_row) %>% nest()
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.5_pnoise_0.1.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df 
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+
+```
+
+## P_noise = 0
+
+### Genpref = 0.6
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 0
+prior_prob_noise = 0
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(c(50, 100, 500, 1000, 10000))
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) 
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.6_pnoise_0.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6_pnoise_0.csv')
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### Genpref = 0.75
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 0
+prior_prob_noise = 0
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.75_pnoise_0.csv')
+
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75_pnoise_0.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df #%>%
+  #filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### GenPref = 0.5
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 0
+prior_prob_noise = 0
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.5_pnoise_0.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.5_pnoise_0.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df 
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+## P_noise = 0.01
+
+### Genpref = 0.6
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+#df = as.data.frame(c(50, 100, 500, 1000, 10000))
+
+#no_cores = availableCores() - 1
+#plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) 
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.6_pnoise_.01.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6_pnoise_.01.csv')
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### Genpref = 0.75
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.75_pnoise_.01.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75_pnoise_.01.csv')
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df 
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### GenPref = 0.5
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.5_pnoise_.01.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.5_pnoise_.01.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df #%>%
+  #filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+## P_noise = 0.001
+
+### Genpref = 0.6
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/1000
+prior_prob_noise = 1/1000
+
+
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(c(50, 100, 500, 1000, 10000))
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) 
+#toc()
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.6_pnoise_.001.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6_pnoise_.001.csv')
+
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### Genpref = 0.75
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/1000
+prior_prob_noise = 1/1000
+
+
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.75_pnoise_.001.csv')
+
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75_pnoise_.001.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df 
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### GenPref = 0.5
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/1000
+prior_prob_noise = 1/1000
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.5_pnoise_.001.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.5_pnoise_.001.csv')
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df #%>%
+  #filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+## What if speaker makes no errors
+
+### Genpref = 0.6
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 0
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(c(50, 100, 500, 1000, 10000))
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) 
+#toc()
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.6_pnoise_.01_producer_nonoise.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6_pnoise_.01_producer_nonoise.csv')
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### Genpref = 0.75
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 0
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.75_pnoise_.01_producer_nonoise.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75_pnoise_.01_producer_nonoise.csv')
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df #%>%
+  #filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### GenPref = 0.5
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 0
+
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.5_pnoise_.01_producer_nonoise.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.5_pnoise_.01_producer_nonoise.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df #%>%
+  #filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+### P_noise = 0
+
+#### Genpref = 0.6
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 0
+prior_prob_noise = 0
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(c(50, 100, 500, 1000, 10000))
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1)) 
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.6_pnoise_0_producer_nonoise.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6_pnoise_0_producer_nonoise.csv')
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  #geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram(color = 'black', fill = 'white') +
+  #geom_density() +
+  xlab(bquote(P(S[i])))+
+  ylab('Density') +
+  scale_x_continuous(breaks = c(0, 0.5, 1), limits = c(0, 1)) +
+  facet_wrap(~Overall.Frequency, nrow = 1) +
+  theme_bw() +
+  theme(axis.title = element_text(size = 12))
+
+#ggsave('./Write-up/Figures/noNoise.png', width = 20, height = 7, units = 'cm')
+```
+
+#### Genpref = 0.75
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+
+nu = 10
+p_noise = 0
+prior_prob_noise = 0
+
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.75_pnoise_0_producer_nonoise.csv')
+
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75_pnoise_0_producer_nonoise.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df #%>%
+  #filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+#### GenPref = 0.5
+
+```{r warning = F, message = F}
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 0
+prior_prob_noise = 0
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(c(50, 500, 1000, 10000))
+
+
+no_cores = availableCores() - 1
+plan(multisession, workers = no_cores)
+
+#tic()
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise, last_gen_only = T), 'Overall Frequency' = ..1))# to practice using that library)
+#toc()
+
+#write_csv(new_df, '../Sims Data/nsims_1000_genpref_0.5_pnoise_0_producer_nonoise.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.5_pnoise_0_producer_nonoise.csv')
+plot_data = new_df #%>%
+  #filter(generation %in% c(1,100,500))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df 
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu, y = ..density..)) +
+  geom_histogram() +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+```{r}
+
+```
+

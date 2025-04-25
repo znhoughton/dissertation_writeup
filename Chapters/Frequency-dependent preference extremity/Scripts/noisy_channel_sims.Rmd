@@ -1,0 +1,1716 @@
+---
+title: "Noisy Channel Iterated Learning Sims"
+author: "Zachary Houghton"
+date: "2023-10-05"
+output: 
+  html_document:
+  toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(profvis)
+#nstall.packages("microbenchmark")
+library(microbenchmark)
+library(furrr)
+```
+
+# Important Note:
+
+This file contains exploratory simulations. The important simulations are contained in the `more_noisy_channel_sims.Rmd` file. This file contains the mathematical explanations behind our noisy channel algorithm, however for the function used for the paper, you should look at the `iterated_learning.R` script. The primary purpose of this markdown is to explain the mathematical logic behind the function.
+
+## Noisy Channel Algorithm
+
+The present markdown will walk through the noisy channel iterated learning model.
+
+The general overview is that the alphabetical form of a specific binomial will be generated from a beta distribution. We will find the peak of the distribution (mu) and use it as the probability of producing the alphabetical form (or 1 minus that for the non-alphabetical form) in the Bayesian noisy channel equation from Gibson et al. (2009). The probability of this will then be used to update the beta distribution and the process will be repeated N times.
+
+We will update $p_{alpha}$ and $p_{nonalpha}$ differently depending on whether the alphabetical form is heard or the nonalphabetical form is. The equations are similar but slightly different.
+
+If the alphabetical form is heard:
+
+$$
+\hat{p}_{alpha} \propto (alpha_1 / (alpha_1 + alpha_2)) * (1 - p_{noise})
+$$
+
+$$
+\hat{p}_{nonalpha} \propto (1 - (alpha_1 / (alpha_1 + alpha_2))) * p_{noise}
+$$
+
+If the non-alphabetical is heard, since hearing the nonalphabetical term is correct (i.e., not noise), then it should be multiplied by $1-p_{noise}$:
+
+$$
+\hat{p}_{alpha} \propto (alpha_1 / (alpha_1 + alpha_2)) * p_{noise}
+$$
+
+$$
+\hat{p}_{nonalpha} \propto (1 - (alpha_1 / (alpha_1 + alpha_2))) * (1 - p_{noise})
+$$
+
+<!--# clean up the wording -->
+
+The variables we have to define a-priori are, $\mu$ and $\nu$ (which will be used as priors in our beta distribution), $p_{theta}$, which is the probability of the previous generation producing the alphabetical form, N which is the number of binomials the listener has heard, and p_noise which is the probability of hearing the wrong ordering.
+
+```{r}
+
+noisy_channel_learning = function(p_theta, N, prior_mu, nu, p_noise) {
+#p_theta = p_theta
+#N = 100
+#prior_mu = 0.6
+#nu = 5
+#p_noise = 0.05 
+
+alpha_1 = prior_mu * nu        #from the beta distribution
+alpha_2 = (1 - prior_mu) * nu  #from the beta distribution
+
+for (i in 1:N) {
+generated_word = rbinom(n = 1, size = 1, prob = p_theta)
+
+if (generated_word == 1) { #if we hear A and B
+  
+#alpha1 / (alpha1 + alpha2) = mu = argmax(beta distribution), i.e., it is where the peak of the beta distribution is which let's us know the best estimate for the probability of the alphabetical ordering
+  un_normalized_p_hat_alpha = (alpha_1 / (alpha_1 + alpha_2)) * (1 - p_noise)
+  un_normalized_p_hat_nonalpha = (1 - (alpha_1 / (alpha_1 + alpha_2))) * p_noise
+  
+
+
+}
+
+else { #if we hear B and A: it should be similar to above, but in this case, we actually did hear B and A, so we multiply it by p * noise, not 1 - p_noise
+  un_normalized_p_hat_alpha = (alpha_1 / (alpha_1 + alpha_2)) * p_noise #we mutiply this by 0.05 because we actually did hear B and A
+  un_normalized_p_hat_nonalpha = (1 - (alpha_1 / (alpha_1 + alpha_2))) *  (1 - p_noise) #multiply this by 1-p_noise because we heard correctly
+}
+p_hat_alpha = un_normalized_p_hat_alpha / (un_normalized_p_hat_alpha + un_normalized_p_hat_nonalpha)
+
+p_hat_nonalpha = 1 - (un_normalized_p_hat_alpha / (un_normalized_p_hat_alpha + un_normalized_p_hat_nonalpha))
+
+alpha_1 = alpha_1 + p_hat_alpha
+alpha_2 = alpha_2 + p_hat_nonalpha
+}
+
+
+return(posterior_mu = alpha_1 / (alpha_1 + alpha_2))
+#rbinom(p = alpha_1 / (alpha_1 + alpha_2))
+
+}
+
+noisy_channel_learning(0.5, 100, 0.5,25, 0)
+```
+
+We're not doing this now, but eventually we will add a part that generates data, this can easily be done with `rbinom()` with p equal to the peak of the posterior distribution (posterior_mu).
+
+Now let's manipulate parts of these.
+
+```{r}
+n_sims = 1000
+p_theta = 0.5
+N = 40
+prior_mu = 0.6
+nu = 5
+p_noise = 0.05
+
+simulation = function(n_sims, p_theta, N, prior_mu, nu, p_noise) {
+  mu_df = data.frame(matrix(ncol = 1, nrow = 0))
+  colnames(mu_df) = 'posterior_mu'
+  for (i in 1:n_sims) {
+    mu_df[nrow(mu_df) + 1,] = noisy_channel_learning(p_theta, N, prior_mu, nu, p_noise) 
+    
+    
+  }
+  return(mu_df)
+}
+
+mus = simulation(n_sims, p_theta, N, prior_mu, nu, p_noise)
+hist(mus$posterior_mu)
+```
+
+## Graphs
+
+Let's explore the effects of changing p_theta:
+
+```{r}
+n_sims = 1000
+#p_theta = 0.5
+N = 200
+prior_mu = 0.6
+nu = 5
+p_noise = 0.05
+
+y_coord = 1 #parameters for annotation
+x_coord = 0
+
+graph_different_pthetas = function(n_sims, N, prior_mu, nu, p_noise) {
+
+
+p_thetas = seq(0, 1, by = 0.05)
+
+df_thetas = data.frame(matrix(ncol = 2, nrow = 0))
+colnames(df_thetas) = c('posterior_mu', 'p_theta')
+
+for (i in 1:length(p_thetas)) {
+  p_theta = p_thetas[i]
+  mus = simulation(n_sims, p_theta, N, prior_mu, nu, p_noise) %>%
+    mutate(p_theta = p_theta)
+  colnames(mus) = c('posterior_mu', 'p_theta')
+  df_thetas = df_thetas %>%
+    full_join(mus, by = c('posterior_mu', 'p_theta'))
+
+}
+
+#graph parameters:
+
+labels = c(paste0('N == ', N),  #labels for our graph
+           paste0('prior_mu == ', prior_mu), 
+           paste0('nu == ', nu), 
+           paste0('p_noise == ', p_noise))
+
+y_coord = 1 #parameters for annotation
+x_coord = 0
+
+plot = ggplot(data = df_thetas) +
+  geom_jitter(aes(x = p_theta, y = posterior_mu), alpha = 0.05) +
+  theme_bw() +
+  annotate(geom='text', 
+           x = x_coord, 
+           y = c(y_coord, 0.95 * y_coord, 0.9 * y_coord, 0.85 * y_coord), 
+           hjust = 0,
+           label = labels, parse = T,
+           color = 'blue')
+
+print(plot)
+}
+```
+
+Single graph:
+
+```{r}
+n_sims = 1000
+#p_theta = 0.5
+N = 200
+prior_mu = 0.6
+nu = 5
+p_noise = 0.05
+
+graph_different_pthetas(n_sims, N, prior_mu, nu, p_noise)
+```
+
+```{r}
+N = seq(0, 1000, by = 100)
+
+N %>%
+  purrr::walk(\(N) graph_different_pthetas(n_sims, N, prior_mu, nu, p_noise)) #learning how to use the purrr library functions as well
+```
+
+Now let's manipulate the prior probability (prior_mu):
+
+```{r}
+n_sims = 1000
+p_theta = 0.6
+N = 40
+#prior_mu = 0.6
+nu = 5
+p_noise = 0.05
+
+prior_mus = seq(0, 1, by = 0.05)
+
+df_prior_mus = data.frame(matrix(ncol = 2, nrow = 0))
+colnames(df_prior_mus) = c('posterior_mu', 'prior_mu')
+
+for (i in 1:length(prior_mus)) {
+  prior_mu = prior_mus[i]
+  mus = simulation(n_sims, p_theta, N, prior_mu, nu, p_noise) %>%
+    mutate(prior_mu = prior_mu)
+  colnames(mus) = c('posterior_mu', 'prior_mu')
+  df_prior_mus = df_prior_mus %>%
+    full_join(mus, by = c('posterior_mu', 'prior_mu'))
+
+}
+
+#graph parameters
+
+labels = c(paste0('N == ', N),  #labels for our graph
+           paste0('p_theta == ', p_theta), 
+           paste0('nu == ', nu), 
+           paste0('p_noise == ', p_noise))
+
+ggplot(data = df_prior_mus) +
+  geom_jitter(aes(x = prior_mu, y = posterior_mu), alpha = 0.05) +
+  theme_bw() +
+  annotate(geom='text', 
+           x = x_coord, 
+           y = c(y_coord, 0.95 * y_coord, 0.9 * y_coord, 0.85 * y_coord), 
+           hjust = 0,
+           label = labels, parse = T,
+           color = 'blue')
+  
+```
+
+Finally let's manipulate N:
+
+```{r}
+n_sims = 1000
+p_theta = 0.6
+#N = 20
+prior_mu = 0.7
+nu = 5
+p_noise = 0.05
+
+Ns = seq(0, 100, by = 5)
+
+df_Ns = data.frame(matrix(ncol = 2, nrow = 0))
+colnames(df_Ns) = c('posterior_mu', 'N')
+
+for (i in 1:length(Ns)) {
+  N = Ns[i]
+  mus = simulation(n_sims, p_theta, N, prior_mu, nu, p_noise) %>%
+    mutate(N = N)
+  colnames(mus) = c('posterior_mu', 'N')
+  df_Ns = df_Ns %>%
+    full_join(mus, by = c('posterior_mu', 'N'))
+
+}
+
+### graph parameters
+
+labels = c(paste0('prior_mu == ', prior_mu),  #labels for our graph
+           paste0('p_theta == ', p_theta), 
+           paste0('nu == ', nu), 
+           paste0('p_noise == ', p_noise))
+
+ggplot(data = df_Ns) +
+  geom_jitter(aes(x = N, y = posterior_mu), alpha = 0.05) +
+  theme_bw() +
+  annotate(geom='text', 
+           x = x_coord, 
+           y = c(y_coord, 0.97 * y_coord, 0.94 * y_coord, 0.91 * y_coord), 
+           hjust = 0,
+           label = labels, parse = T,
+           color = 'blue')
+```
+
+## Add Noise to prior generations' production:
+
+```{r}
+noisy_channel_learning_prod_noise = function(p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) {
+
+
+alpha_1 = prior_mu * nu        #from the beta distribution
+alpha_2 = (1 - prior_mu) * nu  #from the beta distribution
+
+for (i in 1:N) {
+generated_word = rbinom(n = 1, size = 1, prob = p_theta)
+
+prior_noise = rbinom(n = 1, size = 1, prob = 1-prior_prob_noise)
+
+if (generated_word == prior_noise) { #if we hear A and B
+  
+  un_normalized_p_hat_alpha = (alpha_1 / (alpha_1 + alpha_2)) * (1 - p_noise)
+  un_normalized_p_hat_nonalpha = (1 - (alpha_1 / (alpha_1 + alpha_2))) * p_noise
+  
+
+
+}
+
+else { #if we hear B and A: it should be similar to above, but in this case, we actually did hear B and A, so we multiply it by p * noise, not 1 - p_noise
+  un_normalized_p_hat_alpha = (alpha_1 / (alpha_1 + alpha_2)) * p_noise #we mutiply this by 0.05 because we actually did hear B and A
+  un_normalized_p_hat_nonalpha = (1 - (alpha_1 / (alpha_1 + alpha_2))) *  (1 - p_noise) #multiply this by 1-p_noise because we heard correctly
+}
+
+p_hat_alpha = un_normalized_p_hat_alpha / (un_normalized_p_hat_alpha + un_normalized_p_hat_nonalpha)
+p_hat_nonalpha = 1 - (un_normalized_p_hat_alpha / (un_normalized_p_hat_alpha + un_normalized_p_hat_nonalpha))
+
+alpha_1 = alpha_1 + p_hat_alpha
+alpha_2 = alpha_2 + p_hat_nonalpha
+}
+
+return(alpha_1 / (alpha_1 + alpha_2))
+#rbinom(p = alpha_1 / (alpha_1 + alpha_2))
+
+}
+
+p_theta = 0.5
+N = 1000
+prior_mu = 0.5
+nu = 50
+p_noise = 0
+prior_prob_noise = 0
+
+noisy_channel_learning_prod_noise(p_theta, N, prior_mu, nu, p_noise, prior_prob_noise)
+
+noisy_channel_learning_prod_noise_efficient2 = function(p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) { #this is faster, I'm copy-pasting it earlier so that we can call it in the original function
+  
+  alpha_1 <- prior_mu * nu
+  alpha_2 <- (1 - prior_mu) * nu
+
+  generated_words <- rbinom(N, 1, p_theta)
+  prior_noises <- rbinom(N, 1, 1 - prior_prob_noise)
+
+  un_normalized_p_hat_alpha <- numeric(N)
+  un_normalized_p_hat_nonalpha <- numeric(N)
+
+  # Vectorized calculations
+  un_normalized_p_hat_alpha[generated_words == prior_noises] <- (alpha_1 / (alpha_1 + alpha_2)) * (1 - p_noise)
+  un_normalized_p_hat_nonalpha[generated_words == prior_noises] <- (1 - (alpha_1 / (alpha_1 + alpha_2))) * p_noise
+
+  un_normalized_p_hat_alpha[generated_words != prior_noises] <- (alpha_1 / (alpha_1 + alpha_2)) * p_noise
+  un_normalized_p_hat_nonalpha[generated_words != prior_noises] <- (1 - (alpha_1 / (alpha_1 + alpha_2))) * (1 - p_noise)
+
+  p_hat_alpha <- un_normalized_p_hat_alpha / (un_normalized_p_hat_alpha + un_normalized_p_hat_nonalpha)
+  p_hat_nonalpha <- 1 - p_hat_alpha
+
+  alpha_1 <- alpha_1 + sum(p_hat_alpha)
+  alpha_2 <- alpha_2 + sum(p_hat_nonalpha)
+
+  return(alpha_1 / (alpha_1 + alpha_2))
+}
+```
+
+Now let's modify our simulation function:
+
+```{r}
+simulation_prod_noise = function(n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) {
+  mu_df = data.frame(matrix(ncol = 1, nrow = 0))
+  colnames(mu_df) = 'posterior_mu'
+  for (i in 1:n_sims) {
+    mu_df[nrow(mu_df) + 1,] = noisy_channel_learning_prod_noise(p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) 
+    
+    
+  }
+  return(mu_df)
+}
+
+#test = simulation_prod_noise(100, 0.5, 1000, 0.5, 40, 0,0)
+```
+
+```{r}
+n_sims = 1000
+#p_theta = 0.5
+N = 200
+prior_mu = 0.6
+nu = 5
+p_noise = 0.000000001
+prior_prob_noise = 0.000000001
+
+p_thetas = seq(0, 1, by = 0.05)
+
+df_thetas = data.frame(matrix(ncol = 2, nrow = 0))
+colnames(df_thetas) = c('posterior_mu', 'p_theta')
+
+for (i in 1:length(p_thetas)) {
+  p_theta = p_thetas[i]
+  mus = simulation_prod_noise(n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>%
+    mutate(p_theta = p_theta)
+  colnames(mus) = c('posterior_mu', 'p_theta')
+  df_thetas = df_thetas %>%
+    full_join(mus, by = c('posterior_mu', 'p_theta'))
+
+}
+
+#graph parameters:
+
+labels = c(paste0('N == ', N),  #labels for our graph
+           paste0('prior_mu == ', prior_mu), 
+           paste0('nu == ', nu), 
+           paste0('p_noise == ', p_noise))
+
+y_coord = 1 #parameters for annotation
+x_coord = 0
+
+ggplot(data = df_thetas) +
+  geom_jitter(aes(x = p_theta, y = posterior_mu), alpha = 0.05) +
+  theme_bw() +
+  annotate(geom='text', 
+           x = x_coord, 
+           y = c(y_coord, 0.95 * y_coord, 0.9 * y_coord, 0.85 * y_coord), 
+           hjust = 0,
+           label = labels, parse = T,
+           color = 'blue')
+  
+```
+
+## Iterated Learning Algorithm
+
+We now will create an iterated learning algorithm to run our noisy-channel model for many generations (n_gen). This will be very similar to the above simulations, the only difference is that with the exception of the first generation, $p{\_theta}$ will be calculated from the previous generation.
+
+A few important things to note: We care about order, so we can't use vectorization to speed up our noisy channel algorithm (since vectorization would compute everything in parallel, ignoring order). We also can't parallelize the entirety of the iterated_learning function since generations are ordered. We can, however, parallelize the simulations, since the order of those doesn't matter.
+
+Thus, we'll use map_dfr (and in the final function in the iterated_learning.R script, we actually use the future package to parallelize this) to speed things up a bit. Benchmarks have confirmed that this approach is faster for larger n_sims (though slower for smaller n_sims), though the benchmarks are not included in this file.
+
+```{r}
+iterated_learning = function(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) {
+  #mu_df = tibble(posterior_mu = numeric(), generation = numeric(), estimated_p_theta = numeric())
+  
+  sim_function = function() {
+    p_new_theta = p_theta
+    map_dfr(1:n_gen, ~{
+      #if (. %% 100 == 0) {
+        # print(sprintf('current generation is: %s', .))
+      #}
+      generation = .
+      posterior_mu = noisy_channel_learning_prod_noise(p_theta = p_new_theta, N = N, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise)
+       
+      result = tibble(posterior_mu = posterior_mu, generation = generation, estimated_p_theta = p_new_theta)
+      p_new_theta <<- posterior_mu #need to use the operator <<- to update p_new_theta on a global scope
+      return(result)
+    })
+  }
+
+  mu_df <- map_dfr(1:n_sims, ~sim_function())
+
+  return(mu_df)
+}
+
+```
+
+### Data
+
+```{r}
+data = read_csv('../corpus.csv')
+
+#ggplot(data = data) +
+  #geom_point(aes(x=GenPref, y = RelFreq))
+
+data_sliced = data %>%
+  arrange(desc(OverallFreq)) %>%
+  slice(which(row_number() %% 20 == 1)) %>%
+  mutate('N' = ceiling(OverallFreq / 323592921465 * 350000000))
+```
+
+```{r message = F, eval = F}
+
+
+n_gen = 10
+n_sims = 500
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 5
+p_noise = 0.01
+prior_prob_noise = 0.01
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+for(i in 1:nrow(data_sliced)) {
+  N = data_sliced$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = data_sliced$WordA[i]
+  WordB = data_sliced$WordB[i]
+  prior_mu = data_sliced$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df %>%
+  ungroup() %>%
+  filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`)
+  theme_bw()
+```
+
+Let's replicate the above graphs and manipulate the noise parameters to 0.001 instead of 0.01.
+
+```{r eval = F}
+n_gen = 20
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 5
+p_noise = 0.001
+prior_prob_noise = 0.001
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+for(i in 1:nrow(data_sliced)) {
+  N = data_sliced$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = data_sliced$WordA[i]
+  WordB = data_sliced$WordB[i]
+  prior_mu = data_sliced$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df %>%
+  ungroup() %>%
+  filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+### Manipulating N, holding GenPref constant
+
+```{r message = F}
+
+n_gen = 20
+n_sims = 500
+p_theta = 0.5 #initial p_theta value
+#N = 200
+prior_mu = 0.5
+nu = 5
+
+
+p_noise = 0.01
+prior_prob_noise = 0.01
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df #%>%
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+
+
+```
+
+### Manipulate GenPref, hold N constant:
+
+```{r message = F}
+sim_data_genPref_manipulated = sim_data_N_manipulated %>% 
+  mutate(N = 50, GenPref = seq(from = 0.1, to = 1, by = 0.1))
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+
+for(i in 1:nrow(sim_data_genPref_manipulated)) {
+  N = sim_data_genPref_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_genPref_manipulated$WordA[i]
+  WordB = sim_data_genPref_manipulated$WordB[i]
+  prior_mu = sim_data_genPref_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N, prior_mu = prior_mu)
+  
+  df = df %>%  full_join(new_df)
+}
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df #%>%
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `prior_mu`) +
+  theme_bw()
+
+```
+
+### Nu = 10, p_noise = 0.01
+
+Now let's manipulate nu and p_noise
+
+```{r}
+n_gen = 20
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 0.01
+prior_prob_noise = 0.01
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df #%>%
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+
+```
+
+### Nu = 15, p_noise = 0.01
+
+```{r}
+n_gen = 20
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 15
+p_noise = 0.01
+prior_prob_noise = 0.01
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df #%>%
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+
+```
+
+### Nu = 10, p_noise = 0.05
+
+```{r}
+n_gen = 20
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 0.05
+prior_prob_noise = 0.05
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df #%>%
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+### Nu = 15, p_noise = 0.05
+
+```{r}
+n_gen = 20
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 15
+p_noise = 0.05
+prior_prob_noise = 0.05
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df #%>%
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+### Now we manipulate p_noise
+
+#### P_noise = 1/1000000 (sanity check)
+
+```{r message = F}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+prior_mu = 0.5
+nu = 30
+p_noise = 0
+prior_prob_noise = 0
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:5,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 4001, by = 1000), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+plot_data = df %>%
+  filter(generation == 1 | generation == 100)
+
+#%>%
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+#### P_noise = 1/100000
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 15
+p_noise = 1/100000
+prior_prob_noise = 1/100000
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df %>%
+  filter(generation == '1' | generation == '100')
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+#### P_noise = 1/10,000
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 15
+p_noise = 1/10000
+prior_prob_noise = 1/10000
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = `estimated p_theta`, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+#### P_noise = 1/1000
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 15
+p_noise = 1/1000
+prior_prob_noise = 1/1000
+
+df = data.frame(matrix(ncol = 7, nrow = 0))
+colnames(df) = c('WordA', 'WordB', 'posterior_mu', 'generation', 'estimated p_theta', 'word_row', 'Overall Frequency')
+
+df$WordA = as.character(df$WordA)
+df$WordB = as.character(df$WordB)
+
+sim_data_N_manipulated = data_sliced[1:10,] %>%
+  mutate(wordA = 'word1', wordB = 'word2', N = seq(from = 1, to = 901, by = 100), GenPref = 0.5)
+
+for(i in 1:nrow(sim_data_N_manipulated)) {
+  N = sim_data_N_manipulated$N[i] # not sure how to deal with N, need to talk to Emily about it
+  WordA = sim_data_N_manipulated$WordA[i]
+  WordB = sim_data_N_manipulated$WordB[i]
+  prior_mu = sim_data_N_manipulated$GenPref[i]
+  
+  new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'word_row' = i, 'Overall Frequency' = N)
+  
+  df = df %>%  full_join(new_df)
+}
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+### Manipulating Gen_pref with iterated learning
+
+Let's see if we get regularization across generations if there is a bias towards one of the responses
+
+```{r}
+
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall Frequency`) +
+  theme_bw()
+```
+
+Let's manipulate the prior, prior_mu (GenPref), so that it's slightly biased.
+
+```{r}
+n_gen = 10
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(seq(from = 10, to = 200, by = 10))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = 0.6, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df #%>%
+  #filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+```{r}
+n_gen = 10
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = 0.6, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df #%>%
+  #filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+Let's look at how more generations affects this:
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = 0.6, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+Let's manipulate the starting distribution (p_theta).
+
+```{r}
+n_gen = 10
+n_sims = 1000
+#p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(seq(from = 0, to = 1, by = 0.05))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = ..1, N = N, prior_mu = 0.6, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = N)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df #%>%
+  #filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+### Is there frequency-dependent regularization
+
+Here we revisit our question of whether there is frequency-dependent regularization. We do this by manipulating frequency for three different prior_mu (genPref) values (0.5, 0.6, 0.75):
+
+#### Genpref = 0.5
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+#### Genpref = 0.6
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+#### Genpref = 0.75
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+### Now we manipulate p_theta
+
+#### p_theta = 0.6
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.6 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+#### p_theta = 0.7
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.6 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.7
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+#### p_theta = 0.8
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.8 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+#### p_theta = 0.9
+
+```{r}
+n_gen = 100
+n_sims = 1000
+p_theta = 0.9 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.5
+
+df = as.data.frame(seq(from = 100, to = 2000, by = 100))
+
+
+
+new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation == 1 | generation == 100)
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```
+
+## Getting to the stationary distribution with gen_pref = 0.6 (varying N
+
+```{r}
+
+n_gen = 1000
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.6
+
+df = as.data.frame(c(50, 100, 500, 1000))
+
+
+
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+#write_csv(new_df, 'nsims_500_genpref_0.6.csv')
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.6.csv')
+#test_df = df %>% group_by(word_row) %>% nest()
+
+plot_data = new_df %>%
+  filter(generation %in% c(1,500,1000))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+
+ggplot(data = plot_data, aes(x = posterior_mu)) +
+  geom_histogram() +
+  facet_grid(generation ~ Overall.Frequency) +
+  theme_bw()
+```
+
+## Getting to the stationary distribution with gen_pref = 0.75 (varying N
+
+```{r}
+n_gen = 1000
+n_sims = 1000
+p_theta = 0.5 #initial p_theta value
+#N = 200
+#prior_mu = 0.6
+nu = 10
+p_noise = 1/100
+prior_prob_noise = 1/100
+
+
+#N = 100
+WordA = 'WordA'
+WordB = 'WordB'
+prior_mu = 0.75
+
+df = as.data.frame(c(50, 100, 500, 1000))
+
+
+
+#new_df = pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+#new_df = iterated_learning(n_gen, n_sims, p_theta, N, prior_mu, nu, p_noise, prior_prob_noise) %>% mutate('WordA' = WordA, 'WordB' = WordB, 'Overall Frequency' = N)
+
+#write_csv(new_df, 'simulation results (gen_pref = 0.75).csv')
+#test_df = df %>% group_by(word_row) %>% nest()
+new_df = read_csv('../Sims Data/nsims_1000_genpref_0.75.csv')
+plot_data = new_df %>%
+  filter(generation %in% c(1,100,500,1000))
+  #ungroup() %>%
+  #filter(word_row %in% sample(1:nrow(data_sliced), size = 6))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+
+density_plot_data = new_df %>%
+  filter(generation == 1000)
+
+ggplot(data = density_plot_data, aes(x = posterior_mu)) +
+  geom_density() +
+  theme_bw()
+```
+
+## Playing around with p_noise
+
+```{r}
+df = as.data.frame(c(50, 100))
+
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5
+prior_mu = 0.6
+nu = 10
+p_noise = 0.1
+prior_prob_noise = 0.1
+
+plan(multisession, workers = 4)
+
+test_df = future_pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library) and we use the future version so we can parralelize it 
+
+plot_data = test_df %>%
+  filter(generation %in% c(1,500))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+test_data = test_df %>%
+  filter(generation == 500)
+
+ggplot(data = test_data) +
+  geom_density(aes(x=posterior_mu)) +
+  theme_bw()
+```
+
+```{r}
+df = as.data.frame(c(50, 100))
+
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5
+prior_mu = 0.6
+nu = 10
+p_noise = 0
+prior_prob_noise = 0
+
+test_df = future_pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+plot_data = test_df %>%
+  filter(generation %in% c(1,500))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+test_data = test_df %>%
+  filter(generation == 500)
+
+ggplot(data = test_data) +
+  geom_density(aes(x=posterior_mu)) +
+  theme_bw()
+```
+
+Same thing but reducing nu to 5:
+
+```{r}
+df = as.data.frame(c(50, 100))
+
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5
+prior_mu = 0.6
+nu = 5
+p_noise = 0.1
+prior_prob_noise = 0.1
+
+test_df = future_pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+plot_data = test_df %>%
+  filter(generation %in% c(1,500))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+
+test_data = test_df %>%
+  filter(generation == 500)
+
+ggplot(data = test_data) +
+  geom_density(aes(x=posterior_mu)) +
+  theme_bw()
+```
+
+```{r}
+df = as.data.frame(c(50, 100))
+
+n_gen = 500
+n_sims = 1000
+p_theta = 0.5
+prior_mu = 0.6
+nu = 5
+p_noise = 0
+prior_prob_noise = 0
+
+test_df = future_pmap_dfr(df, ~data.frame(iterated_learning(n_gen = n_gen, n_sims = n_sims, p_theta = 0.5, N = ..1, prior_mu = prior_mu, nu = nu, p_noise = p_noise, prior_prob_noise = prior_prob_noise), 'Overall Frequency' = ..1)) # we use purr::pmap_dfr() here to apply our function because it's a bit cleaner (and because I want to practice using that library)
+
+plot_data = test_df %>%
+  filter(generation %in% c(1,500))
+
+ggplot(data = plot_data, aes(x = estimated_p_theta, y = posterior_mu)) +
+  geom_point(alpha = 0.1) +
+  facet_grid(generation ~ `Overall.Frequency`) +
+  theme_bw()
+```

@@ -1,0 +1,951 @@
+---
+title: "Analysis"
+author: "Zach Houghton"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(rgl)
+knitr::knit_hooks$set(webgl = hook_webgl)
+```
+
+```{r message = F}
+#devtools::install_github("m-clark/visibly") to install the package to make the 3d plot
+library(tidyverse)
+library(brms)
+library(mgcv)
+library(mgcViz)
+library(rgl)
+#library(visibly)
+library(schoenberg) 
+library(ggpubr)
+library(mdthemes)
+library(broom)
+library(tidybayes)
+library(ggdist)
+library(rlist)
+```
+
+## Analysis of English Recognizability Experiment
+
+The purpose of this script is to analyze the data collected from the recognizability experiment.
+
+### Read in Data
+
+First we'll read in our data and organize the data in a tidy format.
+
+For transparency sake we are including the preprocessing steps in this script, however note that they will not run since the size of the raw data is too big to put on github (and thus the raw data is not included in the github rep).
+
+The raw data is available on request by email.
+
+```{r eval = F}
+data = read.csv('../Recognizability Experiment/Experiment 2/Analysis/Database_AllParticipants_Recognizability_Experiment2_330703_2023-11-10_18h36.32_faa93908-1176-4bbf-ba5e-5e6fab9181f2.csv', quote = "\"")
+
+data = data %>%
+  dplyr::select(participant, Word, textbox.text, textbox_2.text, textbox_3.text, textbox_5.text, textbox_6.text, textbox_4.text, Item, Condition, Type, Sentences, response.corr, response.rt, PhrasalVerb, Frequency, Predictability, OnsetTime, OffsetTime, Duration
+) %>%
+  rename(age = textbox.text,
+         gender = textbox_2.text,
+         race = textbox_3.text,
+         native_lang = textbox_5.text,
+         other_langs = textbox_6.text,
+         place_of_birth = textbox_4.text) %>%
+  mutate(gender = lead(gender)) %>%                   #this is so that these values
+  mutate(race = lead(race, n = 2)) %>%                #are all in the same row
+  mutate(native_lang = lead(native_lang, n = 3)) %>%  #instead of all being in 
+  mutate(other_langs = lead(other_langs, n = 4)) %>%  #separate rows
+  mutate(place_of_birth = lead(place_of_birth, n = 5))#it's admittedly a bit of a janky fix
+
+
+data_analysis = data
+
+```
+
+Let's inspect the different languages spoken by our participants to make sure they're all native English speakers:
+
+```{r eval = F}
+unique(data_analysis$native_lang)
+```
+
+Let's exclude participants whose native language is not English (there are a few participants who wrote a non-english language as their native, but said in their demographic questions that they grew up speaking English, I've included those people's data as well).
+
+```{r eval = F}
+data_analysis = data_analysis %>%
+  group_by(participant) %>%
+  filter(any(native_lang %in% c('english', 'English', 'ENGLISH', 'engilsh', 'English ', 'english ', 'Enlish', 'EENNGGLLIISSHH', 'Englsih', 'enlgish', 'ENglish', 'American English', 'English\n')))
+
+```
+
+Next let's exclude participants with an accuracy less than 70%:
+
+```{r eval = F}
+data_analysis = data_analysis %>%
+  group_by(participant) %>%
+  mutate(accuracy = mean(response.corr, na.rm = T))
+
+data_analysis = data_analysis %>%
+  drop_na(Condition)
+
+data_analysis = data_analysis %>%
+  group_by(participant) %>%
+  mutate(nrows = n()) %>%
+  mutate(trial = 1:length(Item))
+
+rows_of_data = data_analysis %>% group_by(nrows) %>% summarize(length(unique(participant)))
+
+data_analysis = data_analysis %>% #filter out participants who only partially completed the experiment, or took the experiment multiple times.
+  filter(nrows > 300 & nrows < 400)
+
+
+#write_csv(data_analysis, 'data_analysis.csv')
+
+participants_excluded = data_analysis %>%
+  filter(accuracy < 0.7)
+
+data_analysis = data_analysis %>%
+  filter(accuracy > 0.7)
+
+data_analysis$PhrasalVerb = as.factor(data_analysis$PhrasalVerb)
+
+```
+
+Let's keep track of how many participants we're excluding this way too:
+
+```{r eval = F}
+num_participants_excluded = length(unique(participants_excluded$participant))
+
+num_participants_excluded
+```
+
+Awesome, only `r num_participants_excluded` participants had below 70% accuracy.
+
+Lastly, let's filter out the filler items and get our data ready for the analysis:
+
+```{r eval = F}
+data_analysis = data_analysis %>%
+  filter(Condition == 'Experimental')
+```
+
+Two of our items were inadvertantly not verb phrases (*press up* and *cluttering up*) so we need to exclude them:
+
+```{r eval = F}
+data_analysis = data_analysis %>%
+  filter(Item != '81' | Item != '159')
+
+
+```
+
+Before we proceed, we do need to add a final variable which will be our outcome variable. This will be the difference between participants' response time, and the onset time of the segment. We will go ahead and also exclude any rows with negative values, since this will represent occasions where participants responded *before* hearing the segment. We're also going to convert seconds to milliseconds here.
+
+```{r eval = F}
+data_analysis = data_analysis %>%
+  mutate(response_time = response.rt - OnsetTime) 
+
+data_analysis = data_analysis %>%
+  filter(response_time > 0 & response_time < 10) #get rid of any responses before the onset and after 10 seconds
+
+```
+
+And let's confirm the number of participants we have:
+
+```{r eval = F}
+length(unique(data_analysis$participant))
+```
+
+Finally, let's log reaction time, frequency, and predictability:
+
+```{r eval = F}
+corpus_size_words = 2111554623 #length of google books 1-gram corpus.
+corpus_size_phrase = 1.06491E+12 #length of google books 2-gram corpus.
+data_analysis = data_analysis %>%
+  mutate(corpus_size = corpus_size_phrase) %>%
+  mutate(frequency_per_million = Frequency * 1000000 / corpus_size) %>% #frequency per million of each verb phrase.
+  mutate(log_freq = log(frequency_per_million)) %>% #log frequency per million.
+  mutate(log_predic = log(Predictability)) %>%
+  mutate(log_rt = log(response_time))
+
+write_csv(data_analysis, 'data_analysis_cleaned.csv')
+```
+
+### GAM model
+
+```{r eval = F}
+data_analysis = read_csv('../Data/data_analysis_cleaned.csv')
+data_analysis$PhrasalVerb[data_analysis$Item == '64'] = 1
+data_analysis = data_analysis %>%
+  mutate(PhrasalVerb = ifelse(PhrasalVerb == 1, 'phrasal', 'nonphrasal'))
+data_analysis$participant = as.factor(data_analysis$participant)
+data_analysis$Item = as.factor(data_analysis$Item)
+data_analysis$Type = as.factor(data_analysis$Type)
+data_analysis$PhrasalVerb = as.factor(data_analysis$PhrasalVerb)
+
+cloze_probs = read_csv('../Data/cloze_probs.csv') #should add this to the github repo
+
+data_analysis = data_analysis %>%
+  mutate(sentences_for_cloze = gsub(' up .*', '', Sentences)) %>%
+  left_join(cloze_probs)
+
+data_analysis %>%
+  filter(PhrasalVerb == 'phrasal') %>%
+  ungroup() %>%
+  summarize(length(unique(Item))) #number of phrasal verbs = 115
+
+data_analysis %>%
+  filter(PhrasalVerb == 'nonphrasal') %>%
+  ungroup() %>%
+  summarize(length(unique(Item)))  #number of nonphrasal verbs = 85
+
+gam_data = data_analysis %>%
+  dplyr::select(participant, Word, Item, Type, log_freq, log_predic, log_rt, Duration, trial, response.corr, response_time, PhrasalVerb, cloze_probs) %>%
+  filter(Type == 'Phrasal Verb') %>%
+  filter(response.corr == 1)
+
+gam_data2 = data_analysis %>%
+  dplyr::select(participant, Item, Type, log_freq, log_predic, log_rt, Duration, trial, response.corr, response_time) %>%
+  filter(Type == 'Word-Internal') %>%
+  filter(response.corr == 1)
+
+gam_data3 = data_analysis %>%
+  dplyr::select(participant, Item, Type, log_freq, log_predic, log_rt, Duration, trial, response.corr, response_time) %>%
+  filter(Type == 'Word-Internal'|Type == 'Phrasal Verb') %>%
+  filter(response.corr == 1)
+
+gam_data_phrasal = gam_data %>%
+  filter(PhrasalVerb == 'phrasal')
+
+gam_data_nonphrasal = gam_data %>%
+  filter(PhrasalVerb == 'nonphrasal')
+
+gam_data = gam_data %>% mutate(log_freqxpred = log_freq + log_predic)
+
+write_csv(gam_data, 'gam_data.csv')
+
+#gam_data_offset = data_analysis_offset %>%
+  #select(participant, Lemma, Item, Type, log_freq, log_predic, log_rt, Duration, response.corr, response_time) %>%
+  #filter(Type == 'Target_Segment')
+```
+
+Let's run our analysis:
+
+```{r message = F}
+gam_data = read_csv("../Data/gam_data.csv")
+
+#we need to re-convert everything to factors when we read from csv
+gam_data$participant = as.factor(gam_data$participant)
+gam_data$Item = as.factor(gam_data$Item)
+gam_data$Type = as.factor(gam_data$Type)
+gam_data$PhrasalVerb = as.factor(gam_data$PhrasalVerb)
+
+
+mod_gam1 = bam(log_rt ~  #note that RT is in seconds 
+                 te(log_predic, log_freq) + Duration +
+                 s(trial, bs = 're') +
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, trial, participant, bs = 're'),
+              #method = 'REML',
+               #optimizer = 'perf',
+              data = gam_data)
+
+summary(mod_gam1)
+
+saveRDS(mod_gam1, '../Models/mod_gam1.rds')
+
+mod_gam_phrasal_nonphrasal = bam(log_rt ~  #note that RT is in log seconds
+                 PhrasalVerb +
+                 te(log_predic, log_freq, by = PhrasalVerb) + Duration +
+                 s(trial, bs = 're') +
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, trial, participant, bs = 're'),
+              #method = 'REML',
+               #optimizer = 'perf',
+              data = gam_data)
+
+saveRDS(mod_gam_phrasal_nonphrasal, '../Models/mod_gam_phrasal_nonphrasal.rds')
+summary(mod_gam_phrasal_nonphrasal)
+
+mod_gam_phrasal_nonphrasal2 = bam(log_rt ~  #note that RT is in log seconds
+                 te(log_predic, log_freq, by = PhrasalVerb) + Duration +
+                 s(trial, bs = 're') +
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, trial, participant, bs = 're'),
+              #method = 'REML',
+               #optimizer = 'perf',
+              data = gam_data)
+
+
+summary(mod_gam_phrasal_nonphrasal2)
+
+
+mod_bam_inter = bam(log_rt ~ ti(log_freq) + ti(log_predic) + ti(log_predic, log_freq) + 
+                 Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, participant, bs = 're'),
+              method = 'REML',   
+              data = gam_data)
+
+saveRDS(mod_bam_inter, '../Models/mod_bam_inter.rds')
+mod_bam_inter = readRDS('../Models/mod_bam_inter.rds')
+summary(mod_bam_inter)
+
+mod_bam_no_inter = bam(log_rt ~ ti(log_freq) + ti(log_predic) + 
+                 Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, participant, bs = 're'),
+              method = 'REML',   
+              data = gam_data)
+
+summary(mod_bam_no_inter)
+saveRDS(mod_bam_no_inter, '../Models/mod_bam_no_inter.rds')
+
+
+mod_bam_freq = bam(log_rt ~ PhrasalVerb + s(log_freq, by = PhrasalVerb) +
+                Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_freq, participant, bs = 're'),
+              method = 'REML',
+              data = gam_data)
+
+#saveRDS(mod_bam_freq, 'mod_bam_freq.rds')
+summary(mod_bam_freq)
+#saveRDS(mod_bam_freq, 'mod_bam_freq.rds')
+
+mod_bam_predic = bam(log_rt ~ PhrasalVerb + s(log_predic, by = PhrasalVerb) +
+                 Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, participant, bs = 're'),
+              method = 'REML',   
+              data = gam_data)
+
+
+#saveRDS(mod_bam_predic, 'mod_bam_predic.rds')
+summary(mod_bam_predic)
+#saveRDS(mod_bam_predic, 'mod_bam_predic.rds')
+
+mod_bam_only_freq = bam(log_rt ~ s(log_freq) +
+                Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_freq, participant, bs = 're'),
+              method = 'REML',
+              data = gam_data)
+
+summary(mod_bam_only_freq)
+
+mod_bam_only_predic =  bam(log_rt ~ s(log_predic) +
+                 Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, participant, bs = 're'),
+              method = 'REML',   
+              data = gam_data)
+summary(mod_bam_only_predic)
+
+
+plot(mod_bam_inter)
+
+```
+
+#### Additional model with cloze probabilities
+
+```{r}
+mod_bam_cloze = bam(log_rt ~ s(log_freq) + s(log_predic) + s(cloze_probs) + 
+                 Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, cloze_probs, participant, bs = 're'),
+              method = 'REML',   
+              data = gam_data)
+
+summary(mod_bam_cloze)
+```
+
+#### Let's compare our model with phrasal vs nonphrasal in it using BIC
+
+```{r}
+models = list(mod_gam1, mod_gam_phrasal_nonphrasal)
+
+map_df(models, glance, .id = 'model') %>%
+  arrange(BIC)
+```
+
+The BIC analysis suggests the model with phrasal verb as an interaction is not any better than our original model.
+
+Let's run separate analyses for phrasal and non-phrasal verbs:
+
+```{r}
+
+gam_data$PhrasalVerb = as.factor(gam_data$PhrasalVerb)
+
+gam_data_phrasal = gam_data %>%
+  filter(PhrasalVerb == 'phrasal')
+
+
+mod_gam_phrasal = bam(log_rt ~  #note that RT is log seconds
+                 te(log_predic, log_freq) + Duration + trial +
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, participant, bs = 're'),
+              #method = 'REML',
+               #optimizer = 'perf',
+              data = gam_data_phrasal)
+
+summary(mod_gam_phrasal)
+
+saveRDS(mod_gam_phrasal, '../Models/mod_gam_phrasal.rds')
+
+gam_data_nonphrasal = gam_data %>%
+  filter(PhrasalVerb == 'nonphrasal')
+
+mod_gam_nonphrasal = bam(log_rt ~  #note that RT is log seconds
+                 te(log_predic, log_freq) + Duration + trial +
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, participant, bs = 're'),
+              #method = 'REML',
+               #optimizer = 'perf',
+              data = gam_data_nonphrasal)
+
+summary(mod_gam_nonphrasal)
+
+saveRDS(mod_gam_nonphrasal, '../Models/mod_gam_nonphrasal.rds')
+```
+
+### Word Internal Analysis
+
+```{r eval = F}
+word_internal_analysis = data_analysis %>%
+  filter(Type == 'Word-Internal')
+
+mod_gam_word_internal = bam(log_rt ~  #note that RT is log seconds
+                 s(log_freq) + Duration + trial +
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_freq, participant, bs = 're'),
+              #method = 'REML',
+               #optimizer = 'perf',
+              data = word_internal_analysis)
+
+summary(mod_gam_word_internal)
+```
+
+### Accuracy (Logistic) Models
+
+```{r}
+
+logistic_data = data_analysis %>% #Note that I ran this code before excluding low-accuracy participants
+  dplyr::select(participant, Item, Type, log_freq, log_predic, log_rt, Duration, trial, response.corr, response_time)
+
+
+logistic_bam = bam(response.corr ~ te(log_predic, log_freq) + Duration + 
+                 s(participant, bs = 're') + 
+                 s(Item, bs = 're') + 
+                 s(log_predic, log_freq, participant, bs = 're'),
+                 family = 'binomial',
+              #method = 'REML',
+               #optimizer = 'perf',
+              data = logistic_data)
+
+#summary(logistic_bam)
+#saveRDS(logistic_bam, 'logistic_bam.rds')
+
+
+
+```
+
+### Brms quadratic
+
+Our GAM suggests that there's a linear effect of frequency and predictability for nonphrasal verbs and a quadratic effect of predictability (but yet still a linear effect of frequency) for phrasal verbs, so let's see if the same model is statistically significant in a quadratic model
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+#let's use weakly informative priors for our beta coefficients are student_t with mean slightly negative (let's say -0.05) and standard deviation of 0.1. 
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           #prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'),  #slightly negative intercept
+           prior(normal(0, 0.1), class = 'b')) #slightly negative prior for beta coefficients
+brms_quadratic_no_interaction = brm(log_rt ~ log_freq + log_predic + Duration + #fixed-effects
+                        I(log_predic^2) + I(log_freq^2) + #quadratic component
+                       (1 + log_freq + log_predic + Duration + I(log_predic^2) + I(log_freq^2) || participant) + (1||Item), #random effects
+                     data = gam_data,
+                     warmup = 10000,
+                     iter = 20000,
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     control = list(adapt_delta = 0.99),
+                     prior = priors,
+                     file = '../Models/brms_quadratic_english_no_interaction') 
+  
+
+fixef(brms_quadratic_no_interaction)
+
+
+```
+
+```{r}
+brms_plot = conditional_effects(brms_quadratic_no_interaction)
+saveRDS(brms_plot, "../Write-up/Figures/brms_plot.rds")
+
+freq_plot = plot(brms_plot, plot = F)[[1]] +
+  theme_bw()
+
+predic_plot = plot(brms_plot, plot = F)[[2]] +
+  theme_bw()
+
+freq_plot +
+  ylab('Log Reaction Time') +
+  xlab('Log Frequency') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 14)) 
+predic_plot +
+  ylab('Log Reaction Time') +
+  xlab('Log Predictability') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 14)) #need a way to plot these together, ggarrange isn't working
+```
+
+### Follow-up brms models (quadratic with only frequency, quadratic with only predictability)
+
+Frequency quadratic
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+#let's use weakly informative priors for our beta coefficients are student_t with mean slightly negative (let's say -0.05) and standard deviation of 0.1. 
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           #prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'),  #slightly negative intercept
+           prior(normal(0, 0.1), class = 'b')) #slightly negative prior for beta coefficients
+brms_freq_quadratic_no_interaction = brm(log_rt ~ log_freq + Duration + #fixed-effects
+                       I(log_freq^2) + #quadratic component
+                       (1 + log_freq + Duration + I(log_freq^2) || participant) + (1||Item), #random effects
+                     data = gam_data,
+                     warmup = 5000,
+                     iter = 10000,
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     control = list(adapt_delta = 0.99),
+                     prior = priors,
+                     file = '../Models/brms_freq_quadratic_english_no_interaction') 
+
+fixef(brms_freq_quadratic_no_interaction)
+
+brms_freq_plot = conditional_effects(brms_freq_quadratic_no_interaction)
+saveRDS(brms_freq_plot, '../Write-up/Figures/brms_freq_plot.rds')
+
+freq_plot = plot(brms_freq_plot, plot = F)[[1]] +
+  ylab('Log Reaction Time') +
+  xlab('Log Frequency') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 14)) 
+freq_plot
+
+```
+
+Predictability quadratic:
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+#let's use weakly informative priors for our beta coefficients are student_t with mean slightly negative (let's say -0.05) and standard deviation of 0.1. 
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           #prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'),  #slightly negative intercept
+           prior(normal(0, 0.1), class = 'b')) #slightly negative prior for beta coefficients
+brms_predic_quadratic_no_interaction = brm(log_rt ~  log_predic + Duration + #fixed-effects
+                        I(log_predic^2) + #quadratic component
+                       (1 + log_predic + Duration + I(log_predic^2) || participant) + (1||Item), #random effects
+                     data = gam_data,
+                     warmup = 5000,
+                     iter = 10000,
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     control = list(adapt_delta = 0.99),
+                     prior = priors,
+                     file = '../Models/brms_predic_quadratic_english_no_interaction') 
+
+fixef(brms_predic_quadratic_no_interaction)
+
+brms_predic_plot = conditional_effects(brms_predic_quadratic_no_interaction)
+saveRDS(brms_predic_plot, '../Write-up/Figures/brms_predic_plot.rds')
+
+predic_plot = plot(brms_predic_plot, plot = F)[[1]] +
+  ylab('Log Reaction Time') +
+  xlab('Log Predictability') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 14)) 
+
+predic_plot
+```
+
+```{r eval = F}
+brms_quadratic = brm(log_rt ~ log_freq * log_predic * PhrasalVerb * Duration + #fixed-effects
+                        I(log_predic^2) * log_freq * PhrasalVerb * Duration + #quadratic component
+                       (1 + log_freq * log_predic * PhrasalVerb * Duration + I(log_predic^2) * log_freq * PhrasalVerb * Duration | participant) + (1|Item), #random effects
+                     data = gam_data,
+                     warmup = 6000,
+                     iter = 12000,
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     prior = priors,
+                     file = '../Models/brms_quadratic_english') 
+
+
+fixef(brms_quadratic)
+
+
+
+brms_quadratic_no_phrasal = brm(log_rt ~ log_freq * log_predic * Duration + #fixed-effects
+                        I(log_predic^2) * log_freq * Duration + #quadratic component
+                       (1 + log_freq * log_predic * Duration + I(log_predic^2) * log_freq * Duration | participant) + (1|Item), #random effects
+                     data = gam_data,
+                     warmup = 6000,
+                     iter = 12000,
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     prior = priors,
+                     file = '../Models/brms_quadratic_no_phrasal') 
+
+
+fixef(brms_quadratic_no_phrasal)
+
+
+bayesian_full_quadratic_english = brm(log_rt ~ log_freq * log_predic * PhrasalVerb * Duration + #fixed-effects
+                        I(log_predic^2) * log_freq * PhrasalVerb * Duration + #quadratic component
+                          I(log_freq^2) * log_predic * PhrasalVerb * Duration + 
+                          I(log_freq^2) * I(log_predic^2) * PhrasalVerb * Duration +
+                       (1 + log_freq * log_predic * PhrasalVerb * Duration + 
+                          I(log_predic^2) * log_freq * PhrasalVerb * Duration +
+                          I(log_freq^2) * log_predic * PhrasalVerb * Duration + 
+                          I(log_freq^2) * I(log_predic^2) * PhrasalVerb * Duration | participant) + (1|Item), #random effects
+                     data = gam_data_english,
+                     warmup = 6000,
+                     iter = 12000,
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     prior = priors,
+                     file = '../Models/brms_full_quadratic_english') 
+
+
+
+bayesian_full_quadratic_english_no_phrasalverb = brm(log_rt ~ log_freq * log_predic * Duration + #fixed-effects
+                        I(log_predic^2) * log_freq  * Duration + #quadratic component
+                          I(log_freq^2) * log_predic * Duration + 
+                          I(log_freq^2) * I(log_predic^2) * Duration +
+                       (1 + log_freq * log_predic * Duration + 
+                          I(log_predic^2) * log_freq * Duration +
+                          I(log_freq^2) * log_predic * Duration + 
+                          I(log_freq^2) * I(log_predic^2) * Duration || participant) + (1||Item), #random effects
+                     data = gam_data_English_final,
+                     warmup = 3000,
+                     iter = 6000,
+                     control = list(adapt_delta = 0.9, max_treedepth = 13),
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     prior = priors,
+                     file = '../Models/brms_full_quadratic_english_no_phrasalverb') 
+```
+
+Percentage of samples greater than zero for the quadratic predictors
+
+```{r}
+post_samples = as.data.frame(fixef(brms_quadratic_no_interaction, summary = F)) %>%
+  select(Ilog_predicE2, Ilog_freqE2, log_freq, log_predic)
+
+#number of freq^2 samples greater than zero
+
+sum(post_samples$Ilog_freqE2 > 0) / length(post_samples$Ilog_freqE2)
+
+#number of predic^2 samples greater than zero
+
+sum(post_samples$Ilog_predicE2 > 0) / length(post_samples$Ilog_predicE2) #almost 97% of samples are greater than zero lol
+
+sum(post_samples$log_freq > 0) / length(post_samples$log_freq)
+sum(post_samples$log_predic > 0) / length(post_samples$log_predic)
+```
+
+#### Cloze Prob model
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+#let's use weakly informative priors for our beta coefficients are student_t with mean slightly negative (let's say -0.05) and standard deviation of 0.1. 
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           #prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'),  #slightly negative intercept
+           prior(normal(0, 0.1), class = 'b')) #slightly negative prior for beta coefficients
+brms_cloze_quadratic_no_interaction = brm(log_rt ~ log_freq + log_predic + Duration + #fixed-effects
+                        cloze_probs +
+                        I(log_predic^2) + I(log_freq^2) + #quadratic component
+                       (1 + log_freq + log_predic + Duration + I(log_predic^2) + I(log_freq^2) || participant) + (1||Item), #random effects
+                     data = gam_data,
+                     warmup = 10000,
+                     iter = 20000,
+                     cores = 8,
+                     chains = 8,
+                     init = 0,
+                     control = list(adapt_delta = 0.99),
+                     prior = priors,
+                     file = '../Models/brms_quadratic_cloze_english_no_interaction')  
+```
+
+### Plots of the beta distributions for our predictors for each brms model:
+
+#### Full Quadratic
+
+```{r}
+#post_samples_full_quadratic = as.data.frame(fixef(brms_quadratic_no_interaction, summary = F)) 
+beta_coef_labels = list.reverse(c('log-predictability', 'log-frequency', 'Intercept', 'log-predictability^2', 'log-frequency^2')) #ordered them the opposite way and I'm too lazy to reverse it manually
+brms_quadratic_no_interaction %>%
+  gather_draws(b_Intercept, b_log_freq, b_log_predic, b_Ilog_predicE2, b_Ilog_freqE2) %>%
+  ggplot(aes(x = .value, y = .variable)) +
+  stat_halfeye() +
+  xlab('Posterior Distribution') +
+  ylab('Beta Coefficent for each fixed-effect') +
+  scale_y_discrete(labels = beta_coef_labels) + 
+  theme_bw()
+
+
+
+```
+
+#### Freq Quadratic
+
+```{r}
+beta_coef_labels = list.reverse(c('log-frequency', 'Intercept', 'log-frequency^2'))
+brms_freq_quadratic_no_interaction %>%
+  gather_draws(b_Intercept, b_log_freq, b_Ilog_freqE2) %>%
+  ggplot(aes(x = .value, y = .variable)) +
+  stat_halfeye() +
+  xlab('Posterior Distribution') +
+  ylab('Beta Coefficent for each fixed-effect') +
+  scale_y_discrete(labels = beta_coef_labels) + 
+  theme_bw()
+
+post_samples_freq = as.data.frame(fixef(brms_freq_quadratic_no_interaction, summary = F)) %>%
+  select(log_freq, Ilog_freqE2)
+
+sum(post_samples_freq$Ilog_freqE2 > 0) / length(post_samples_freq$Ilog_freqE2)
+
+#number of predic^2 samples greater than zero
+
+sum(post_samples_freq$log_freq > 0) / length(post_samples_freq$log_freq)
+```
+
+#### Predic
+
+```{r}
+beta_coef_labels = list.reverse(c('log-predictability', 'Intercept', 'log-predictability^2'))
+brms_predic_quadratic_no_interaction %>%
+  gather_draws(b_Intercept, b_log_predic, b_Ilog_predicE2) %>%
+  ggplot(aes(x = .value, y = .variable)) +
+  stat_halfeye() +
+  xlab('Posterior Distribution') +
+  ylab('Beta Coefficent for each fixed-effect') +
+  scale_y_discrete(labels = beta_coef_labels) + 
+  theme_bw()
+
+post_samples_predic = as.data.frame(fixef(brms_predic_quadratic_no_interaction, summary = F)) %>%
+  select(log_predic, Ilog_predicE2)
+
+
+sum(post_samples_predic$Ilog_predicE2 > 0) / length(post_samples_predic$Ilog_predicE2) #almost 97% of samples are greater than zero lol
+
+sum(post_samples_predic$log_predic > 0) / length(post_samples_predic$log_predic)
+```
+
+#### 
+
+### Plots
+
+Let's start with a really simple rt \~ frequency graph and rt \~ predictability graph:
+
+```{r}
+rt_freq = ggplot(data = gam_data) +
+  geom_point(aes(x = log_freq, y = log_rt)) +
+  geom_smooth(aes(x = log_freq, y = log_rt), method = 'lm', formula = y~x + I(x^2), size = 1) +
+  theme_bw()
+
+rt_freq
+
+rt_predic = ggplot(data = gam_data) +
+  geom_point(aes(x = log_predic, y = log_rt)) +
+  geom_smooth(aes(x = log_predic, y = log_rt), method = 'lm', formula = y~ x + I(x^2), size = 1) +
+  theme_bw()
+
+rt_predic
+
+
+### different plots for PhrasalVerb == 0 and PhrasalVerb == 1
+
+rt_phrasal_data = gam_data %>% 
+  filter(PhrasalVerb == 'phrasal')
+
+rt_nonphrasal_data = gam_data %>%
+  filter(PhrasalVerb == 'nonphrasal')
+
+rt_freq_phrasal = ggplot(data = rt_phrasal_data) +
+  geom_point(aes(x = log_freq, y = log_rt, color = PhrasalVerb)) +
+  geom_smooth(aes(x = log_freq, y = log_rt), method = 'lm', formula = y~x + I(x^2), size = 1) +
+  theme_bw()
+
+rt_freq_nonphrasal = ggplot(data = rt_nonphrasal_data) +
+  geom_point(aes(x = log_freq, y = log_rt, color = PhrasalVerb)) +
+  geom_smooth(aes(x = log_freq, y = log_rt), method = 'lm', formula = y~x + I(x^2), size = 1) +
+  theme_bw()
+
+
+rt_predic_phrasal = ggplot(data = rt_phrasal_data) +
+  geom_point(aes(x = log_predic, y = log_rt, color = PhrasalVerb)) +
+  geom_smooth(aes(x = log_predic, y = log_rt), method = 'lm', formula = y~x + I(x^2), size = 1) +
+  theme_bw()
+
+rt_predic_nonphrasal = ggplot(data = rt_nonphrasal_data) +
+  geom_point(aes(x = log_predic, y = log_rt, color = PhrasalVerb)) +
+  geom_smooth(aes(x = log_predic, y = log_rt), method = 'lm', formula = y~x + I(x^2), size = 1) +
+  theme_bw()
+
+rt_freq_phrasal
+rt_freq_nonphrasal
+rt_predic_phrasal
+rt_predic_nonphrasal
+
+ggarrange(rt_freq_phrasal, rt_freq_nonphrasal, nrow = 1)
+ggarrange(rt_predic_phrasal, rt_predic_nonphrasal, nrow = 1)
+```
+
+```{r, test-rgl, webgl = TRUE}
+
+png(file = 'main_effect_plot1.png')
+vis.gam(mod_gam1,
+        view = c('log_predic', 'log_freq'),
+        type = 'response',
+        plot.type = 'persp',
+        phi = 30,
+        theta = 30,
+        n.grid = 500,
+        xlab = 'Predictability (log)',
+        ylab = 'Frequency (log)',
+        zlab = 'Predicted RT (log)',
+        #too.far = 0.01,
+        border = NA)
+dev.off()
+
+png(file = 'main_effect_phrasal_plot1.png')
+vis.gam(mod_gam_phrasal,
+        view = c('log_predic', 'log_freq'),
+        type = 'response',
+        plot.type = 'persp',
+        phi = 30,
+        theta = 30,
+        n.grid = 500,
+        xlab = 'Predictability (log)',
+        ylab = 'Frequency (log)',
+        zlab = 'Predicted RT (log)',
+        #too.far = 0.01,
+        border = NA)
+dev.off()
+
+png(file = 'main_effect_nonphrasal_plot1.png')
+vis.gam(mod_gam_nonphrasal,
+        view = c('log_predic', 'log_freq'),
+        type = 'response',
+        plot.type = 'persp',
+        phi = 30,
+        theta = 30,
+        n.grid = 500,
+        xlab = 'Predictability (log)',
+        ylab = 'Frequency (log)',
+        zlab = 'Predicted RT (log)',
+        #too.far = 0.01,
+        border = NA)
+dev.off()
+
+png(file = 'main_effect_nonphrasal_plot2.png')
+vis.gam(mod_gam_phrasal_nonphrasal,
+        view = c('log_predic', 'log_freq'),
+        cond = list(PhrasalVerb='nonphrasal'),
+        type = 'response',
+        plot.type = 'persp',
+        phi = 30,
+        theta = 30,
+        n.grid = 500,
+        xlab = 'Predictability (log)',
+        ylab = 'Frequency (log)',
+        zlab = 'Predicted RT (log)',
+        #too.far = 0.01,
+        border = NA)
+dev.off()
+
+png(file = 'main_effect_phrasal_plot2.png')
+vis.gam(mod_gam_phrasal_nonphrasal,
+        view = c('log_predic', 'log_freq'),
+        cond = list(PhrasalVerb='phrasal'),
+        type = 'response',
+        plot.type = 'persp',
+        phi = 30,
+        theta = 30,
+        n.grid = 500,
+        xlab = 'Predictability (log)',
+        ylab = 'Frequency (log)',
+        zlab = 'Predicted RT (log)',
+        #too.far = 0.01,
+        border = NA)
+dev.off()
+
+
+```
+
+2d plots that show our data as well:
+
+```{r}
+#main effect plot
+png(file = 'main_effect_plot_2d.png', width = 800)
+plot(sm(getViz(mod_gam1), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+dev.off()
+
+#graph of GAM run on only phrasal verbs
+#png(file = 'phrasal_plot_2d.png', width = 800)
+#plot(sm(getViz(mod_gam_phrasal), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+#dev.off()
+
+#graph of GAM run on only nonphrasal verbs
+#png(file = 'nonphrasal_plot_2d.png', width = 800)
+#plot(sm(getViz(mod_gam_nonphrasal), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+#dev.off()
+
+#graph of interaction effect for nonphrasal verbs in GAM with both phrasal and nonphrasal verbs
+#png(file = 'phrasal_nonphrasal_plot1_2d.png', width = 800)
+#plot(sm(getViz(mod_gam_phrasal_nonphrasal), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+#dev.off()
+
+#graph of interaction effect for phrasal verbs in GAM with both phrasal and nonphrasal verbs
+#png(file = 'phrasal_nonphrasal_plot2_2d.png', width = 800)
+#plot(sm(getViz(mod_gam_phrasal_nonphrasal), 2)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + theme(axis.text=element_text(size=12),) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+#dev.off()
+
+#plot1 = plot(sm(getViz(mod_gam_phrasal_nonphrasal), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+
+#plot2 = plot(sm(getViz(mod_gam_phrasal_nonphrasal), 2)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+
+#gridPrint(plot1, plot2, ncol = 1)
+```

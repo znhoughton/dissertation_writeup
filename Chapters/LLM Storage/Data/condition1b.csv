@@ -1,0 +1,787 @@
+Item,WordA,WordB,OverallFreq,RelFreq,Sentence,first_word_index,alpha_order,BinomFreq,Binomial,Word1,Word2,group,Asked_about_first_or_second
+1,abandon,fervor,188,0,The violinist played with abandon and fervor even though he had just recovered from an accident.,5,1,0,abandon and fervor,abandon,fervor,1,2
+2,ability,age,12237,0.09528479202,"They questioned his ability and age in the interview, which he thought was unfair.",4,1,1166,ability and age,ability,age,1,1
+4,ability,strength,20058,0.2068501346,Lisa had the ability and strength to become a professional athlete.,4,1,4149,ability and strength,ability,strength,1,2
+7,acknowledgment,authentication,0,0,The system needs to go through procedures for acknowledgment and authentication before carrying out the order.,9,1,0,acknowledgment and authentication,acknowledgment,authentication,1,1
+14,adventure,romance,22627,0.3756132055,The movie had a great balance of adventure and romance which made it a great success.,8,1,8499.000001,adventure and romance,adventure,romance,1,2
+16,agencies,individuals,20024,0.5303136237,Many different agencies and individuals worked together on this project.,3,1,10619,agencies and individuals,agencies,individuals,1,1
+17,aggression,hostility,17481,0.3591899777,"Sasha felt aggression and hostility towards her brother, so she tried to avoid him.",3,1,6279,aggression and hostility,aggression,hostility,1,2
+19,aims,backgrounds,130,0.3615384615,Participants with widely varying aims and backgrounds gathered in Rome for the conference.,5,1,47,aims and backgrounds,aims,backgrounds,1,1
+21,allegory,expressiveness,0,0,This little anecdote was selected mainly for allegory and expressiveness in the opening speech.,8,1,0,allegory and expressiveness,allegory,expressiveness,1,2
+22,amateurs,collectors,577,0.5528596187,The fossil hand book for amateurs and collectors alike is one of the best selling books in the store.,6,1,319,amateurs and collectors,amateurs,collectors,1,1
+26,ambition,poverty,354,0.3192090395,The pressures of ambition and poverty burdened Lawrence to a great extent.,4,1,113,ambition and poverty,ambition,poverty,1,2
+27,ambush,death,232,1,"Throughout the targeted cities, fear of ambush and death was spread by the terrorists.",7,1,232,ambush and death,ambush,death,1,1
+29,amusement,pride,896,0.4162946429,The moderator of the panel grinned with amusement and pride as the speaker indicated pity for the unfortunate .,8,1,373,amusement and pride,amusement,pride,1,2
+30,anger,anxiety,19277,0.4224205011,Anne felt anger and anxiety whenever she was stuck in traffic.,3,1,8143,anger and anxiety,anger,anxiety,1,1
+37,anthropologist,engineer,0,0,Our rural development team headed by a renowned anthropologist and engineer arrived at the destination last week.,9,1,0,anthropologist and engineer,anthropologist,engineer,1,2
+38,anthropology,psychology,16325,0.5429709035,He has figured out that anthropology and psychology are the subjects he wants to study in college.,6,1,8864,anthropology and psychology,anthropology,psychology,1,1
+39,anxiety,hazards,0,0,In order to deal with the situation's anxiety and hazards the honeymooners had a thorough conversation before the trip.,8,1,0,anxiety and hazards,anxiety,hazards,1,2
+40,appliances,cosmetics,43,1,Salesmen in appliances and cosmetics are the best in the department store.,3,1,43,appliances and cosmetics,appliances,cosmetics,1,1
+41,apprehension,fear,19096,0.2492144952,Charlie felt apprehension and fear before jumping out of the plane to skydive.,3,1,4759,apprehension and fear,apprehension,fear,1,2
+42,apprenticeship,learning,228,0.4254385965,We need to get back to apprenticeship and learning instead of trying to figure out everything by ourselves.,7,1,97,apprenticeship and learning,apprenticeship,learning,1,1
+43,aqueducts,tombs,167,0.7125748503,Ashely was so impressed by the aqueducts and tombs that she extended her stay in Rome.,7,1,119,aqueducts and tombs,aqueducts,tombs,1,2
+44,arms,hands,194013,0.4528098633,Both Chelsea's arms and hands are scraped up from falling off her bike.,3,1,87851.00001,arms and hands,arms,hands,1,1
+45,arms,legs,667976,0.8369926464,Sandra broke her arms and legs because she got into a bike accident.,4,1,559091,arms and legs,arms,legs,1,2
+46,arrows,crosses,143,0.5734265734,"In the chart, a series of nodes are connected by arrows and crosses to denote the lineage of the breed .",11,1,82,arrows and crosses,arrows,crosses,1,1
+49,arts,sciences,618850,0.9544574614,"Carol couldn't decide between arts and sciences when applying for college majors, so she chose an interdisciplinary route.",5,1,590666,arts and sciences,arts,sciences,1,2
+50,aspirations,dignity,214,0.5140186916,The Rule of Law should be employed to ensure that an individual's aspirations and dignity are repected in society.,13,1,110,aspirations and dignity,aspirations,dignity,1,1
+52,attitude,culture,921,0.3811074919,The author sincerely wanted to tap the real springs of American attitude and culture regardless of how unpopular and embarrassing they may be.,12,1,351,attitude and culture,attitude,culture,1,2
+54,attractions,repulsions,12897,0.9523144917,He experienced both attractions and repulsions which made him very confused.,4,1,12282,attractions and repulsions,attractions,repulsions,1,1
+55,aunt,uncle,165376,0.6382667376,"Over the summer, Steve stayed with his aunt and uncle at their vacation home near the beach.",8,1,105554,aunt and uncle,aunt,uncle,1,2
+56,austerity,denial,221,0,Before committing himself to a life of austerity and denial he never managed to succeed.,8,1,0,austerity and denial,austerity,denial,1,1
+59,bale,box,198,0.4292929293,"Montero had set up a strong position, using every bale and box in addition to barricades.",10,1,85,bale and box,bale,box,1,2
+60,bankers,friends,140,0.5,A series of conferences with bankers and friends began about this time to discuss this issue.,6,1,70,bankers and friends,bankers,friends,1,1
+63,barriers,stakes,0,0,"After placing barriers and stakes all around, the residents of the town were confident of their defense against any attack.",3,1,0,barriers and stakes,barriers,stakes,1,2
+64,beech,horse-chestnut,0,0,The shelter is as much a part of my landscape as the beech and horse-chestnut trees that grow on the ridge .,13,1,0,beech and horse-chestnut,beech,horse-chestnut,1,1
+70,bitterness,youth,0,0,On his face was this uncanny combination of bitterness and youth that makes one wonder what he must have been through.,9,1,0,bitterness and youth,bitterness,youth,1,2
+71,bleats,rasps,0,0,The horns' bleats and rasps continuously serenaded everyone's ears.,3,1,0,bleats and rasps,bleats,rasps,1,1
+73,boards,two-by-fours,0,0,Mr. Mills gave him the various kinds of boards and two-by-fours to make a new workbench for the studio.,9,1,0,boards and two-by-fours,boards,two-by-fours,1,2
+76,cakes,comfort,0,0,She resumed her self-imposed chores of visiting the poor and bringing cakes and comfort to destitute patients in the county hospital.,12,1,0,cakes and comfort,cakes,comfort,1,1
+77,calmness,detachment,210,1,His tone's calmness and detachment suggested that he was unaware of his own guilt.,3,1,210,calmness and detachment,calmness,detachment,1,2
+81,catholics,non-catholics,0,0,Our next step is to recognize the substantial agreement already existing between catholics and non-catholics before seeking futher negotiation.,13,1,0,catholics and non-catholics,catholics,non-catholics,1,1
+82,ceremonies,exhortations,0,0,They perform elaborate ceremonies and exhortations but have virtually no understanding of social cause and effect.,4,1,0,ceremonies and exhortations,ceremonies,exhortations,1,2
+84,charters,contracts,401,0.6209476309,Her lawyer of a father was too busy debating the legal inviolability of charters and contracts to notice her pining.,14,1,249,charters and contracts,charters,contracts,1,1
+85,cherries,pineapple,878,0.5421412301,He left the ham decorated with cherries and pineapple to cool on the porch.,7,1,476,cherries and pineapple,cherries,pineapple,1,2
+87,choir,glee-club,0,0,He served as choir and glee-club leader at different times during his college years.,4,1,0,choir and glee-club,choir,glee-club,1,1
+91,clash,meeting,60,0,No one predicted that the clash and meeting of the two cultures would unfold so violently.,6,1,0,clash and meeting,clash,meeting,1,2
+92,classicist,mathematician,0,0,She is not only a trained classicist and mathematician but also a good architect.,7,1,0,classicist and mathematician,classicist,mathematician,1,1
+95,clerk,cook,65,1,"One of his innovations was to see to it that every man, even clerk and cook included, qualified with every weapon in the troop.",14,1,65,clerk and cook,clerk,cook,1,2
+96,clerks,postmasters,247,0.2631578947,The exhausted clerks and postmasters shoveled dirt out of their offices and wondered how to move the mail.,3,1,64.99999999,clerks and postmasters,clerks,postmasters,1,1
+98,clothing,decorations,327,0.877675841,The man's posh clothing and decorations would have paid the Wrights' rent for a year.,4,1,287,clothing and decorations,clothing,decorations,1,2
+100,community,customers,502,0.2171314741,Store owners can establish sincere relationships with their community and customers by representing a human personality.,9,1,109,community and customers,community,customers,1,1
+101,competence,willingness,824,0.6723300971,The heads of growing enterprises can develop the competence and willingness to accept the personal responsibility so sorely needed now.,9,1,554,competence and willingness,competence,willingness,1,2
+103,concern,inquiry,633,0.317535545,I immediately knew from the concern and inquiry in her voice that she was the victim's family member.,6,1,201,concern and inquiry,concern,inquiry,1,1
+104,contemplation,delight,195,0.7743589744,Crossword puzzles are a source of contemplation and delight for me whenever I am bored.,7,1,151,contemplation and delight,contemplation,delight,1,2
+108,courage,virility,757,0.5416116248,"He had faith that the idea would work, since his courage and virility were involved in the magnificent plan.",11,1,410,courage and virility,courage,virility,1,1
+109,courthouse,square,181,0.4475138122,The assassin had followed him and waited till the courthouse and square were deserted to shut him up.,10,1,81.00000001,courthouse and square,courthouse,square,1,2
+110,cover,pillows,236,0.6271186441,The bed with dark-brown cover and pillows had been made up way before the guest arrived.,5,1,148,cover and pillows,cover,pillows,1,1
+111,coverings,veils,267,0.2397003745,The gentle nuns with coverings and veils were the unwitting models of several of his paintings.,5,1,63.99999999,coverings and veils,coverings,veils,1,2
+116,cry,rustle,0,0,All of a sudden the cry and rustle of wild birds filled the warm spring morning.,6,1,0,cry and rustle,cry,rustle,1,1
+118,currents,rhythms,44,1,This life has its own currents and rhythms just like any other way of life does.,6,1,44,currents and rhythms,currents,rhythms,1,2
+119,dancers,guests,144,0.625,"All the dancers and guests were bathed in the same soft, warm light.",3,1,90,dancers and guests,dancers,guests,1,1
+121,defeat,misfortune,606,0.3613861386,The heroic loyalty of the Swedish people to their king in defeat and misfortune was the central theme of the play.,12,1,219,defeat and misfortune,defeat,misfortune,1,2
+122,delirium,illness,235,0,The story ends in the child 's delirium and illness without telling the readers if his mother ever made it back.,8,1,0,delirium and illness,delirium,illness,1,1
+123,denial,ignorance,960,0.2645833333,Pamela realized that denial and ignorance were not the best ways to deal with those threatening forces.,4,1,254,denial and ignorance,denial,ignorance,1,2
+126,design,outline,446,0.4730941704,"The composition's main design and outline was the product of collaboration with musicians, ballad singers, and musicologists.",4,1,211,design and outline,design,outline,1,1
+129,dialects,localisms,0,0,The effects of television and other mass media are erasing dialects and localisms with a startling force.,11,1,0,dialects and localisms,dialects,localisms,1,2
+131,diffidence,gentleness,24,1,His habitual diffidence and gentleness was submerged under his present agitation.,3,1,24,diffidence and gentleness,diffidence,gentleness,1,1
+135,disasters,sufferings,552,0.4166666667,John has seen too many disasters and sufferings to uphold his blind optimism.,6,1,230,disasters and sufferings,disasters,sufferings,1,2
+138,doctors,president,0,0,"Despite the many meetings, the doctors and president never managed to reach an agreement on this issue.",6,1,0,doctors and president,doctors,president,1,1
+140,door,sill,261,0.6704980843,"Light was beginning to creep across the room, touching door and sill before reaching Doaty 's flowers.",10,1,175,door and sill,door,sill,1,2
+142,dregs,wine,0,0,The undesirable mixture of dregs and wine should be left in the bottle.,5,1,0,dregs and wine,dregs,wine,1,1
+149,equipment,musket,0,0,The man stripped of his equipment and musket was then tied to the chair.,6,1,0,equipment and musket,equipment,musket,1,2
+150,exasperation,love,235,0.2255319149,The single word she said mingled exasperation and love in an equal blend.,7,1,53,exasperation and love,exasperation,love,1,1
+152,farms,mountains,372,0.564516129,The artist paints farms and mountains in a modern impressionist fashion.,4,1,210,farms and mountains,farms,mountains,1,2
+153,fear,ritual,0,0,A reduction in fear and ritual has been observed in the tribes as modern science gains more influence.,4,1,0,fear and ritual,fear,ritual,1,1
+154,felons,fixers,0,0,The officer consorting with those felons and fixers was fired from the police department.,6,1,0,felons and fixers,felons,fixers,1,2
+155,fishermen,scientists,453,0.5607064018,Around this area fishermen and scientists have occasionally seen strange by-products of the phenomenon.,4,1,254,fishermen and scientists,fishermen,scientists,1,1
+156,flirtation,romance,145,0.6827586207,The novel filled with flirtation and romance was disdained by the stern English teacher.,5,1,99,flirtation and romance,flirtation,romance,1,2
+157,force,voice,508,0.1850393701,The campaign seeks to give force and voice to those striving for their rights.,6,1,94.00000001,force and voice,force,voice,1,1
+158,foresight,patriotism,287,0.5156794425,Miss Johnson's foresight and patriotism have been widely praised among her readers.,3,1,148,foresight and patriotism,foresight,patriotism,1,2
+159,form,mess,0,0,The tension between form and mess is an important topic in art.,4,1,0,form and mess,form,mess,1,1
+161,friends,tenants,790,0.6227848101,Mrs. Green greeted her friends and tenants as she walked into the house.,5,1,492,friends and tenants,friends,tenants,1,2
+162,furs,merchandise,464,0.6637931034,All activity in furs and merchandise were reserved for the largest trading company in the area.,4,1,308,furs and merchandise,furs,merchandise,1,1
+166,gardens,riverbanks,0,0,Going to the gardens and riverbanks is one of my favorite leisure activities.,4,1,0,gardens and riverbanks,gardens,riverbanks,1,2
+170,gift,heritage,516,0.5096899225,Through both gift and heritage Mr. Collins has come to possess a large coin collection.,3,1,263,gift and heritage,gift,heritage,1,1
+171,glance,signal,0,0,The agents communicating with each other by glance and signal were on a secret mission.,8,1,0,glance and signal,glance,signal,1,2
+173,gossip,truth,63,0,Students who cannot distinguish between gossip and truth are all over this school.,6,1,0,gossip and truth,gossip,truth,1,1
+174,graces,manners,783,0.4597701149,She seems to be a woman who keeps her graces and manners as she ages over the years.,10,1,360,graces and manners,graces,manners,1,2
+177,gunfire,shouting,524,0.5190839695,The children frightened by the gunfire and shouting hid in their mothers' arms.,6,1,272,gunfire and shouting,gunfire,shouting,1,1
+178,handle,hinge,46,0,Each and every handle and hinge shone after the hardworking maid completed her work.,4,1,0,handle and hinge,handle,hinge,1,2
+187,huggings,kissings,187,0.7967914439,There have been a lot of huggings and kissings since the reunion started.,7,1,149,huggings and kissings,huggings,kissings,1,1
+188,humor,proportion,519,0.7052023121,They lost their sense of humor and proportion as they grew more and more defensive.,6,1,366,humor and proportion,humor,proportion,1,2
+189,immersion,involvement,155,0.3935483871,The country's immersion and involvement in world affairs has increased over the years.,3,1,61,immersion and involvement,immersion,involvement,1,1
+192,ingratitude,injury,28,1,"If the child isn't taught how to deal with other people, ingratitude and injury are likely to occur.",12,1,28,ingratitude and injury,ingratitude,injury,1,2
+194,intelligence,mentality,156,0.5064102564,Despite his contempt for the police's intelligence and mentality the detective is perfectly willing to cooperate with them.,7,1,79,intelligence and mentality,intelligence,mentality,1,1
+195,intensities,rhythms,129,0,The sequence of intensities and rhythms can be determined by a mathematical system established by the composer.,4,1,0,intensities and rhythms,intensities,rhythms,1,2
+200,juice,spirit,56,1,"The boy, full of juice and spirit, got down to painting the fence right away.",5,1,56,juice and spirit,juice,spirit,1,1
+201,ketches,yachts,0,0,All the ketches and yachts belonged to the royalties.,3,1,0,ketches and yachts,ketches,yachts,1,2
+202,kind,scale,923,0.6684723727,"In order to begin, John must on the kind and scale of farming he wants to undertake.",9,1,617,kind and scale,kind,scale,1,1
+205,linguistics,psychiatry,0,0,Dr. Chang was trained in both linguistics and psychiatry before launching his successful career.,7,1,0,linguistics and psychiatry,linguistics,psychiatry,1,2
+206,linguists,psychotherapists,0,0,Teams of linguists and psychotherapists attended the conference to present their work.,3,1,0,linguists and psychotherapists,linguists,psychotherapists,1,1
+207,lint,thread,136,0.3823529412,Particles of lint and thread were found in the patient's mouth.,3,1,52,lint and thread,lint,thread,1,2
+209,madman,tyrant,26,1,From being a madman and tyrant he was now the best-known figure in the history of Sweden.,4,1,26,madman and tyrant,madman,tyrant,1,1
+210,maintenance,travel,815,0.1926380368,Having served for a number of years without pay beyond her maintenance and travel she finally left for a better job.,12,1,157,maintenance and travel,maintenance,travel,1,2
+211,maps,registers,159,0.641509434,From the maps and registers the expert has identified six potential excavation sites.,3,1,102,maps and registers,maps,registers,1,1
+212,marquees,signs,276,0.5543478261,Anna was surprised to see the marquees and signs lit up for the first time since blackout regulations had been instituted.,7,1,153,marquees and signs,marquees,signs,1,2
+217,misunderstanding,persecution,500,0.664,Advocates of this unusual way of life face misunderstanding and persecution constantly wherever they go.,9,1,332,misunderstanding and persecution,misunderstanding,persecution,1,1
+218,modernizing,redecorating,0,0,The old house in need of modernizing and redecorating was sold for a low price.,7,1,0,modernizing and redecorating,modernizing,redecorating,1,2
+219,nagging,stress,0,0,I don't want to hear any more of her nagging and stress because they make me feel worse than I already do.,10,1,0,nagging and stress,nagging,stress,1,1
+220,names,specialties,282,1,Be sure to familiarize yourself with their names and specialties before going to the wine dealers.,8,1,282,names and specialties,names,specialties,1,2
+225,onrush,retreat,0,0,The wolves' onrush and retreat were studied closely by the zoologists using a hidden camera.,3,1,0,onrush and retreat,onrush,retreat,1,1
+227,pains,shocks,164,0.4756097561,The therapist led her patients to let go of their pains and shocks over their sessions every month.,11,1,78,pains and shocks,pains,shocks,1,2
+228,painting,sculptures,495,0.7292929293,The theme of conflict in painting and sculptures is one of Maria's areas of interest.,6,1,361,painting and sculptures,painting,sculptures,1,1
+231,patronage,subscription,34,1,The editor of the magazine thanked the readers for their patronage and subscription in the last editorial of the year.,11,1,34,patronage and subscription,patronage,subscription,1,2
+232,peace,rehabilitation,75,1,The two sides both yearning for peace and rehabilitation settled on a cease-fire last week.,7,1,75,peace and rehabilitation,peace,rehabilitation,1,1
+235,pills,tonics,449,0.7305122494,"Having dealt with pills and tonics for months, Catherine finally got out of hospital.",4,1,328,pills and tonics,pills,tonics,1,2
+237,powers,traditions,200,0.715,The Presidential office's powers and traditions were firmly upheld during his term as president.,4,1,143,powers and traditions,powers,traditions,1,1
+241,reference,withdrawal,0,0,Greta's memory has stored for reference and withdrawal the locations of nice restaurants in town.,6,1,0,reference and withdrawal,reference,withdrawal,1,2
+242,retribution,violence,835,0.1053892216,Before resorting to retribution and violence other measures should be taken to resolve the conflict.,4,1,88.00000004,retribution and violence,retribution,violence,1,1
+245,scars,welts,438,0.4269406393,The sight of the boy's body covered in scars and welts made his mother burst out in tears.,9,1,187,scars and welts,scars,welts,1,2
+246,Scots,Swiss,99,0.5656565657,"Surprisingly, the Scots and Swiss in my class spoke Spanish fluently.",3,1,56,Scots and Swiss,Scots,Swiss,1,1
+247,screens,shades,336,0.3035714286,The skylights fitted with systems of multiple screens and shades were fitted into the roof.,8,1,102,screens and shades,screens,shades,1,2
+248,seals,wires,0,0,All the seals and wires need to be removed first before the gadgets can be fixed.,3,1,0,seals and wires,seals,wires,1,1
+249,self-aggrandisement,self-confidence,0,0,The businessman's speech was so full of self-aggrandisement and self-confidence that some of the audience left the room halfway through.,8,1,0,self-aggrandisement and self-confidence,self-aggrandisement,self-confidence,1,2
+250,self-indulgence,softness,0,0,The president knew very well that self-indulgence and softness was not going to be a successful strategy,7,1,0,self-indulgence and softness,self-indulgence,softness,1,1
+251,sky,wasteland,0,0,The photographer positioned the model against the background of sky and wasteland for an ideal picture.,10,1,0,sky and wasteland,sky,wasteland,1,2
+252,song,tears,362,0.6104972376,I remember my grandmother's song and tears at my grandfather's funeral.,5,1,221,song and tears,song,tears,1,1
+254,sprains,swellings,191,0.5392670157,It is said that for sprains and swellings one pint of cider vinegar added to three beaten eggs can give speedy relief.,6,1,103,sprains and swellings,sprains,swellings,1,2
+255,stalls,urinals,133,0.6090225564,By counting the number of stalls and urinals I attempted to form a loose estimate of how many men the hall would hold at one time.,6,1,81,stalls and urinals,stalls,urinals,1,1
+256,starvation,tuberculosis,117,0.6495726496,Mrs. Hull died of starvation and tuberculosis before receiving a visit from her son.,5,1,76,starvation and tuberculosis,starvation,tuberculosis,1,2
+263,usefulness,viability,412,0.3373786408,"For the first time in the country's history, the usefulness and viability of nationalism came into question.",10,1,139,usefulness and viability,usefulness,viability,1,1
+264,vitality,will,999,0.7777777778,Terror had sapped some of Anne's vitality and will so she was left frozen in the moment.,7,1,777,vitality and will,vitality,will,1,2
+265,aunts,uncles,114866,0.6316229345,The family reunion had all the aunts and uncles together in one room.,7,1,72551.99999,aunts and uncles,aunts,uncles,1,1
+266,back,shoulders,63372,0.6295367039,Anthony got his back and shoulders adjusted by the chiropractor.,4,1,39895,back and shoulders,back,shoulders,1,2
+267,bacon,eggs,86914,0.6438318338,"On the days Lilly doesn't have work, she makes bacon and eggs for breakfast and reads the paper.",10,1,55958,bacon and eggs,bacon,eggs,1,1
+268,bar,grill,40757,0.9625831146,We went to a bar and grill in the city last night.,5,1,39232,bar and grill,bar,grill,1,2
+269,barley,oats,27431,0.4298056943,Susanne prepared barley and oats for breakfast everyday for a week.,3,1,11790,barley and oats,barley,oats,1,1
+270,barrels,boxes,12973,0.3705388114,There were a lot of barrels and boxes that needed to be moved before the event could start.,6,1,4807,barrels and boxes,barrels,boxes,1,2
+272,beauty,truth,77484,0.3256930463,I decided that beauty and truth would be the major themes of the poem I was writing.,4,1,25236,beauty and truth,beauty,truth,1,1
+273,beauty,youth,65503,0.1011556723,The serum promised beauty and youth to everyone who used it.,4,1,6626.000003,beauty and youth,beauty,youth,1,2
+274,being,existence,12923,0.5259614641,The girl questioned her being and existence when she went to her last therapy session.,5,1,6797.000001,being and existence,being,existence,1,1
+275,belly,chest,14929,0.2288833813,"Zack said his belly and chest were hurting, so his mom took him to the hospital.",4,1,3416.999999,belly and chest,belly,chest,1,2
+277,blood,flesh,556220,0.02639603035,Although Rhonda was not Nick's blood and flesh he considered her part of his family.,6,1,14682,blood and flesh,blood,flesh,1,1
+278,blood,guts,19009,0.9607554316,The film showed blood and guts which made them very uncomfortable.,4,1,18263,blood and guts,blood,guts,1,2
+281,body,face,97417,0.1736247267,"After visiting many stores, Ann finally found a body and face sunscreen that worked well for her skin.",9,1,16914,body and face,body,face,1,1
+282,body,head,172950,0.1511419485,"When drawing people, Suzanne struggles with sketching the body and head because she can never get the proportions right.",9,1,26139.99999,body and head,body,head,1,2
+283,body,mind,820530,0.4173046689,She talked about the importance of keeping your body and mind super healthy and strong.,9,1,342411,body and mind,body,mind,1,1
+284,bone,flesh,72784,0.2187980875,"After a hard fall, you could see the bone and flesh of the basketball player's leg.",9,1,15925,bone and flesh,bone,flesh,1,2
+285,bone,muscle,59672,0.5633462931,The doctor studied the bone and muscle of the patient's injured leg.,5,1,33616,bone and muscle,bone,muscle,1,1
+286,bones,skulls,19232,0.3933548253,Scientists study the bones and skulls of long-extinct animal species.,4,1,7565,bones and skulls,bones,skulls,1,2
+287,boots,shoes,81005,0.837170545,My suitcase was full of boots and shoes which made it exceed the weight limit.,6,1,67815,boots and shoes,boots,shoes,1,1
+288,boys,girls,1835429,0.8825195635,The teacher separated the boys and girls into two groups.,5,1,1619802,boys and girls,boys,girls,1,2
+291,bread,cheese,105642,0.8957800875,Xavier brought bread and cheese to the potluck at the beach.,3,1,94632,bread and cheese,bread,cheese,1,1
+292,breakfast,dinner,53396,0.9091504982,Molly decided that breakfast and dinner are her favorite meals of the day.,4,1,48545,breakfast and dinner,breakfast,dinner,1,2
+293,bride,groom,204540,0.9693702943,I think that the bride and groom are very excited about the upcoming wedding.,5,1,198275,bride and groom,bride,groom,1,1
+295,brother,sister,492450,0.8382719058,Paul wants to spend time with his brother and sister because he doesn't get to see them very often.,8,1,412807,brother and sister,brother,sister,1,2
+296,brothers,sisters,1102312,0.9142402514,When we were younger my brothers and sisters wanted a Beagle puppy.,6,1,1007778,brothers and sisters,brothers,sisters,1,1
+297,brush,trees,35404,0.3333239182,Amanda loved all the brush and trees that surrounded her house.,5,1,11801,brush and trees,brush,trees,1,2
+299,cattle,horses,164491,0.494671441,"On the ranch, there are cattle and horses roaming around the green pastures.",6,1,81369,cattle and horses,cattle,horses,1,1
+301,cause,effect,679208,0.9893920566,"Ryan was uncertain about the cause and effect of inflation, so he did some research about it online.",6,1,672003,cause and effect,cause,effect,1,2
+304,chair,table,34607,0.3391799347,They noticed that the chair and table were knocked over after the earthquake.,5,1,11738,chair and table,chair,table,1,1
+307,characters,situations,32957,0.8178839093,Cheryl considered the characters and situations in the novel she was writing.,4,1,26955,characters and situations,characters,situations,1,2
+308,charts,maps,51057,0.2401237832,Dr. Morganstern took out his charts and maps in order to document where he found the last fossil.,6,1,12260,charts and maps,charts,maps,1,1
+310,child,husband,20834,0.09911682826,Rachel lived with her child and husband in a small apartment in New York City.,5,1,2065,child and husband,child,husband,1,2
+311,child,wife,166893,0.02212795024,Bill wanted to take his child and wife on a tropical vacation.,6,1,3692.999999,child and wife,child,wife,1,1
+313,choice,decision,11325,0.7605298013,It was her choice and decision to stay home for the summer instead of traveling through South America.,4,1,8613,choice and decision,choice,decision,1,2
+315,city,country,106397,0.7849751403,Her love for her city and country made her want to get into politics.,5,1,83519,city and country,city,country,1,1
+321,coat,hat,132073,0.4387119245,"Once she stepped through the door, she designated a spot for her coat and hat to be safely put away.",13,1,57942,coat and hat,coat,hat,1,2
+323,coffee,toast,19739,0.4575206444,Every morning Karen has coffee and toast for breakfast before school.,5,1,9031,coffee and toast,coffee,toast,1,1
+324,college,school,301287,0.02764473741,Matt said that college and school are not worth his time.,4,1,8329,college and school,college,school,1,2
+325,college,university,296202,0.891962242,Carlos talked about college and university with his school counselor.,4,1,264201,college and university,college,university,1,1
+326,color,light,83699,0.3201710893,Rob used a lot of color and light to make his photographs pop.,6,1,26798,color and light,color,light,1,2
+328,colors,forms,31064,0.3418426474,They read a whole chapter on colors and forms in her art class.,7,1,10619,colors and forms,colors,forms,1,1
+332,concrete,steel,83832,0.4510330184,The company got a new shipment of concrete and steel for an upcoming project.,8,1,37811,concrete and steel,concrete,steel,1,2
+333,confusion,fear,27042,0.3863619555,They felt confusion and fear about what they would do after graduating.,3,1,10448,confusion and fear,confusion,fear,1,1
+334,confusion,turmoil,11154,0.3482158867,Hannah felt confusion and turmoil after her mom gave her some unfortunate news.,3,1,3884,confusion and turmoil,confusion,turmoil,1,2
+336,contemporary,friend,13050,0.5211494253,I learned that my professor was a contemporary and friend of a famous poet.,8,1,6801,contemporary and friend,contemporary,friend,1,1
+340,council,governor,100783,0.01141065457,She wanted to meet with both the council and governor to discuss some ideas she had.,8,1,1150,council and governor,council,governor,1,2
+341,counties,towns,26566,0.4343898216,Fred drove through many counties and towns to move to his new house.,5,1,11540,counties and towns,counties,towns,1,1
+342,courage,hope,37808,0.4317340245,It took courage and hope to overcome what she had been through.,3,1,16323,courage and hope,courage,hope,1,2
+347,crime,punishment,131945,0.9885937322,The jury needed to consider the crime and punishment before coming to a final decision.,7,1,130440,crime and punishment,crime,punishment,1,1
+349,crops,livestock,41356,0.8806702776,All of the crops and livestock needed a lot of water to survive.,4,1,36421,crops and livestock,crops,livestock,1,2
+354,daughter,son,190092,0.2435031458,"With the holidays approaching, the daughter and son needed to shop for presents for their parents.",6,1,46287.99999,daughter and son,daughter,son,1,1
+357,days,years,31764,0.8792973177,It had been days and years since Molly had seen her cousins.,4,1,27930,days and years,days,years,1,2
+358,death,life,1142991,0.0619278717,It is hard to tell the difference between death and life when you are in purgatory.,9,1,70783,death and life,death,life,1,1
+359,debate,discussion,59247,0.3081843806,"During class, there was debate and discussion surrounding the controversial current event.",5,1,18259,debate and discussion,debate,discussion,1,2
+366,discussion,thought,24358,0.0763198949,A lot of discussion and thought went into making the decision to buy this house.,4,1,1859,discussion and thought,discussion,thought,1,1
+369,doorways,windows,14085,0.4975505857,Bill wanted to fix the doorways and windows before moving into the new home.,6,1,7008,doorways and windows,doorways,windows,1,2
+371,dreams,plans,11614,0.4828655071,She had dreams and plans to become a successful scientist.,3,1,5607.999999,dreams and plans,dreams,plans,1,1
+372,ears,eyes,304481,0.1289834177,"Cleo said that her ears and eyes were bothering her, so she stayed home from work.",5,1,39273,ears and eyes,ears,eyes,1,2
+375,editor,publisher,125503,0.8418683219,"In order to finalize all the details, the editor and publisher wanted to have a meeting with the author of the book.",9,1,105657,editor and publisher,editor,publisher,1,1
+376,education,skill,10876,0.7269216624,They had the education and skill to be a great professor.,4,1,7906,education and skill,education,skill,1,2
+377,effort,resources,12297,0.7416443035,It would take a lot of effort and resources to put on this fundraiser.,7,1,9120,effort and resources,effort,resources,1,1
+378,eggs,ham,59981,0.1829079208,All she wanted to eat was eggs and ham but she didn't have either item in her refrigerator.,7,1,10971,eggs and ham,eggs,ham,1,2
+379,elbows,knees,48397,0.4986879352,I hurt my elbows and knees when I fell off my longboard.,4,1,24135,elbows and knees,elbows,knees,1,1
+381,energy,money,31490,0.5265163544,Alice said that all of the energy and money that her car needed made her want to sell it.,7,1,16580,energy and money,energy,money,1,2
+384,error,trial,454209,0.0004865601518,They dealt with a lot of error and trial before having a final product.,7,1,221,error and trial,error,trial,1,1
+385,errors,omissions,58890,0.9366445916,Rebecca went over the errors and omissions that occurred in the paper.,5,1,55159,errors and omissions,errors,omissions,1,2
+394,faith,love,130104,0.6901786263,He wrote songs about faith and love that he hoped to record for his next album.,5,1,89795,faith and love,faith,love,1,1
+398,farms,fields,11526,0.4367516918,Ron loved spending time at farms and fields because he loved being in nature.,6,1,5034,farms and fields,farms,fields,1,2
+401,father,uncle,52100,0.9085220729,She took her father and uncle out to dinner to celebrate their birthdays.,4,1,47334,father and uncle,father,uncle,1,1
+402,fathers,mothers,315907,0.492318942,The community center had summer camps for fathers and mothers to send their kids to while they worked.,8,1,155527,fathers and mothers,fathers,mothers,1,2
+403,feelings,thoughts,480072,0.1513647953,"Whenever Pat was frustrated, her feelings and thoughts got muddled and she couldn't make any decisions.",6,1,72666.00001,feelings and thoughts,feelings,thoughts,1,1
+407,fiction,poetry,65232,0.5009351239,Maddy liked to read fiction and poetry in her spare time.,5,1,32677,fiction and poetry,fiction,poetry,1,2
+408,field,stream,15417,0.9641953687,"There was a field and stream near his house, which made him very happy.",4,1,14865,field and stream,field,stream,1,1
+409,figures,words,19044,0.1167296786,Hannah used figures and words to explain her findings.,3,1,2222.999999,figures and words,figures,words,1,2
+410,fingers,thumb,59440,0.4542395693,Demi broke her fingers and thumb when she fell while roller skating.,4,1,27000,fingers and thumb,fingers,thumb,1,1
+411,fire,light,21101,0.561584759,"According to Mandy, the lack of fire and light ruined the evening's ambiance.",7,1,11850,fire and light,fire,light,1,2
+412,fire,police,126094,0.278371691,Both the fire and police departments put on a barbeque for the community.,3,1,35101,fire and police,fire,police,1,1
+413,flame,smoke,45767,0.4484235366,"He noticed the flame and smoke coming from his neighbor's house, so he called the fire department.",4,1,20523,flame and smoke,flame,smoke,1,2
+414,flames,smoke,33304,0.4292877732,"Down the street, you could see the flames and smoke from the house that was on fire.",8,1,14297,flames and smoke,flames,smoke,1,1
+419,food,shelter,147749,0.8765609243,The stray dog searched for food and shelter while running through the streets.,6,1,129511,food and shelter,food,shelter,1,2
+420,force,violence,63181,0.9219227299,They didn't like how he used force and violence to get his way.,7,1,58248,force and violence,force,violence,1,1
+421,forefinger,thumb,193360,0.1029064957,The ability to use the forefinger and thumb are very important evolutionary traits that differentiate humans from apes.,6,1,19898.00001,forefinger and thumb,forefinger,thumb,1,2
+422,fork,spoon,20391,0.654455397,Tara needed both a fork and spoon to properly eat her meal.,5,1,13345,fork and spoon,fork,spoon,1,1
+423,forms,materials,10721,0.5657121537,Lee didn't have the necessary forms and materials to move forward with the task.,6,1,6065,forms and materials,forms,materials,1,2
+424,freedom,security,30628,0.5844325454,Mary searched for freedom and security in her next job opportunity.,4,1,17900,freedom and security,freedom,security,1,1
+426,fruit,nuts,20149,0.7948781577,All he had in his kitchen was fruit and nuts so he made a trip to the grocery store.,8,1,16016,fruit and nuts,fruit,nuts,1,2
+427,fruits,vegetables,667661,0.8501050683,"Growing up, Paul ate his fruits and vegetables everyday in order to be healthy.",6,1,567582,fruits and vegetables,fruits,vegetables,1,1
+429,future,past,283153,0.04213269858,Jazmin wanted to talk about the future and past of the company she was interviewing for.,7,1,11930,future and past,future,past,1,2
+439,gums,teeth,36148,0.1735365719,You should take care of your gums and teeth in order to have optimal dental hygiene.,7,1,6273.000001,gums and teeth,gums,teeth,1,1
+441,hands,knees,339150,0.9814447884,Chris had to get on his hands and knees to look for the button that fell off his shirt.,7,1,332857,hands and knees,hands,knees,1,2
+443,head,tail,73606,0.945126756,There were white spots on the head and tail of the tiny dog.,7,1,69567,head and tail,head,tail,1,1
+444,health,spirits,50385,0.9643544706,In order to improve their health and spirits the couple decided to go for long daily walks.,6,1,48589,health and spirits,health,spirits,1,2
+449,history,identity,13980,0.6706723891,Jonathon was unsure about the history and identity of the statue he saw in the park.,6,1,9376,history and identity,history,identity,1,1
+456,ice,snow,278789,0.4094171578,All of the ice and snow outside made Luis want to stay in all day.,4,1,114141,ice and snow,ice,snow,1,2
+458,improvements,land,17036,0.03868278939,Timothy said that the hotel needed more improvements and land to be able to make enough money.,8,1,659,improvements and land,improvements,land,1,1
+460,influence,power,314032,0.1889011311,The employee used her influence and power in the company in order to get a raise.,5,1,59321,influence and power,influence,power,1,2
+461,influence,prestige,40191,0.3460725038,The doctor's influence and prestige made her popular with patients.,3,1,13909,influence and prestige,influence,prestige,1,1
+463,ink,paper,58599,0.4722606188,All you need is ink and paper in order to write the next great novel.,5,1,27674,ink and paper,ink,paper,1,2
+467,jaws,teeth,26610,0.5205561819,Teddy was surprised at how large the jaws and teeth of the crocodiles he saw at the swamp were.,8,1,13852,jaws and teeth,jaws,teeth,1,1
+469,kind,quantity,18201,0.7352892698,This was the kind and quantity of bread that he needed for the recipe.,4,1,13383,kind and quantity,kind,quantity,1,2
+470,knowledge,skills,437430,0.6686052626,"Although Cassie's knowledge and skills were both strong, her exams were still difficult.",3,1,292468,knowledge and skills,knowledge,skills,1,1
+474,law,order,682080,0.9852172766,There was a lack of law and order that caused some chaos.,6,1,671997,law and order,law,order,1,2
+476,left,right,1786858,0.4326717624,You should look left and right before crossing the street.,4,1,773123,left and right,left,right,1,1
+477,length,quality,10492,0.6245711018,She thought the length and quality of the boat would impress her friends.,4,1,6553,length and quality,length,quality,1,2
+478,length,weight,30128,0.5539033457,She took note of the length and weight of the bed before trying to bring it into the small room.,6,1,16688,length and weight,length,weight,1,1
+479,libraries,museums,33304,0.6304347826,The amount of time he spent in libraries and museums surpassed the amount of time he spent at home.,8,1,20996,libraries and museums,libraries,museums,1,2
+480,life,religion,20659,0.5684689482,Jenny talked about life and religion with her brother and sister.,4,1,11744,life and religion,life,religion,1,1
+481,light,shadow,128575,0.9083569901,It is important to consider both light and shadow when creating a still life painting.,7,1,116792,light and shadow,light,shadow,1,2
+482,light,sound,68749,0.5895794848,The exhibit used light and sound to create an attention-grabbing experience.,4,1,40533,light and sound,light,sound,1,1
+487,mamma,papa,30494,0.2655604381,Antonio wants to spend a lot of time with his mamma and papa while they are in town.,11,1,8097.999999,mamma and papa,mamma,papa,1,2
+491,math,science,123868,0.7649110343,Ricky discovered that math and science are his favorite subjects in school.,4,1,94748,math and science,math,science,1,1
+495,methods,principles,107758,0.1575753076,She didn't agree with the company's methods and principles so she made her opinion known.,7,1,16980,methods and principles,methods,principles,1,2
+497,misery,pain,24920,0.2792536116,The people experienced misery and pain after they were shipwrecked for months.,4,1,6959.000001,misery and pain,misery,pain,1,1
+499,months,years,125753,0.8928614029,"After many tiring months and years, the author finally published their book.",4,1,112280,months and years,months,years,1,2
+501,morning,night,101769,0.3945110987,Kevin worked both morning and night shifts as an ER nurse.,4,1,40149,morning and night,morning,night,1,1
+502,mother,son,128987,0.9364819711,Jack spent more time with his mother and son than any other family member.,7,1,120794,mother and son,mother,son,1,2
+503,mouth,nostrils,23816,0.7699025865,"Evan took a look at the mouth and nostrils of his dog, and compared them to his own.",7,1,18336,mouth and nostrils,mouth,nostrils,1,1
+504,movements,positions,13056,0.3334865196,"After hurting her foot, certain movements and positions caused her a lot of pain.",6,1,4354,movements and positions,movements,positions,1,2
+505,mr.,mrs.,1680824,0.9980908174,The couple call each other mr. and mrs. Smith even though they aren't married.,6,1,1677615,mr. and mrs.,mr.,mrs.,1,1
+509,needle,thread,64176,0.9341030915,He needed a needle and thread to fix the hole in his shirt.,4,1,59947,needle and thread,needle,thread,1,2
+510,nights,weekends,17624,0.9411597821,Clare spent her nights and weekends working on new recipes for the cookbook she was writing.,4,1,16587,nights and weekends,nights,weekends,1,1
+511,nitrogen,oxygen,93142,0.4186940371,The atmosphere is composed of nitrogen and oxygen as well as other elements.,6,1,38998,nitrogen and oxygen,nitrogen,oxygen,1,2
+513,north,west,385427,0.7283169057,The boat sailed north and west to get to its destination.,4,1,280713,north and west,north,west,1,1
+517,novels,tales,16797,0.7729951777,He had always loved novels and tales so he majored in English in college.,5,1,12984,novels and tales,novels,tales,1,2
+519,pain,pressure,10781,0.4788053056,Jeremy felt pain and pressure in his chest that concerned him.,3,1,5162,pain and pressure,pain,pressure,1,1
+522,peace,quiet,191274,0.9514779845,The students reserved a spot in the library for some peace and quiet to study for their upcoming exams.,11,1,181993,peace and quiet,peace,quiet,1,2
+523,pepper,salt,831039,0.06075045816,The food is in need of pepper and salt because it's rather bland.,7,1,50486,pepper and salt,pepper,salt,1,1
+525,pitch,volume,10617,0.6652538382,Musicians pride themselves on being able to adjust pitch and volume in order to produce art.,9,1,7063,pitch and volume,pitch,volume,1,2
+526,place,time,1218090,0.1386769451,Finding a place and time for the meeting was very difficult due to the boss's busy schedule.,3,1,168921.0001,place and time,place,time,1,1
+527,plans,projects,18234,0.8174838214,She had many plans and projects in the works for her small business.,4,1,14906,plans and projects,plans,projects,1,2
+528,poetry,prose,222228,0.5465962885,The professor taught both poetry and prose in his Renaissance literature class.,5,1,121469,poetry and prose,poetry,prose,1,1
+530,power,resources,45867,0.697625744,The business had the power and resources to create a multi-million dollar company.,5,1,31998,power and resources,power,resources,1,2
+532,prose,verse,173062,0.6567068449,They discussed differences between prose and verse in her writing class.,5,1,113651,prose and verse,prose,verse,1,1
+533,radar,radio,12445,0.3183607875,The soldiers used radar and radio to plan their next moves.,4,1,3962,radar and radio,radar,radio,1,2
+535,research,training,108917,0.6437287109,The surgeon had to do a lot of research and training before attempting the risky procedure.,9,1,70113.00001,research and training,research,training,1,1
+536,rights,wrongs,47755,0.9699926709,She considered the rights and wrongs of the situation before moving forward.,4,1,46322,rights and wrongs,rights,wrongs,1,2
+538,sailors,soldiers,149549,0.116470187,"The little boy thought sailors and soldiers were cool, so he liked to dress up as them for Halloween.",5,1,17418,sailors and soldiers,sailors,soldiers,1,1
+542,sights,sounds,143294,0.8994305414,"While traveling, Kim wanted to experience the sights and sounds of the city she was visiting.",8,1,128883,sights and sounds,sights,sounds,1,2
+544,south,west,455538,0.6486220689,"The compass was broken, so it would only point to south and west instead of all four directions.",11,1,295472,south and west,south,west,1,1
+546,stress,tension,32225,0.6198603569,"In order to get rid of stress and tension after his exam, Zack went for a run.",7,1,19975,stress and tension,stress,tension,1,2
+547,sunrise,sunset,66190,0.7936848467,Andrew loved to be outside at sunrise and sunset during the summer months.,7,1,52534,sunrise and sunset,sunrise,sunset,1,1
+548,sympathy,understanding,66140,0.6837163592,Being a therapist requires a lot of sympathy and understanding because you often have to deal with people in rough patches.,8,1,45221,sympathy and understanding,sympathy,understanding,1,2
+549,teaching,writing,37699,0.6146847396,He has discovered that teaching and writing are what he wants to do for a career.,5,1,23173,teaching and writing,teaching,writing,1,1
+550,testament,will,248768,0.001097408027,Louis discussed his testament and will with his lawyer last week.,4,1,273.0000001,testament and will,testament,will,1,2
+554,skirt,sweater,9969,0.5119871602,Clarissa chose the skirt and sweater she would wear for her first day of school.,4,1,5104,skirt and sweater,skirt,sweater,1,1
+556,checks,money,7950,0.7950943396,Graham disliked handling checks and money so he decided not to run for treasurer of the club.,4,1,6321,checks and money,checks,money,1,2
+557,calluses,corns,5405,0.1800185014,The grandmother had a lot of calluses and corns on her feet which made it difficult to walk.,7,1,973.0000001,calluses and corns,calluses,corns,1,1
+558,action,motion,5237,0.3971739546,All of the action and motion in the 3D film made some viewers dizzy.,4,1,2080,action and motion,action,motion,1,2
+560,conduct,manners,5138,0.3956792526,"At a job interview, your conduct and manners can matter as much as your qualifications.",6,1,2033,conduct and manners,conduct,manners,1,1
+562,hostility,indifference,4279,0.3136246787,A lot of people feel hostility and indifference from large bureaucratic institutions.,6,1,1342,hostility and indifference,hostility,indifference,1,2
+566,schools,synagogues,3291,0.4080826497,There are some places that have schools and synagogues within the same vicinity.,7,1,1343,schools and synagogues,schools,synagogues,1,1
+567,arrangers,composers,3127,0.1794051807,The work of many arrangers and composers went into producing the soundtrack.,5,1,561,arrangers and composers,arrangers,composers,1,2
+571,candies,cookies,2837,0.3524850194,Stephen's parents banned candies and cookies from the house because he kept getting cavities.,4,1,1000,candies and cookies,candies,cookies,1,1
+572,county,village,2834,0.4290755116,The nearby county and village faced constant threats from their neighbhors.,3,1,1216,county and village,county,village,1,2
+573,charm,variety,2705,0.4377079482,Anthony missed the charm and variety of living in a big city.,4,1,1184,charm and variety,charm,variety,1,1
+576,complexity,obscurity,1319,0.6504927976,The student found that the complexity and obscurity of her research topic made the project difficult.,6,1,858,complexity and obscurity,complexity,obscurity,1,2
+579,file,rank,500989,0.0003572932739,Olivia's task was to file and rank the data her boss provided her.,5,1,179,file and rank,file,rank,1,1
+584,folklore,legend,5914,0.5180926615,Mandy read about the folklore and legend surrounding King Arthur in her new book.,5,1,3064,folklore and legend,folklore,legend,1,2
+586,contraction,dilation,3161,0.4618791522,Anna was confused about the difference between contraction and dilation so she talked to her doctor about it.,8,1,1460,contraction and dilation,contraction,dilation,1,1
+587,ships,weapons,2628,0.7754946728,There are too many ships and weapons according to Jack's uncle.,5,1,2038,ships and weapons,ships,weapons,1,2
+588,funnels,masts,2592,0.2581018519,They noticed that the funnels and masts on the ship were broken.,5,1,669.0000001,funnels and masts,funnels,masts,1,1
+589,law,sovereignty,2097,0.6294706724,They discussed both law and sovereignty in their political science class.,4,1,1320,law and sovereignty,law,sovereignty,1,2
+590,assurance,dignity,1291,0.4244771495,Richard tried to portray assurance and dignity at work but didn't know if he succeeded.,5,1,548,assurance and dignity,assurance,dignity,1,1
+591,friends,partners,10050,0.6131343284,Josh and Jack had been friends and partners for almost ten years.,6,1,6162,friends and partners,friends,partners,1,2
+594,trees,underbrush,9369,0.8759739567,All of the trees and underbrush made the area extremely green.,4,1,8207,trees and underbrush,trees,underbrush,1,1
+596,december,may,9064,0.3022947926,He is so busy that december and may are the only months he can see his family.,6,1,2740,december and may,december,may,1,2
+597,grains,seeds,8920,0.5920403587,Victoria liked her bread to have a variety of grains and seeds in it because she hated plain foods.,10,1,5281,grains and seeds,grains,seeds,1,1
+598,beauty,color,8914,0.3467579089,The women at the store complimented the beauty and color of the girl's hair.,8,1,3091,beauty and color,beauty,color,1,2
+599,legs,torso,8829,0.484086533,"Both her legs and torso are extremely long, so she always has to get her clothes tailored.",3,1,4274,legs and torso,legs,torso,1,1
+600,transportation,utilities,8691,0.4913128524,Dylan had to spend a lot of money on transportation and utilities on top of all his other bills.,10,1,4270,transportation and utilities,transportation,utilities,1,2
+602,science,tactics,8541,0.9921554853,Cynthia didn't understand the science and tactics behind the experiment she was reading about.,5,1,8474,science and tactics,science,tactics,1,1
+606,astronomy,geology,7933,0.5831337451,Richard hated astronomy and geology so he avoided taking any classes in these subjects.,3,1,4626,astronomy and geology,astronomy,geology,1,2
+607,feet,heads,7570,0.2124174373,Amy thinks that the feet and heads of the kittens are so cute.,5,1,1608,feet and heads,feet,heads,1,1
+609,back,hips,7534,0.6851606053,Jon went to a chiropractic office to get his back and hips checked out by a professional.,10,1,5162,back and hips,back,hips,1,2
+611,argument,debate,7440,0.6696236559,The couple's argument and debate over what to have for dinner lasted an hour.,3,1,4982,argument and debate,argument,debate,1,1
+612,doubts,suspicions,7417,0.8328165026,The detective had doubts and suspicions about the suspect's alibi.,4,1,6177,doubts and suspicions,doubts,suspicions,1,2
+614,arms,faces,7402,0.4437989733,Paul noticed that the arms and faces of his figurines could use some new paint.,5,1,3285,arms and faces,arms,faces,1,1
+615,chrome,glass,7398,0.5510948905,The architect said that chrome and glass are his favorite materials to use in his designs.,5,1,4077,chrome and glass,chrome,glass,1,2
+621,crises,problems,6694,0.2544069316,All of the crises and problems she had to overcome made her stronger.,4,1,1703,crises and problems,crises,problems,1,1
+622,bathrobe,slippers,6684,0.8955715141,Kyle refused to leave his bathrobe and slippers at home when he travelled anywhere.,6,1,5986,bathrobe and slippers,bathrobe,slippers,1,2
+624,boredom,loneliness,6246,0.4506884406,Chloe experienced boredom and loneliness over the summer because she missed her college friends.,3,1,2815,boredom and loneliness,boredom,loneliness,1,1
+626,fun,pleasure,6132,0.684605349,All of the fun and pleasure that came with traveling made the cost worth it.,4,1,4198,fun and pleasure,fun,pleasure,1,2
+628,fields,homes,6083,0.3074141049,"There were plenty of fields and homes in the town, which made it an ideal place for families.",5,1,1870,fields and homes,fields,homes,1,1
+630,certainty,security,5706,0.5308447249,Trish appreciated the certainty and security that her job as a dentist provided.,4,1,3029,certainty and security,certainty,security,1,2
+631,artist,critic,5674,0.8089531195,Lisa was both the artist and critic who worked on the magazine.,5,1,4590,artist and critic,artist,critic,1,1
+633,brick,glass,5652,0.7342533616,A lot of brick and glass was needed to finish building the house.,4,1,4150,brick and glass,brick,glass,1,2
+634,gas,light,5578,0.4845822876,Ted found out that the gas and light in his kitchen were not working.,6,1,2703,gas and light,gas,light,1,1
+638,palm,pine,5388,0.5966963623,Frank decided that palm and pine trees are his favorite.,4,1,3215,palm and pine,palm,pine,1,2
+639,fish,vegetable,5385,0.6674094708,He wanted to make a fish and vegetable soup that would impress his family.,6,1,3594,fish and vegetable,fish,vegetable,1,1
+641,fury,pain,5310,0.2903954802,Wendy felt fury and pain when she learned that her uncle had died.,3,1,1542,fury and pain,fury,pain,1,2
+642,gentleness,sweetness,5275,0.465971564,The dog's gentleness and sweetness made her loved by anyone who spent time with her.,3,1,2458,gentleness and sweetness,gentleness,sweetness,1,1
+643,experiences,reactions,5219,0.7668135658,Randy said that her experiences and reactions made her quite the character.,5,1,4002,experiences and reactions,experiences,reactions,1,2
+645,comedy,satire,5139,0.682428488,Olivia enjoyed comedy and satire and made sure that everyone knew.,3,1,3507,comedy and satire,comedy,satire,1,1
+646,enthusiasm,warmth,5100,0.1703921569,Kristin appreciated Jack's enthusiasm and warmth so she spent a lot of time with him.,4,1,869.0000002,enthusiasm and warmth,enthusiasm,warmth,1,2
+648,beauty,brains,5091,0.6201139265,Her mom says she has beauty and brains among many other things.,6,1,3157,beauty and brains,beauty,brains,1,1
+650,imagination,originality,4763,0.4931765694,It takes a lot of imagination and originality to write a successful novel.,6,1,2349,imagination and originality,imagination,originality,1,2
+651,ears,hair,4651,0.4325951408,Bill washed his ears and hair before going to bed.,4,1,2012,ears and hair,ears,hair,1,1
+652,importance,validity,4610,0.3937093275,He questioned the importance and validity of the statements they were making.,4,1,1815,importance and validity,importance,validity,1,2
+653,money,papers,4570,0.5424507659,Alice brought both the money and papers that were required to buy the house.,5,1,2479,money and papers,money,papers,1,1
+656,blossom,leaf,4489,0.1846736467,Ethan kept track of the blossom and leaf of the plant to make sure it was healthy.,6,1,829,blossom and leaf,blossom,leaf,1,2
+657,desolation,misery,4427,0.3724870115,Robert felt desolation and misery so he started going to therapy.,3,1,1649,desolation and misery,desolation,misery,1,1
+658,boots,jacket,4308,0.3625812442,"On a trip to the mountains, Jane forgot her boots and jacket at home, so she had to make a trip to the mall.",10,1,1562,boots and jacket,boots,jacket,1,2
+659,confusions,contradictions,4304,0.5559944238,All of the confusions and contradictions did not make Amy feel confident about the new rules.,4,1,2393,confusions and contradictions,confusions,contradictions,1,1
+660,flames,sparks,4256,0.4823778195,Maeve stared at the flames and sparks that came from the fireplace.,5,1,2053,flames and sparks,flames,sparks,1,2
+661,danger,threat,4180,0.4313397129,Riley thought that the danger and threat of sharks were too high to go surfing.,5,1,1803,danger and threat,danger,threat,1,1
+663,berlin,frankfurt,4154,0.6114588349,Sam wanted to visit berlin and frankfurt on her trip to Germany.,5,1,2540,berlin and frankfurt,berlin,frankfurt,1,2
+664,clothes,dishes,4140,0.5524154589,Molly needed to wash her clothes and dishes before leaving for her trip.,6,1,2287,clothes and dishes,clothes,dishes,1,1
+665,comfort,companionship,4138,0.7728371194,He experienced comfort and companionship whenever he visited his Grandma.,3,1,3198,comfort and companionship,comfort,companionship,1,2
+669,interest,payments,4047,0.2246108228,Christopher was stressed about the interest and payments he had for his loans.,6,1,908.9999999,interest and payments,interest,payments,1,1
+670,gambling,vice,3997,0.5053790343,Christine joked that the words gambling and vice should be considered synonyms.,6,1,2020,gambling and vice,gambling,vice,1,2
+673,leaves,limbs,3832,0.3063674322,All of the leaves and limbs of the trees obstructed the ocean view.,4,1,1174,leaves and limbs,leaves,limbs,1,1
+677,activity,nature,3742,0.1317477285,"Timothy thought that he didn't have enough activity and nature in his life, so he decided to get out more.",8,1,493,activity and nature,activity,nature,1,2
+678,sun,weather,3714,0.8893376414,Tina said that the sun and weather made her want to be outside.,5,1,3303,sun and weather,sun,weather,1,1
+681,shooting,yelling,3658,0.3942044833,The movie had a lot of shooting and yelling which made Peter upset.,7,1,1442,shooting and yelling,shooting,yelling,1,2
+682,arches,piers,3647,0.2278585138,Tamara learned how to properly design arches and piers in her architecture class.,7,1,830.9999998,arches and piers,arches,piers,1,1
+683,investment,risk,3621,0.663352665,Harry didn't think the investment and risk were worth the money.,5,1,2402,investment and risk,investment,risk,1,2
+684,control,growth,3621,0.1800607567,The lack of control and growth that the position offered made Jerry want to find a new job.,4,1,652,control and growth,control,growth,1,1
+685,happiness,pain,3609,0.5996120809,"Ed feels happiness and pain when drinking milk because he loves the taste, but is lactose intolerant.",3,1,2164,happiness and pain,happiness,pain,1,2
+686,Egypt,Europe,3595,0.4311543811,He wanted to visit Egypt and Europe once he had the time to travel.,5,1,1550,Egypt and Europe,Egypt,Europe,1,1
+687,order,truth,3498,0.3865065752,The judge wanted order and truth from the lawyers and witnesses.,4,1,1352,order and truth,order,truth,1,2
+688,factories,industries,3465,0.6614718615,Tristen worked in a variety of factories and industries before he was able to retire.,7,1,2292,factories and industries,factories,industries,1,1
+689,name,year,3444,0.9378629501,Jasmine wanted to know the name and year of the car her friend was selling.,6,1,3230,name and year,name,year,1,2
+690,river,sky,3362,0.6522903034,"On an afternoon walk, Cindy noticed that the river and sky were the same shade of blue.",9,1,2193,river and sky,river,sky,1,1
+692,breakfast,luncheon,3299,0.929069415,The conference had a breakfast and luncheon included on the itinerary.,5,1,3065,breakfast and luncheon,breakfast,luncheon,1,2
+693,attitude,experience,3253,0.4420534891,Both Jerry's attitude and experience made him an excellent candidate for the job.,3,1,1438,attitude and experience,attitude,experience,1,1
+694,pilot,plane,3214,0.321717486,There was a need for a pilot and plane for the flight to Hawaii.,7,1,1034,pilot and plane,pilot,plane,1,2
+695,malaria,typhoid,3188,0.6420953576,Trina got her malaria and typhoid vaccines before travelling the world.,4,1,2047,malaria and typhoid,malaria,typhoid,1,1
+697,economist,historian,3086,0.4744005185,He was surprised that both the economist and historian are named Jane Doe.,7,1,1464,economist and historian,economist,historian,1,2
+701,silence,space,2998,0.3108739159,Ryan wanted silence and space after a long day of work.,3,1,931.9999999,silence and space,silence,space,1,1
+702,fingers,mouth,2949,0.3808070532,Both her fingers and mouth were dirty from eating ribs.,3,1,1123,fingers and mouth,fingers,mouth,1,2
+703,power,variety,2907,0.5555555556,Brian said that the power and variety of the cars at the dealership left him unimpressed.,5,1,1615,power and variety,power,variety,1,1
+705,habits,movements,2899,0.3477061056,He kept track of his dog's habits and movements because the vet told him to.,7,1,1008,habits and movements,habits,movements,1,2
+707,boardinghouses,hotels,2816,0.1807528409,She spent a lot of time in boardinghouses and hotels during her summer travels.,8,1,509,boardinghouses and hotels,boardinghouses,hotels,1,1
+710,happiness,warmth,2791,0.1820136152,Clarissa felt happiness and warmth whenever she hugged her mom.,3,1,508,happiness and warmth,happiness,warmth,1,2
+712,means,motives,2767,0.5095771594,He was trying to understand the means and motives behind this controversial decision.,7,1,1410,means and motives,means,motives,1,1
+713,fear,relief,2765,0.6459312839,Mary felt both fear and relief about graduating from high school.,4,1,1786,fear and relief,fear,relief,1,2
+717,clippings,pictures,2541,0.5356158993,She used many clippings and pictures for the collage she was working on.,4,1,1361,clippings and pictures,clippings,pictures,1,1
+719,domination,influence,2524,0.383518225,The player's domination and influence made them the obvious choice for captain of the team.,3,1,967.9999999,domination and influence,domination,influence,1,2
+720,action,conversation,2470,0.3672064777,There was action and conversation occurring in every scene of the movie.,3,1,906.9999999,action and conversation,action,conversation,1,1
+721,pattern,sequence,2372,0.5438448567,They discussed the connection between a pattern and sequence in their math class today.,7,1,1290,pattern and sequence,pattern,sequence,1,2
+722,detective,police,2346,0.2199488491,Usually the town's detective and police work together to deal with criminals.,4,1,516,detective and police,detective,police,1,1
+724,gardens,lawn,2244,0.2081105169,He makes sure to water the gardens and lawn of the estate every other day.,7,1,466.9999999,gardens and lawn,gardens,lawn,1,2
+727,ammo,weapons,2212,0.1003616637,The military has ammo and weapons readily available to them.,4,1,222.0000001,ammo and weapons,ammo,weapons,1,1
+729,associations,enterprises,2189,0.3992690726,She dealt with different associations and enterprises in her line of work.,5,1,873.9999999,associations and enterprises,associations,enterprises,1,2
+733,certainty,order,2092,0.3231357553,Jake liked the certainty and order that his job provided him.,4,1,676.0000001,certainty and order,certainty,order,1,1
+734,discretion,moderation,2059,0.4691597863,"There was an absence of discretion and moderation in the decision, which upset many people.",6,1,966,discretion and moderation,discretion,moderation,1,2
+736,captain,leader,2031,0.5869030034,The team thought of her as a captain and leader even though she didn't officially have the title.,8,1,1192,captain and leader,captain,leader,1,1
+737,control,intelligence,2022,0.5326409496,Jason wanted to be known for his control and intelligence instead of being known for his temper.,8,1,1077,control and intelligence,control,intelligence,1,2
+738,grease,sweat,2001,0.5257371314,"At the end of the day, Fred washed the grease and sweat off of his face.",10,1,1052,grease and sweat,grease,sweat,1,1
+739,comprehension,control,1993,0.7717009533,There was a lack of comprehension and control that made Stephanie feel uneasy.,6,1,1538,comprehension and control,comprehension,control,1,2
+742,cost,upkeep,1881,0.9393939394,They didn't think the house was worth the cost and upkeep it would take to keep it.,9,1,1767,cost and upkeep,cost,upkeep,1,1
+743,men,objects,1870,0.7427807487,The artist painted men and objects for the museum's upcoming exhibit.,4,1,1389,men and objects,men,objects,1,2
+745,betrayal,murder,1796,0.6542316258,The book was about a betrayal and murder and Harry thought it was very interesting.,6,1,1175,betrayal and murder,betrayal,murder,1,1
+747,confusion,congestion,1755,0.4051282051,The traffic caused confusion and congestion for the drivers on the busy highway.,4,1,711,confusion and congestion,confusion,congestion,1,2
+751,boulders,ledges,1599,0.4759224515,Paula climbed boulders and ledges with her friend Chris.,3,1,760.9999999,boulders and ledges,boulders,ledges,1,1
+754,tensions,uncertainties,1587,0.7429111531,Chris said all of the tensions and uncertainties made him feel uncomfortable.,6,1,1179,tensions and uncertainties,tensions,uncertainties,1,2
+755,beauty,poise,1571,0.6098026735,The model's beauty and poise got her booked for a lot of shows.,3,1,958.0000001,beauty and poise,beauty,poise,1,1
+758,fairness,moderation,1517,0.6117336849,Gino thought that fairness and moderation were concepts that should go together.,4,1,928,fairness and moderation,fairness,moderation,1,2
+761,head,teeth,1481,0.7400405132,"Both Vanessa's head and teeth were bothering her, so she took some medicine for the pain.",3,1,1096,head and teeth,head,teeth,1,1
+762,cod,salmon,1472,0.5033967391,He made sure the chef knew that cod and salmon are his sister's favorite types of fish.,8,1,741,cod and salmon,cod,salmon,1,2
+764,chopping,sawing,1425,0.4940350877,It took a lot of chopping and sawing to remove the dead trees.,6,1,704,chopping and sawing,chopping,sawing,1,1
+765,anxiety,dismay,1411,0.616583983,Josh was filled with anxiety and dismay and didn't know what to do about it.,5,1,870,anxiety and dismay,anxiety,dismay,1,2
+766,resources,riches,1403,0.307911618,The couple had the resources and riches to start their own company.,5,1,432.0000001,resources and riches,resources,riches,1,1
+768,bandits,outlaws,1364,0.5476539589,She watched an old western movie about bandits and outlaws with both of her roommates.,8,1,746.9999999,bandits and outlaws,bandits,outlaws,1,2
+771,barges,towboats,1270,0.3897637795,The ocean was filled with barges and towboats so Mara didn't want to go in the water.,6,1,495,barges and towboats,barges,towboats,1,1
+772,celebration,ritual,1211,0.2997522709,The event was considered both a celebration and ritual by all who attended.,7,1,363.0000001,celebration and ritual,celebration,ritual,1,2
+774,letters,magazines,1182,0.6455160745,Xena read many of her old letters and magazines instead of going on her phone.,7,1,763.0000001,letters and magazines,letters,magazines,1,1
+777,disdain,indifference,1129,0.3268379097,"Nathan felt disdain and indifference towards Mark, so he avoided him.",3,1,369.0000001,disdain and indifference,disdain,indifference,1,2
+780,color,imagery,1105,0.6497737557,She liked all of the color and imagery the artist used in their art.,6,1,718,color and imagery,color,imagery,1,1
+782,abasement,humiliation,1085,0.4700460829,"Jenny was subjected to abasement and humiliation at school, which made her want to leave.",5,1,509.9999999,abasement and humiliation,abasement,humiliation,1,2
+784,education,industrialization,1068,0.6235955056,Tania read about the connection between education and industrialization in a chapter of her textbook.,7,1,666,education and industrialization,education,industrialization,1,1
+786,firepower,speed,1016,0.1988188976,Christopher liked the firepower and speed of the car he was test driving.,4,1,202,firepower and speed,firepower,speed,1,2
+3,ability,desire,26503,0.4642493303,Maddie had both the desire and ability to play college-level soccer.,5,0,14199,desire and ability,desire,ability,1,1
+5,accessories,aircraft,495,0,The supplier provided the new military base with aircraft and accessories to ensure its normal operation as soon as possible.,9,0,495,aircraft and accessories,aircraft,accessories,1,2
+6,acids,tannin,68,1,"In order for the tannin and acids to work out, a red wine should be served at approximately room temperature.",5,0,0,tannin and acids,tannin,acids,1,1
+8,action,interests,648,0.2978395062,The executive's presentation on the company's interests and action was well received among the employees.,7,0,455,interests and action,interests,action,1,2
+9,action,character,18766,0.3248960887,Riley thought his lack of character and action was too significant to overlook.,6,0,12669,character and action,character,action,1,1
+10,actions,feelings,31729,0.2691544013,He was confused because her feelings and actions were not matching up.,6,0,23189,feelings and actions,feelings,actions,1,2
+11,adaptations,cycles,52,0,The Pacific Ocean marine life's cycles and adaptations are the focus of Dr. Green's research.,6,0,52,cycles and adaptations,cycles,adaptations,1,1
+12,addresses,names,273323,0.00702465581,The company collected hundreds of names and addresses for a petition they wanted to pass in June.,6,0,271403,names and addresses,names,addresses,1,2
+13,adherent,advocate,69,1,The new foreign policy's chief advocate and adherent gave a passionate speech during the gathering.,6,0,0,advocate and adherent,advocate,adherent,1,1
+15,age,day,98957,0.004476691896,Amanda said that in this day and age you need to be tech-savy.,6,0,98514,day and age,day,age,1,2
+18,agreements,contracts,22390,0.291022778,Tony had to deal with many contracts and agreements before he officially started working at the company.,7,0,15874,contracts and agreements,contracts,agreements,1,1
+20,aircraft,ships,29331,0.1865262009,The new ships and aircraft ended up being extremely expensive.,3,0,23860,ships and aircraft,ships,aircraft,1,2
+23,amber,froth,0,0,There was a flash of froth and amber when the bottle shattered against the side of the car.,6,0,0,froth and amber,froth,amber,1,1
+24,ambiguities,fears,44,0,"In recent years, fears and ambiguities have been introduced regarding certain actions formerly assumed safe.",4,0,44,fears and ambiguities,fears,ambiguities,1,2
+25,ambiguities,urgencies,0,0,Some painters have less interest in the moment's urgencies and ambiguities than in a higher level of truth.,9,0,0,urgencies and ambiguities,urgencies,ambiguities,1,1
+28,ammunition,guns,55799,0.03962436603,The old man kept guns and ammunition locked away in his basement in case of a zombie invasion.,5,0,53588,guns and ammunition,guns,ammunition,1,2
+31,anger,fear,88323,0.4141843008,The abused dog showed both fear and anger when animal control came to pick him up.,6,0,51741,fear and anger,fear,anger,1,1
+32,anger,hatred,29441,0.7066336062,Michelle felt a lot of hatred and anger towards her brother when he crashed her car.,6,0,8637,hatred and anger,hatred,anger,1,2
+33,anger,indignation,13774,0.7186728619,Amber felt indignation and anger after arguing with her sister.,3,0,3875,indignation and anger,indignation,anger,1,1
+34,angst,science,0,0,In our present era of science and angst many people find themselves uncertain of the fundamental truth.,6,0,0,science and angst,science,angst,1,2
+35,anguish,pain,31259,0.194631946,His injury caused him a lot of pain and anguish and a long recovery.,8,0,25175,pain and anguish,pain,anguish,1,1
+36,animosity,resistance,164,0.4756097561,The audience started to turn to resistance and animosity after the presenter's controversial speech.,7,0,86,resistance and animosity,resistance,animosity,1,2
+47,articulation,establishment,60,0,The CEO believes that the establishment and articulation of rules is key to a well-functioning corporation.,6,0,60,establishment and articulation,establishment,articulation,1,1
+48,arts,crafts,454080,0.9952497357,Lilly enjoys doing crafts and arts to relax when she is stressed.,4,0,2157.000013,crafts and arts,crafts,arts,1,2
+51,assistant,confidante,216,0.6296296296,Mrs. Green's sole confidante and assistant was her youngest daughter.,4,0,80.00000001,confidante and assistant,confidante,assistant,1,1
+53,attraction,conflict,77,1,"Clearly, both conflict and attraction existed between the two main characters.",3,0,0,conflict and attraction,conflict,attraction,1,2
+57,authority,decency,70,1,This man of decency and authority finally gave in under the blow.,4,0,0,decency and authority,decency,authority,1,1
+58,background,dancers,0,0,The art design for the show was so well done that the dancers and background merged into a shimmering unity .,13,0,0,dancers and background,dancers,background,1,2
+61,bankruptcy,death,636,0.7311320755,The old man has no fear of death and bankruptcy because he regards the well-being of others higher than his own.,8,0,171,death and bankruptcy,death,bankruptcy,1,1
+62,barnyard,coop,0,0,Any bird accustomed only to the predictable life of coop and barnyard would be overwelmed by the events of the last hour.,10,0,0,coop and barnyard,coop,barnyard,1,2
+65,beginnings,greetings,0,0,"As a pessimist, he believes that greetings and beginnings are the best part of any human interaction.",7,0,0,greetings and beginnings,greetings,beginnings,1,1
+66,bellboy,chambermaid,0,0,He should interview the chambermaid and bellboy before they get off their shifts.,5,0,0,chambermaid and bellboy,chambermaid,bellboy,1,2
+67,benefactor,sponsor,108,0,It was announced that the school would be renamed after its sponsor and benefactor from its early years.,12,0,108,sponsor and benefactor,sponsor,benefactor,1,1
+68,berries,gardens,0,0,The book on gardens and berries written by the famous botanist is accessible for everyone.,4,0,0,gardens and berries,gardens,berries,1,2
+69,bicep,forearm,310,0.4806451613,I was impressed by the strength in the man's forearm and bicep although he looks relatively thin.,10,0,161,forearm and bicep,forearm,bicep,1,1
+72,bleedings,pills,0,0,The hospital with all those pills and bleedings has been John's least favorite place since his was a young boy.,6,0,0,pills and bleedings,pills,bleedings,1,2
+74,boy,mount,0,0,"For a moment, mount and boy hung in midair, causing gasps from the audience.",4,0,0,mount and boy,mount,boy,1,1
+75,cables,communiques,0,0,My correspondent's constant dipatch of exciting communiques and cables made me wonder what background he came from.,7,0,0,communiques and cables,communiques,cables,1,2
+78,capture,isolation,121,0.4214876033,All factors that might contribute to our country's isolation and capture must be eliminated as soon as possible.,9,0,70,isolation and capture,isolation,capture,1,1
+79,career,wanderings,0,0,The Maestro told of his wanderings and career to explain how the number seven had significantly recurred in his life several times.,6,0,0,wanderings and career,wanderings,career,1,2
+80,carpet,tile,820,0.4926829268,The best tile and carpet makers worked through Abbas's reign and those of his successors to enrich the city.,3,0,416,tile and carpet,tile,carpet,1,1
+83,chair,floor,693,0.7113997114,Mark painted the floor and chair on the day he got back.,4,0,200,floor and chair,floor,chair,1,2
+86,childhood,hobo,0,0,Sandburg went to assemble a book of songs out of his hobo and childhood days and from the memory of songs others had taught him.,12,0,0,hobo and childhood,hobo,childhood,1,1
+88,chorus,verses,532,0.1484962406,Most of the verses and chorus of the song had special meanings to the author.,4,0,453,verses and chorus,verses,chorus,1,2
+89,clarification,reexamination,72,0,All international laws are now in need of reexamination and clarification because of the change in social conditions of the present era.,9,0,72,reexamination and clarification,reexamination,clarification,1,1
+90,clarity,flavor,104,0.5096153846,My landlord lugged me up a mountainside to drink from a spring famous for its flavor and clarity a few mongths ago.,16,0,51,flavor and clarity,flavor,clarity,1,2
+93,classifications,probings,0,0,With his endless probings and classifications the analyst appears to be lacking a soul.,4,0,0,probings and classifications,probings,classifications,1,1
+94,clergymen,parishioners,104,1,This scandal involving parishioners and clergymen shocked the entire world.,4,0,0,parishioners and clergymen,parishioners,clergymen,1,2
+97,clothes,haircut,472,0.5720338983,The newcomer with his old-fashioned haircut and clothes was disliked by the superintendent.,6,0,202,haircut and clothes,haircut,clothes,1,1
+99,cologne,munich,862,0.5475638051,He will conduct two concerts in munich and cologne as well as at the Accademia Di Santa Cecilia.,7,0,390,munich and cologne,munich,cologne,1,2
+102,composure,tranquility,202,0.6287128713,He had achieved a certain tranquility and composure by accepting the fact that there were certain things he could never know.,6,0,75,tranquility and composure,tranquility,composure,1,1
+105,contortion,scream,0,0,The patient's scream and contortion scared most of the people in the room.,3,0,0,scream and contortion,scream,contortion,1,2
+106,control,needs,866,0.5912240185,Corporations must become quasi-governmental institutions subject to public needs and control if they are not to run away with us.,9,0,354,needs and control,needs,control,1,1
+107,costume,decor,839,0.6615017878,To the arts of decor and costume Mr. Nikolais has made a distinctive contribution.,5,0,284,decor and costume,decor,costume,1,2
+112,covers,towels,119,0.6470588235,The housemaid came in with clean towels and covers but was startled by the unexpected presence of Mr. Hirschman.,7,0,42,towels and covers,towels,covers,1,1
+113,cowboy,rancher,537,0.6573556797,It turned out that Tom had a number of rancher and cowboy witnesses ready to swear with straight faces that he had been out of town the day of the killing.,10,0,184,rancher and cowboy,rancher,cowboy,1,2
+114,criminality,madness,250,0.396,The young man disgusted by the madness and criminality around him left home to become a monk.,7,0,151,madness and criminality,madness,criminality,1,1
+115,crisis,destruction,83,1,The Old Order's destruction and crisis was symbolized by a dead armadillo on the stage.,4,0,0,destruction and crisis,destruction,crisis,1,2
+117,curiosity,foreboding,98,1,"Kate tried to contain her foreboding and curiosity as she read the letter, wondering what the new arrangement would mean for Juanita.",6,0,0,foreboding and curiosity,foreboding,curiosity,1,1
+120,danger,nuisance,499,0.248496994,Young boys were the main nuisance and danger according to the glassware store owner.,6,0,375,nuisance and danger,nuisance,danger,1,2
+124,denials,sacrifices,214,0.6542056075,"If providing higher standards of living gets in the way of producing sufficient guns to resist the aggression, then sacrifices and denials will have to be made.",20,0,74,sacrifices and denials,sacrifices,denials,1,1
+125,derelicts,outcasts,133,0.4661654135,The house welcomes the city's outcasts and derelicts to eat and converse.,6,0,71,outcasts and derelicts,outcasts,derelicts,1,2
+127,desire,response,702,0.7934472934,"During the animal behavior experiment, the lions' response and desire defied the scientists' predictions.",8,0,145,response and desire,response,desire,1,1
+128,desire,wishing,158,0.4240506329,She let her soul suspend itself above all wishing and desire to just relax in the tub.,9,0,91,wishing and desire,wishing,desire,1,2
+130,diamonds,mink,422,0.3981042654,The girl clad in mink and diamonds listened to the Assistant District Attorney describe her to the arraigning judge.,5,0,254,mink and diamonds,mink,diamonds,1,1
+132,direction,moment,181,0.4475138122,The attack that happened in the least expected moment and direction caught everyone off guard.,9,0,99.99999999,moment and direction,moment,direction,1,2
+133,directness,truth,390,0.5948717949,Her insistence on truth and directness caused some problems in their relationship.,4,0,158,truth and directness,truth,directness,1,1
+134,disarray,impasse,0,0,"According to some, the impasse and disarray of European politics were reflected in ""Waiting For Godot"".",5,0,0,impasse and disarray,impasse,disarray,1,2
+136,disrespect,misunderstanding,55,0,Wright had to endure the misunderstanding and disrespect as he best could.,6,0,55,misunderstanding and disrespect,misunderstanding,disrespect,1,1
+137,distinction,tone,127,0,The rider gave the day tone and distinction by breaking the world record.,6,0,127,tone and distinction,tone,distinction,1,2
+139,dogs,grandchildren,98,0.4591836735,My grandmother was too indulgent a lover of grandchildren and dogs to be an impassioned gardener.,9,0,53,grandchildren and dogs,grandchildren,dogs,1,1
+141,drawing,models,191,0.1989528796,Dennis never went down to the factory but the models and drawing were done by him.,10,0,153,models and drawing,models,drawing,1,2
+143,dryness,dust,433,0.3833718245,The season of dust and dryness is brought by the monsoon from the northeast.,4,0,267,dust and dryness,dust,dryness,1,1
+144,emeralds,peanuts,0,0,Those crazy people knew clearly the relative values of peanuts and emeralds but insisted on selling them at the same price.,10,0,0,peanuts and emeralds,peanuts,emeralds,1,2
+145,employees,proprietors,689,0.3018867925,"Strikes should be declared illegal against corporations because proprietors and employees must be completely interdependent, as they are each a part of the whole.",9,0,481,proprietors and employees,proprietors,employees,1,1
+146,envelope,pencil,347,0.5677233429,Eugenia was sitting at the kitchen table with the pencil and envelope jotting down words and figures.,10,0,150,pencil and envelope,pencil,envelope,1,2
+147,envy,hurt,124,0.5564516129,Helena was full of hurt and envy when she decided to tell Demetrius the two lovers' secret.,5,0,55,hurt and envy,hurt,envy,1,1
+148,equality,relativism,0,0,"The theory suffers from many weaknesses, with relativism and equality being its biggest problems.",8,0,0,relativism and equality,relativism,equality,1,2
+151,farms,hayfields,0,0,The gravel roads leading past hayfields and farms will be paved next year.,6,0,0,hayfields and farms,hayfields,farms,1,1
+160,freedom,israel,62,0,For the soldier israel and freedom are above everything else.,4,0,62,israel and freedom,israel,freedom,1,2
+163,gadgets,prowess,0,0,"Despite the scientific prowess and gadgets we have, new unanswered questions are arising every day.",4,0,0,prowess and gadgets,prowess,gadgets,1,1
+164,garden,livestock,476,0.6596638655,Adequate water for your livestock and garden may be provided by a pond.,5,0,162,livestock and garden,livestock,garden,1,2
+165,garden,pavilion,325,0.4307692308,Chehel Sotun was a pavilion and garden built in the seventeenth century.,5,0,185,pavilion and garden,pavilion,garden,1,1
+167,gardens,housing,61,0,A fringe of housing and gardens lined the top of the hill.,4,0,61,housing and gardens,housing,gardens,1,2
+168,gasps,rushes,0,0,The boys exclaimed in rushes and gasps as they searched all around the house.,5,0,0,rushes and gasps,rushes,gasps,1,1
+169,gentility,principle,0,0,Having lived a life of principle and gentility Cousin Elec passed away peacefully in his bed.,6,0,0,principle and gentility,principle,gentility,1,2
+172,goodnight,lullaby,226,0,The baby needs her mom's lullaby and goodnight to go to sleep.,6,0,226,lullaby and goodnight,lullaby,goodnight,1,1
+175,grandfather,great-grandfather,0,0,Mr. Walton's great-grandfather and grandfather were scholars in the same field as well.,3,0,0,great-grandfather and grandfather,great-grandfather,grandfather,1,2
+176,greed,pettiness,296,0.4155405405,She is now freed from pettiness and greed by leading a simple life in the countryside.,6,0,173,pettiness and greed,pettiness,greed,1,1
+179,hat,tunic,331,0.5407854985,The tall man in a tunic and hat was my friend Henry.,6,0,152,tunic and hat,tunic,hat,1,2
+180,head-tossing,prancing,0,0,The pop star's signature prancing and head-tossing cannot be easily immitated by impersonators.,5,0,0,prancing and head-tossing,prancing,head-tossing,1,1
+181,hearsay,legend,435,0.4942528736,People who fill their heads with legend and hearsay have a hard time accepting the truth.,7,0,220,legend and hearsay,legend,hearsay,1,2
+182,heat,outcry,0,0,The superintendent has noticed some outcry and heat among the assembly line workers.,6,0,0,outcry and heat,outcry,heat,1,1
+183,hillbilly,jazz,59,0,Ears used to jazz and hillbilly will not be surprised by the new albumn from the studio.,4,0,59,jazz and hillbilly,jazz,hillbilly,1,2
+184,holland,japan,922,0.5921908894,His mentioning of japan and holland opened up a discussion among the guests.,4,0,376,japan and holland,japan,holland,1,1
+185,honeysuckle,rosebush,0,0,A tangle of rosebush and honeysuckle could be seen from the window.,4,0,0,rosebush and honeysuckle,rosebush,honeysuckle,1,2
+186,hope,smiles,245,0.6081632653,The little girl raised with smiles and hope had not the slightest idea of suffering.,6,0,96,smiles and hope,smiles,hope,1,1
+190,incredulity,shock,736,0.2364130435,Everyone was left in shock and incredulity by the speaker's speech.,5,0,562,shock and incredulity,shock,incredulity,1,2
+191,inertia,petulance,0,0,Having broken out of a long period of petulance and inertia Charles regained his old self.,9,0,0,petulance and inertia,petulance,inertia,1,1
+193,instinct,judgement,91,0.5054945055,An ignorant person's judgement and instinct can never be trusted.,4,0,45,judgement and instinct,judgement,instinct,1,2
+196,interconnectedness,quality,0,0,Leading a life of quality and interconnectedness is Helen's ultimate goal.,5,0,0,quality and interconnectedness,quality,interconnectedness,1,1
+197,ivory,sandalwood,390,0.6461538462,The antique French chess set in sandalwood and ivory was passed down to me from my grandfather.,7,0,138,sandalwood and ivory,sandalwood,ivory,1,2
+198,jazz,marijuana,47,1,"In college, marijuana and jazz were Martin's best friends.",3,0,0,marijuana and jazz,marijuana,jazz,1,1
+199,jubilation,regret,0,0,The engineer of the dam looks back with mingled regret and jubilation now that the project is complete.,10,0,0,regret and jubilation,regret,jubilation,1,2
+203,lights,motor,779,0.568677792,I turned off my motor and lights because nobody was going anywhere in this traffic jam.,5,0,336,motor and lights,motor,lights,1,1
+204,linguist,therapist,0,0,It should be clear to every therapist and linguist that the word not used can be as important as the word that is used.,7,0,0,therapist and linguist,therapist,linguist,1,2
+208,liquor,luxury,43,1,She had indulged herself in luxury and liquor too much before re-examining her way of life.,6,0,0,luxury and liquor,luxury,liquor,1,1
+213,meaningfulness,relevance,461,0.4403470716,The comments are sorted by their relevance and meaningfulness in order to be used for market research.,7,0,258,relevance and meaningfulness,relevance,meaningfulness,1,2
+214,mechanics,technique,516,0.5484496124,My ballet teacher gave us an overview of the technique and mechanics during the first class.,10,0,233,technique and mechanics,technique,mechanics,1,1
+215,medicines,yeast,0,0,A delivery of yeast and medicines arrived by plane this morning.,4,0,0,yeast and medicines,yeast,medicines,1,2
+216,miners,teamsters,225,0.64,All the teamsters and miners gathered at the company to demand better working conditions.,3,0,81,teamsters and miners,teamsters,miners,1,1
+221,nationalism,sentiment,164,0,Books that are marketed via sentiment and nationalism are not popular anymore.,6,0,164,sentiment and nationalism,sentiment,nationalism,1,2
+222,neighborliness,politeness,0,0,"Because of his politeness and neighborliness, Jack is on good terms with everyone in his community.",4,0,0,politeness and neighborliness,politeness,neighborliness,1,1
+223,nightingales,roses,878,0.3223234624,The traveler in the desert saw a great garden filled with roses and nightingales but he knew it must have been an illusion.,12,0,595,roses and nightingales,roses,nightingales,1,2
+224,non-poetry,poetry,0,0,Literary works including poetry and non-poetry can be analyzed under the proposed framework.,4,0,0,poetry and non-poetry,poetry,non-poetry,1,1
+226,optimism,practicality,91,1,Christina was trying to find a proper balance between practicality and optimism through meditation every morning.,10,0,0,practicality and optimism,practicality,optimism,1,2
+229,passage,rhythm,0,0,"When the lovers were together, time's rhythm and passage seemed to change drastically.",7,0,0,rhythm and passage,rhythm,passage,1,1
+230,patients,psychiatrists,882,0.3571428571,Good relationships between psychiatrists and patients must be established slowly.,4,0,567,psychiatrists and patients,psychiatrists,patients,1,2
+233,pen,telephone,0,0,He sat down at the hotel desk with his telephone and pen to resume his work.,10,0,0,telephone and pen,telephone,pen,1,1
+234,people,soils,0,0,Designers need to take both soils and people into consideration when designing gardens for their clients.,6,0,0,soils and people,soils,people,1,2
+236,poise,posture,591,0.4247038917,The young lady was admired for her posture and poise by all the young men in the ballroom.,8,0,340,posture and poise,posture,poise,1,1
+238,preparations,services,91,0.6043956044,Kate moved through all the services and preparations in a state of bewilderment .,6,0,36,services and preparations,services,preparations,1,2
+239,promoters,salesmen,373,0.5495978552,Mr. Duncan is such a nice person that he even welcomes salesmen and promoters to join him for tea.,12,0,168,salesmen and promoters,salesmen,promoters,1,1
+240,reason,sight,630,0.2047619048,The girl was deprived of sight and reason by her rare medical condition.,6,0,501,sight and reason,sight,reason,1,2
+243,romance,snobbery,0,0,Having arrived at an age for snobbery and romance the girls started to behave differently.,7,0,0,snobbery and romance,snobbery,romance,1,1
+244,salt,whiskey,248,0.5524193548,Mark's mother used whiskey and salt to treat itching skin.,4,0,111,whiskey and salt,whiskey,salt,1,2
+253,sparkle,spring,150,0,Henry was still full of spring and sparkle even in his fifties.,6,0,150,spring and sparkle,spring,sparkle,1,1
+257,starvation,suicide,202,1,People are dying of suicide and starvation in many parts of the world.,5,0,0,suicide and starvation,suicide,starvation,1,2
+258,sushi,tea,0,0,Kate prepared tea and sushi for each of her visitors.,3,0,0,tea and sushi,tea,sushi,1,1
+259,suspense,worry,334,0.3832335329,Once Bill had quieted all the worry and suspense the situation didn't seem that bad after all.,7,0,206,worry and suspense,worry,suspense,1,2
+260,temperature,wind-velocity,0,0,Edward checked the wind-velocity and temperature before setting out to the field.,4,0,0,wind-velocity and temperature,wind-velocity,temperature,1,1
+261,tension,terror,918,0.6699346405,The news caused terror and tension as soon as the latest report came out.,4,0,303,terror and tension,terror,tension,1,2
+262,unhappiness,women,0,0,Men who believe that women and unhappiness go together always mess up their dates.,5,0,0,women and unhappiness,women,unhappiness,1,1
+271,beauty,dignity,25267,0.5212728064,The girl had both dignity and beauty but was lacking intelligence.,5,0,12096,dignity and beauty,dignity,beauty,1,2
+276,black,white,2268565,0.8322018545,Dalmatians found in colors other than white and black are highly unusual.,7,0,380660.9999,white and black,white,black,1,1
+279,boats,ships,24996,0.3792606817,The pier was full of ships and boats ready to take off on an adventure.,6,0,15516,ships and boats,ships,boats,1,2
+280,bodies,faces,26522,0.2394992836,Grant wrote a poem about how everyone's faces and bodies are beautiful and unique.,8,0,20170,faces and bodies,faces,bodies,1,1
+289,boys,men,263583,0.2523910874,There were a lot of men and boys at the park today.,6,0,197057,men and boys,men,boys,1,2
+290,bread,butter,261886,0.98716999,Brent likes to eat butter and bread for breakfast when he doesn't have a lot of time in the morning.,5,0,3359.999999,butter and bread,butter,bread,1,1
+294,brother,mother,57486,0.1291270918,Last week my mother and brother came to visit me in my new apartment.,4,0,50063,mother and brother,mother,brother,1,2
+298,cakes,pies,22636,0.5034016611,Hannah had a real sweet tooth for pies and cakes so she took up baking as a hobby.,8,0,11241,pies and cakes,pies,cakes,1,1
+300,cause,consequence,11492,0.9420466411,Finn didn't want to think about the consequence and cause of him losing his job.,8,0,666.0000005,consequence and cause,consequence,cause,1,2
+302,ceiling,walls,90509,0.1970743241,The painter finished painting the walls and ceiling of all of the bedrooms.,6,0,72672,walls and ceiling,walls,ceiling,1,1
+303,cents,dollars,127135,0.003059739647,The boy brought his dollars and cents to the store to buy an ice cream cone.,5,0,126746,dollars and cents,dollars,cents,1,2
+305,chairs,sofas,35053,0.5607223348,The hoarder had many sofas and chairs in their living room.,5,0,15398,sofas and chairs,sofas,chairs,1,1
+306,chairs,table,56411,0.1057240609,The event planner fixed the table and chairs to accommodate all of the wedding guests.,6,0,50447,table and chairs,table,chairs,1,2
+309,chest,stomach,25203,0.7111851764,Tom felt pain in both his stomach and chest so he decided to stay home from school.,7,0,7278.999999,stomach and chest,stomach,chest,1,1
+312,childhood,infancy,103215,0.01835973453,The students watched a video on infancy and childhood in their human development class.,7,0,101320,infancy and childhood,infancy,childhood,1,2
+314,church,community,39253,0.8295416911,Tim has said that his community and church are very important to him.,6,0,6690.999999,community and church,community,church,1,1
+316,city,county,315000,0.821015873,The meeting had representatives from both the county and city to discuss policy changes.,8,0,56380.00001,county and city,county,city,1,2
+317,city,state,184793,0.6482767204,He liked his state and city too much to move away.,4,0,64996.00001,state and city,state,city,1,1
+318,clarity,precision,28178,0.7098090709,Devin tried to achieve precision and clarity in everything he did.,5,0,8177,precision and clarity,precision,clarity,1,2
+319,classmates,friends,13278,0.3248230155,We have been friends and classmates all the way from kindergarten to college.,4,0,8965,friends and classmates,friends,classmates,1,1
+320,closets,drawers,10283,0.4827385004,Ben needed a lot of drawers and closets to store all of his clothes.,6,0,5319,drawers and closets,drawers,closets,1,2
+322,coffee,sandwiches,19962,0.5174832181,The company had sandwiches and coffee catered for their employees.,4,0,9632,sandwiches and coffee,sandwiches,coffee,1,1
+327,color,texture,90359,0.7614736772,Sarah was known for the texture and color she used in her paintings.,6,0,21553,texture and color,texture,color,1,2
+329,comfort,ease,52544,0.287911084,"Her parents liked the ease and comfort of flying, so they flew to their friend's wedding.",5,0,37416,ease and comfort,ease,comfort,1,1
+330,comings,goings,141234,0.9128609258,The school newspaper reported on the goings and comings of the student body.,7,0,12307.00001,goings and comings,goings,comings,1,2
+331,command,control,170958,0.9739175704,The eldest sibling wanted to control and command all of their younger siblings.,6,0,4459,control and command,control,command,1,1
+335,conscience,religion,15154,0.7004091329,Bree is reading a book about the relationship between religion and conscience in her book club.,10,0,4540,religion and conscience,religion,conscience,1,2
+337,corruption,crime,16627,0.1909544716,All of the crime and corruption in the city made Tony want to move.,4,0,13452,crime and corruption,crime,corruption,1,1
+338,costumes,masks,12920,0.4411764706,Tammy had to buy masks and costumes for all of the Halloween parties she was going to attend.,5,0,7220,masks and costumes,masks,costumes,1,2
+339,cotton,tobacco,40004,0.7100039996,The company has sold tobacco and cotton for almost twenty years.,5,0,11601,tobacco and cotton,tobacco,cotton,1,1
+343,cousins,uncles,21181,0.1845049809,Olivia said her uncles and cousins are her favorite family members.,4,0,17273,uncles and cousins,uncles,cousins,1,2
+344,crannies,nooks,46060,0.002648719062,He made sure to dust all of the nooks and crannies throughout the old house.,9,0,45938,nooks and crannies,nooks,crannies,1,1
+345,cream,peaches,13614,0.01939180256,We had peaches and cream for dessert at the diner down the street.,3,0,13350,peaches and cream,peaches,cream,1,2
+346,crime,poverty,21270,0.3729196051,The study on the link between poverty and crime was published in the local newspaper.,7,0,13338,poverty and crime,poverty,crime,1,1
+348,crime,violence,63327,0.7296098031,The frequent violence and crime in the neighborhood had people worried.,3,0,17123,violence and crime,violence,crime,1,2
+350,cysts,tumors,11633,0.4969483366,Paul had an appointment with his doctor to check for any tumors and cysts that he might have.,12,0,5852,tumors and cysts,tumors,cysts,1,1
+351,dairy,poultry,13945,0.6899964145,You will often find poultry and dairy close to each other in the refrigerated aisle of the grocery store.,5,0,4323,poultry and dairy,poultry,dairy,1,2
+352,dark,light,292691,0.2445377548,Johanna thought the contrast between light and dark colors in the painting made it interesting to look at.,6,0,221117,light and dark,light,dark,1,1
+353,dates,events,15058,0.7338291938,Katrina had many events and dates to attend because she was very popular.,4,0,4008,events and dates,events,dates,1,2
+355,day,night,1876827,0.6975288612,It is harder to tell the difference between night and day if you can't see.,9,0,567686,night and day,night,day,1,1
+356,days,nights,445957,0.9144469086,Finn spent many nights and days working on writing his novel.,4,0,38152.99998,nights and days,nights,days,1,2
+360,democracy,liberty,29095,0.3831586183,Jade's brother talked about liberty and democracy while they ate dinner on the fourth of July.,5,0,17947,liberty and democracy,liberty,democracy,1,1
+361,despair,rage,17146,0.173276566,Annie felt a lot of rage and despair so she wanted to talk with a therapist.,6,0,14175,rage and despair,rage,despair,1,2
+362,development,research,1380352,0.01925016228,"The scientist had a lot of research and development to do, because he had been sick for a long time.",7,0,1353780,research and development,research,development,1,1
+363,diagnosis,treatment,448278,0.9913000415,Marissa found that her treatment and diagnosis at the hospital were completely different from what she anticipated.,5,0,3899.999996,treatment and diagnosis,treatment,diagnosis,1,2
+364,diamonds,rubies,18750,0.60896,The pirates followed the treasure map to find that rubies and diamonds were hidden in the treasure chest.,10,0,7332,rubies and diamonds,rubies,diamonds,1,1
+365,dirt,sweat,11621,0.4766371225,Mike needed to wash the sweat and dirt out of his soccer uniform.,6,0,6081.999999,sweat and dirt,sweat,dirt,1,2
+367,distress,pain,24052,0.1803592217,The couple's divorce caused a lot of pain and distress for the whole family.,8,0,19714,pain and distress,pain,distress,1,1
+368,dogs,men,24614,0.348622735,Her grandma joked that men and dogs had a lot in common.,5,0,16033,men and dogs,men,dogs,1,2
+370,doubts,fears,71893,0.7722865926,"She wanted to be a pop star, but her fears and doubts got in the way of her dream.",10,0,16371,fears and doubts,fears,doubts,1,1
+373,earth,sky,131176,0.7843507959,Talking about the sky and earth was one of Randy's favorite things to do.,4,0,28288,sky and earth,sky,earth,1,2
+374,editing,publishing,11644,0.8752147029,The company did the publishing and editing for many well-known books.,5,0,1452.999999,publishing and editing,publishing,editing,1,1
+380,ends,odds,188194,0.003767388971,"The new restaurant was almost ready for the grand opening, but had a few odds and ends to deal with before the big night.",15,0,187485,odds and ends,odds,ends,1,2
+382,engineers,scientists,229487,0.2510251125,There were a good number of scientists and engineers present at the conference.,7,0,171880,scientists and engineers,scientists,engineers,1,1
+383,equipment,personnel,64626,0.4141367252,The company had an appropriate amount of personnel and equipment in order to make sure everyone at the event would be safe.,8,0,37862,personnel and equipment,personnel,equipment,1,2
+386,evening,morning,282270,0.07635951394,Victor plans on spending tomorrow morning and evening reading the new book he bought.,6,0,260716,morning and evening,morning,evening,1,1
+387,everybody,everything,88771,0.3626747474,Noah loved everything and everybody in his college town.,3,0,56576,everything and everybody,everything,everybody,1,2
+388,expense,time,78761,0.09267276952,He said that the time and expense of maintaining the property was too much.,5,0,71462,time and expense,time,expense,1,1
+389,eyes,face,61214,0.3126572353,The instructions in the lab ask you cover your face and eyes when you operate any machinery.,10,0,42075,face and eyes,face,eyes,1,2
+390,eyes,hair,108355,0.3496839094,"In order to make your hair and eyes stand out, you should choose an appropriate outfit.",6,0,70465,hair and eyes,hair,eyes,1,1
+391,face,figure,57306,0.9229749066,The model's figure and face was highlighted in the magazine spread.,3,0,4414.000002,figure and face,figure,face,1,2
+392,facts,figures,183738,0.9783877042,Lauren needed to get her figures and facts straight before her business plan presentation.,6,0,3971.000006,figures and facts,figures,facts,1,1
+393,faith,life,44519,0.696242054,He wanted to write a book about life and faith using many personal stories.,8,0,13523,life and faith,life,faith,1,2
+395,fall,rise,746325,0.02994807892,I've gotten particularly ill due to the rise and fall of the waves out at sea.,8,0,723974,rise and fall,rise,fall,1,1
+396,fall,winter,174361,0.9865795677,In the months during winter and fall students tend to feel a bit sadder due to the cold and gloomy weather.,5,0,2339.999996,winter and fall,winter,fall,1,2
+397,family,neighborhood,17862,0.8362445415,She loved her neighborhood and family so she was sad about leaving for college.,4,0,2925,neighborhood and family,neighborhood,family,1,1
+399,father,mother,1590868,0.601676569,"Because Stephanie was grounded, her mother and father would not permit her to go out with her friends.",6,0,633680,mother and father,mother,father,1,2
+400,father,son,486090,0.9679236355,Eric enjoys going to the movies with his son and father so much that he decided to make it a weekly tradition for them.,9,0,15592.00002,son and father,son,father,1,1
+404,feet,hands,574548,0.117742991,The child's hands and feet were numb from playing in the snow.,3,0,506899,hands and feet,hands,feet,1,2
+405,feet,legs,194658,0.3892981537,The soccer player injured their legs and feet during a very intense game.,6,0,118878,legs and feet,legs,feet,1,1
+406,female,male,1742846,0.07364792988,The dog breeder has male and female puppies coming up for sale soon.,5,0,1614489,male and female,male,female,1,2
+415,flesh,skin,27576,0.3535320569,Cory explained the difference between skin and flesh to his little brother.,6,0,17827,skin and flesh,skin,flesh,1,1
+416,flowers,herbs,27473,0.4178648127,Dan grew herbs and flowers in his own backyard.,3,0,15993,herbs and flowers,herbs,flowers,1,2
+417,flowers,plants,78739,0.3853871652,All of the plants and flowers in the Arboretum made it a popular spot for walks.,4,0,48394,plants and flowers,plants,flowers,1,1
+418,fog,mist,15420,0.5708819715,All of the mist and fog made Terry want to stay inside the house all day.,4,0,6616.999999,mist and fog,mist,fog,1,2
+425,friends,relations,83205,0.6741301604,Ciara had many relations and friends so she was rarely lonely.,4,0,27114,relations and friends,relations,friends,1,1
+428,fun,games,54491,0.9751885632,Sally promised that there would be games and fun at her birthday party.,7,0,1352.000003,games and fun,games,fun,1,2
+430,gas,oil,1040905,0.0854477594,"Sam had just bought a new car and didn't know the difference between oil and gas, so she ruined her car.",14,0,951962,oil and gas,oil,gas,1,1
+431,gentlemen,ladies,501922,0.09135283968,The hostess in the venue lead the ladies and gentlemen to their respective tables at the wedding banquet.,8,0,456070,ladies and gentlemen,ladies,gentlemen,1,2
+432,gin,tonic,36799,0.998124949,"After a long day of work, he had a tonic and gin to unwind and celebrate the weekend.",10,0,69.00000175,tonic and gin,tonic,gin,1,1
+433,glass,steel,41200,0.4629126214,The architect wanted the building to have a lot of steel and glass to make it look sleek and modern.,11,0,22128,steel and glass,steel,glass,1,2
+434,god,man,501367,0.8238296497,The friends had a discussion about the relationship between man and god after school last week.,10,0,88326.00002,man and god,man,god,1,1
+435,goods,services,1553253,0.9925981151,The village people would not trade services and goods for money because they don't use currency.,7,0,11496.99993,services and goods,services,goods,1,2
+436,gratitude,joy,30564,0.2809841644,David felt joy and gratitude when his kids made him breakfast in bed.,3,0,21976,joy and gratitude,joy,gratitude,1,1
+437,groups,individuals,441733,0.2521455268,Differentiating between individuals and groups became increasingly difficult as the crowd grew larger.,3,0,330352,individuals and groups,individuals,groups,1,2
+438,guidance,information,32507,0.1762697265,She got a lot of information and guidance from her older sister about the college admissions process.,6,0,26777,information and guidance,information,guidance,1,1
+440,hair,skin,93412,0.3866847942,The doctor recommended skin and hair supplements to some of her patients.,4,0,57291,skin and hair,skin,hair,1,2
+442,head,shoulders,252972,0.9552124346,The doctor looked at Ashley's shoulders and head because she said that both were bothering her.,6,0,11329.99999,shoulders and head,shoulders,head,1,1
+445,hearing,sight,79594,0.1376611302,His grandma lost her sight and hearing so she needed to live in a nursing home.,5,0,68637,sight and hearing,sight,hearing,1,2
+446,heart,mind,433049,0.4663144355,It took a long time for Sarah's mind and heart to recover after her husband died.,8,0,231112,mind and heart,mind,heart,1,1
+447,heir,son,137375,0.003210191083,The king's son and heir went missing after the battle.,3,0,136934,son and heir,son,heir,1,2
+448,help,understanding,10362,0.5557807373,She appreciated Claire's understanding and help when it came to teaching John how to ride a bike.,4,0,4603,understanding and help,understanding,help,1,1
+450,honey,milk,113327,0.05635903183,Jack's mother gave him milk and honey in order to calm him after a nightmare.,5,0,106940,milk and honey,milk,honey,1,2
+451,horses,wagons,28583,0.725501172,"Instead of a car, they used wagons and horses to move their belongings to a new town.",7,0,7846.000001,wagons and horses,wagons,horses,1,1
+452,houses,shops,33872,0.6144307983,"The town is pretty small, so the shops and houses are really close to each other.",8,0,13060,shops and houses,shops,houses,1,2
+453,humility,pride,12307,0.3033233119,It is hard to have both pride and humility when one is rich and famous.,7,0,8574,pride and humility,pride,humility,1,1
+454,husband,wife,1075512,0.9745981449,Because the wife and husband didn't love each other anymore they pondered going their separate ways.,3,0,27319.99998,wife and husband,wife,husband,1,2
+455,husbands,wives,272233,0.8956555598,The counselor met with many wives and husbands throughout his long career.,6,0,28405.99999,wives and husbands,wives,husbands,1,1
+457,ice,water,54953,0.5168962568,The kids went all over town to find water and ice since their air conditioner was broken.,9,0,26548,water and ice,water,ice,1,2
+459,inclination,time,10476,0.02520045819,Samuel had the time and inclination to help his little brother with his homework.,4,0,10212,time and inclination,time,inclination,1,1
+462,information,material,17241,0.4884867467,Fred lacked the material and information to work on the project.,4,0,8819,material and information,material,information,1,2
+464,iron,wood,29016,0.2993176179,The company purchased wood and iron for their latest construction project.,4,0,20331,wood and iron,wood,iron,1,1
+465,jacket,trousers,18202,0.7891989891,Ted needed to iron his trousers and jacket before his big meeting.,6,0,3837,trousers and jacket,trousers,jacket,1,2
+466,jams,jellies,24827,0.8031981311,Jake started making jellies and jams with all the fruit he was growing in his garden.,4,0,4885.999999,jellies and jams,jellies,jams,1,1
+468,joy,pleasure,28376,0.6589018889,Tucking yourself into bed provides a great sense of pleasure and joy at the end of a long day.,10,0,9679.000001,pleasure and joy,pleasure,joy,1,2
+471,labor,money,17606,0.4503578326,The amount of money and labor required to keep the farm was not worth it to Mark.,4,0,9676.999999,money and labor,money,labor,1,1
+472,land,sea,413757,0.6887617611,They had to travel across sea and land to get to their final destination.,6,0,128777,sea and land,sea,land,1,2
+473,landings,takeoffs,17024,0.2288533835,Christian enjoyed watching the takeoffs and landings of the planes at the airport.,5,0,13128,takeoffs and landings,takeoffs,landings,1,1
+475,lecturer,writer,15994,0.3650118795,She was both a writer and lecturer but wanted to be an actor instead.,5,0,10156,writer and lecturer,writer,lecturer,1,2
+483,location,size,104236,0.3134041982,The couple told the realtor that size and location are the most important criteria for picking a house.,7,0,71568,size and location,size,location,1,1
+484,machinery,power,11022,0.2724550898,She didn't think they had enough power and machinery to fulfill the large bulk order.,7,0,8019,power and machinery,power,machinery,1,2
+485,magazines,newspapers,378784,0.2997988299,Anna has written articles for many newspapers and magazines throughout her career as a journalist.,7,0,265225,newspapers and magazines,newspapers,magazines,1,1
+486,magic,superstition,11125,0.6986067416,He thinks superstition and magic are definitely not real.,3,0,3353,superstition and magic,superstition,magic,1,2
+488,man,nature,178124,0.7225921268,Harry wanted to talk about how nature and man interact in today's society.,7,0,49413.00001,nature and man,nature,man,1,1
+489,man,wife,213993,0.9976774941,I learned that the wife and man got married after dating for 5 years.,5,0,497.0000051,wife and man,wife,man,1,2
+490,man,woman,731849,0.9605779334,He noticed that both the woman and man had green sneakers on.,6,0,28851.00002,woman and man,woman,man,1,1
+492,meaning,origin,30841,0.154956065,Michael was confused about both the origin and meaning of the folk tale he had just heard.,7,0,26062,origin and meaning,origin,meaning,1,2
+493,men,officers,457386,0.09059962482,Nicole's history textbook listed an estimate of the number of officers and men who died during the civil war.,11,0,415947,officers and men,officers,men,1,1
+494,men,women,7628255,0.9064281412,The guard instructed the women and men to form an orderly line.,5,0,713789.9998,women and men,women,men,1,2
+496,minerals,vitamins,179421,0.1422241544,The human body needs both vitamins and minerals in order to continue functioning properly.,6,0,153903,vitamins and minerals,vitamins,minerals,1,1
+498,money,time,572131,0.1033696828,The amount of time and money required to fix up the old car made it quite the project.,4,0,512990,time and money,time,money,1,2
+500,moon,sun,322714,0.08936085822,Rebecca got a sun and moon tattooed on her left arm.,4,0,293876,sun and moon,sun,moon,1,1
+506,muscles,nerves,55557,0.4155551956,Allison felt like her nerves and muscles were on fire after running a marathon.,5,0,32470,nerves and muscles,nerves,muscles,1,2
+507,names,numbers,48724,0.8205401855,The host asked for both the numbers and names of the people who wanted to make reservations.,7,0,8744.000002,numbers and names,numbers,names,1,1
+508,nature,size,38101,0.3056350227,Sometimes it is hard to figure out the size and nature of a problem just from reading about it in the news.,9,0,26456,size and nature,size,nature,1,2
+512,north,south,1532336,0.9390120705,The family moved south and north a couple of times before deciding on their current home.,4,0,93453.99994,south and north,south,north,1,1
+514,nose,throat,101711,0.9214834187,Springtime allergies make my throat and nose a lot more irritated than the rest of the year.,5,0,7986.000001,throat and nose,throat,nose,1,2
+515,novelist,poet,43417,0.3425156045,Lydia is a successful poet and novelist and is praised for her writing style.,5,0,28546,poet and novelist,poet,novelist,1,1
+516,novels,stories,70893,0.4949854005,The famous author had published many stories and novels over the past twenty years.,7,0,35802,stories and novels,stories,novels,1,2
+518,pad,pencil,35363,0.7996210729,Antonio brought his pencil and pad to sketch the statues in the park.,4,0,7085.999999,pencil and pad,pencil,pad,1,1
+520,pain,shame,14173,0.6648557116,Todd felt shame and pain when he talked about his divorce.,3,0,4749.999999,shame and pain,shame,pain,1,2
+521,paper,pen,86400,0.2285416667,"Even though most people use computers, I prefer to use pen and paper to take my notes in class.",11,0,66654,pen and paper,pen,paper,1,1
+524,piano,violin,90587,0.2238731827,Alex loved to play the violin and piano so they took lessons for both instruments.,6,0,70307,violin and piano,violin,piano,1,2
+529,politics,religion,162465,0.3520696765,The strangers wanted to avoid discussing religion and politics to avoid starting an argument.,7,0,105266,religion and politics,religion,politics,1,1
+531,pressure,temperature,449437,0.362246544,He learned about the relationship between temperature and pressure in his science class.,7,0,286630,temperature and pressure,temperature,pressure,1,2
+534,radio,television,651263,0.744326025,Tania wanted to work in both television and radio and couldn't decide which she liked more.,7,0,166511,television and radio,television,radio,1,1
+537,rock,roll,248992,0.9972047295,He said he was ready to roll and rock after getting off of work.,7,0,695.9999923,roll and rock,roll,rock,1,2
+539,shoes,socks,64752,0.7621540647,"When it rains, your socks and shoes become more of a nuisance than something to protect your feet.",5,0,15401,socks and shoes,socks,shoes,1,1
+540,shower,tub,17557,0.179130831,Lilly wanted to install a tub and shower into her new bathroom.,6,0,14412,tub and shower,tub,shower,1,2
+541,sidewalks,streets,29202,0.1999178138,All of the streets and sidewalks were so busy that Mike decided not to leave his house.,4,0,23364,streets and sidewalks,streets,sidewalks,1,1
+543,son,wife,118681,0.05184486144,Roman lives with his wife and son in an apartment downtown.,5,0,112528,wife and son,wife,son,1,2
+545,spring,summer,381701,0.9901414982,Maddy said that summer and spring are her favorite seasons.,4,0,3762.999996,summer and spring,summer,spring,1,1
+551,turns,twists,126594,0.06704899126,The movie had many different twists and turns that left the audience on the edge of their seats.,6,0,118106,twists and turns,twists,turns,1,2
+552,vinegar,water,20603,0.6980051449,Nicole needed water and vinegar for the recipe she was trying out.,3,0,6222,water and vinegar,water,vinegar,1,1
+553,wisdom,wit,43515,0.09359990808,Clare believed she gained a lot of wit and wisdom throughout her time in college.,8,0,39442,wit and wisdom,wit,wisdom,1,2
+555,linen,silk,9625,0.4578701299,Betthany put her silk and linen shirts into the wash and they all shrank.,4,0,5218,silk and linen,silk,linen,1,1
+559,brain,intelligence,5151,0.7553873034,The committee admired the applicant's intelligence and brain so much that they decided to award her the prize.,6,0,1260,intelligence and brain,intelligence,brain,1,2
+561,completeness,unity,4700,0.2319148936,I often feel a sense of unity and completeness after completing a tedious group project.,7,0,3610,unity and completeness,unity,completeness,1,1
+563,depth,force,4062,0.6159527326,The newspaper reported on the force and depth of the earthquake that had surprised the city the night before.,6,0,1560,force and depth,force,depth,1,2
+564,hours,miles,3820,0.4136125654,It takes many miles and hours to drive between Los Angeles and Santa Barbara.,4,0,2240,miles and hours,miles,hours,1,1
+565,movements,speech,3639,0.611431712,Natalie studied the speech and movements of young children in her development psychology class.,4,0,1414,speech and movements,speech,movements,1,2
+568,happiness,laughter,3072,0.4137369792,"When you are with the one you love, laughter and happiness should be common occurences.",9,0,1801,laughter and happiness,laughter,happiness,1,1
+569,diagrams,sketches,2961,0.391421817,The architect had many sketches and diagrams to show her client.,5,0,1802,sketches and diagrams,sketches,diagrams,1,2
+570,pail,shovel,2855,0.8217162872,Cassie's parents packed the shovel and pail in order to be able to build sand castles at the beach.,5,0,509,shovel and pail,shovel,pail,1,1
+574,bouquets,wreaths,2269,0.3759365359,"At certain times of year, wreaths and bouquets are often gifted to neighbors as tokens of appreciation.",6,0,1416,wreaths and bouquets,wreaths,bouquets,1,2
+575,beech,elm,1837,0.6075122482,"During the spring, elm and beech trees can to cause some people severe allergies.",4,0,721.0000001,elm and beech,elm,beech,1,1
+577,devotion,effort,1231,0.3103168156,The intern was praised for her effort and devotion after the big event went off without a hitch.,7,0,849,effort and devotion,effort,devotion,1,2
+578,alibis,excuses,1103,0.5494106981,The student was always full of excuses and alibis for why she didn't come to class.,7,0,497,excuses and alibis,excuses,alibis,1,1
+580,integrity,unity,9540,0.2538784067,India thought that there was a lack of unity and integrity amongst her friend group.,9,0,7118,unity and integrity,unity,integrity,1,2
+581,flowers,hearts,9516,0.05023118958,Craig drew hearts and flowers on the card he was making for his mom.,3,0,9038,hearts and flowers,hearts,flowers,1,1
+582,grapefruit,oranges,7753,0.1898619889,Kyle liked to keep oranges and grapefruit in a bowl on his kitchen counter.,5,0,6281,oranges and grapefruit,oranges,grapefruit,1,2
+583,Kingston,Montreal,7177,0.3650550369,Christian wanted to visit Montreal and Kingston while on vaction in Canada.,5,0,4557,Montreal and Kingston,Montreal,Kingston,1,1
+585,doctors,fathers,5235,0.1266475645,There were many fathers and doctors in the same room.,4,0,4572,fathers and doctors,fathers,doctors,1,2
+592,receivers,senders,9936,0.03834541063,Both the senders and receivers of the letters visited the post office often.,3,0,9555,senders and receivers,senders,receivers,1,1
+593,authority,force,9915,0.3295007564,They said that Richard's force and authority made him effective at his job.,5,0,6648,force and authority,force,authority,1,2
+595,bacon,coffee,9230,0.515276273,Sara found out that coffee and bacon was a combination she did not like.,5,0,4474,coffee and bacon,coffee,bacon,1,1
+601,hardships,trials,8611,0.3377075833,They dealt with many trials and hardships with the product they were trying to launch.,5,0,5703,trials and hardships,trials,hardships,1,2
+603,neighborhood,school,8377,0.3782977199,The fantastic school and neighborhood made the price of the house extremely high.,3,0,5208,school and neighborhood,school,neighborhood,1,1
+604,irony,satire,8231,0.5875349289,The comedian used a lot of satire and irony in their show last night.,7,0,3395,satire and irony,satire,irony,1,2
+605,kitchen,pantry,8200,0.787195122,They wanted to renovate the pantry and kitchen before the renters moved in.,6,0,1745,pantry and kitchen,pantry,kitchen,1,1
+608,snow,water,7559,0.5365789126,"Carl loves being around water and snow, so he does not want to go to the desert for vacation.",5,0,3503,water and snow,water,snow,1,2
+610,bombers,missiles,7505,0.3881412392,"During the war, the missiles and bombers caused a lot of destruction.",5,0,4592,missiles and bombers,missiles,bombers,1,1
+613,laborers,servants,7407,0.4468745781,The wealthy family had a budget for servants and laborers to work at their estate.,8,0,4097,servants and laborers,servants,laborers,1,2
+616,paris,washington,7309,0.5300314681,Connor spent his summer in washington and paris even though he wanted to travel to China.,6,0,3435,washington and paris,washington,paris,1,1
+617,arm,back,7257,0.581369712,Maddy injured her back and arm during her basketball game last week.,4,0,3038,back and arm,back,arm,1,2
+618,emotion,meaning,7218,0.5685785536,The singer put a lot of meaning and emotion into all of the songs they wrote.,7,0,3114,meaning and emotion,meaning,emotion,1,1
+619,bushes,vines,7099,0.5011973517,All of the vines and bushes in the backyard made Mandy very happy.,4,0,3541,vines and bushes,vines,bushes,1,2
+620,authority,independence,6920,0.511849711,"Victor wanted more independence and authority, so he worked towards a promotion.",4,0,3378,independence and authority,independence,authority,1,1
+623,generalists,specialists,6474,0.5384615385,Martin wanted to talk with both specialists and generalists before making his decision.,7,0,2988,specialists and generalists,specialists,generalists,1,2
+625,excitement,fatigue,6150,0.4469918699,He felt both fatigue and excitement when spending the day at an amusement park.,4,0,3401,fatigue and excitement,fatigue,excitement,1,1
+627,individualism,socialism,6126,0.6549134835,Nate discussed socialism and individualism with his friend in the coffee shop.,3,0,2114,socialism and individualism,socialism,individualism,1,2
+629,brow,cheeks,5773,0.4488134419,Veronica wanted to buy some new makeup products to highlight her cheeks and brow for when she goes out.,12,0,3182,cheeks and brow,cheeks,brow,1,1
+632,20s,30s,5667,1,Amy said she enjoyed her 30s and 20s because she was able to travel the world.,6,0,0,30s and 20s,30s,20s,1,2
+635,dentist,doctor,5556,0.1479481641,He had doctor and dentist appointments back to back on Thursday.,3,0,4734,doctor and dentist,doctor,dentist,1,1
+636,bourbon,water,5555,0.9843384338,All the bar had to drink was water and bourbon so they decided to try another place.,8,0,87.00000024,water and bourbon,water,bourbon,1,2
+637,cuts,wounds,5438,0.7767561604,Max had many wounds and cuts after falling off his bike.,4,0,1214,wounds and cuts,wounds,cuts,1,1
+640,initials,names,5373,0.2739624046,Gloria wrote down both the names and initials of the people she wanted to invite to her wedding.,6,0,3901,names and initials,names,initials,1,2
+644,bitterness,disappointment,5200,0.6032692308,Kim felt a lot of disappointment and bitterness when she learned that she didn't get into her dream school.,6,0,2063,disappointment and bitterness,disappointment,bitterness,1,1
+647,body,breath,5098,0.4882306787,"Both his breath and body smelled, which made him embarassed.",3,0,2609,breath and body,breath,body,1,2
+649,hotels,pensions,4962,0.9068923821,The company spent quite a lot of money on pensions and hotels throughout their years of business.,10,0,462,pensions and hotels,pensions,hotels,1,1
+654,pies,puddings,4565,0.582694414,The baseball team had a bake sale with puddings and pies to raise money for new uniforms.,9,0,1905,puddings and pies,puddings,pies,1,2
+655,eloquence,force,4562,0.2781674704,He admires his sister for the force and eloquence she has when dealing with difficult situations.,7,0,3293,force and eloquence,force,eloquence,1,1
+662,determination,faith,4173,0.2602444285,It took faith and determination to get where she is today.,3,0,3087,faith and determination,faith,determination,1,2
+666,background,interest,4132,0.6195546951,He thought that Eduardo's interest and background in cooking would make him perfect for the personal chef role.,5,0,1572,interest and background,interest,background,1,1
+667,glass,rubber,4071,0.6082043724,Trisha made a statue out of rubber and glass for her friend's birthday.,7,0,1595,rubber and glass,rubber,glass,1,2
+668,color,scent,4058,0.680137999,Both the scent and color of the flowers made Terry happy.,3,0,1298,scent and color,scent,color,1,1
+671,activities,places,3873,0.2876323264,The many places and activities available to Ronnie meant that he was never bored.,3,0,2759,places and activities,places,activities,1,2
+672,elegance,purity,3859,0.3239181135,Her mom thought the dress exuded purity and elegance but Lauren did not agree.,7,0,2609,purity and elegance,purity,elegance,1,1
+674,power,trade,3824,0.5515167364,The country's lack of trade and power caused many financial problems.,5,0,1715,trade and power,trade,power,1,2
+675,games,races,3815,0.5588466579,All of the races and games kept Troy very entertained.,4,0,1683,races and games,races,games,1,1
+676,evenings,sundays,3744,0.8218482906,Carlos spends his sundays and evenings doing his favorite activities.,4,0,667,sundays and evenings,sundays,evenings,1,2
+679,leather,paper,3714,0.4604200323,He needed to get some paper and leather for his latest art project.,6,0,2004,paper and leather,paper,leather,1,1
+680,anguish,rage,3683,0.3670920445,She felt rage and anguish after learning that her dog had died.,3,0,2331,rage and anguish,rage,anguish,1,2
+691,detection,removal,3333,1,Victoria went to her dermatologist for removal and detection of her potentially cancerous moles.,7,0,0,removal and detection,removal,detection,1,1
+696,technology,time,3171,0.179123305,Marissa thinks it will take a lot of time and technology for humans to be able to live on Mars.,9,0,2603,time and technology,time,technology,1,2
+698,muskets,swords,3049,0.4014430961,Soldiers used to use swords and muskets when they fought in battles.,5,0,1825,swords and muskets,swords,muskets,1,1
+699,character,wisdom,3043,0.5133092343,His mom's wisdom and character made her someone he would go to for advice.,3,0,1481,wisdom and character,wisdom,character,1,2
+700,azaleas,camellias,3020,0.6006622517,He bought his wife a bouquet of camellias and azaleas for Mother's Day this year.,8,0,1206,camellias and azaleas,camellias,azaleas,1,1
+704,cliches,stereotypes,2899,0.5950327699,The movie had a lot of stereotypes and cliches but it was still one of Kim's favorites.,7,0,1174,stereotypes and cliches,stereotypes,cliches,1,2
+706,shirt,waistcoat,2852,0.4831697055,They needed to buy a new waistcoat and shirt for the upcoming event.,7,0,1474,waistcoat and shirt,waistcoat,shirt,1,1
+708,stucco,wood,2813,0.3458940633,The builders used wood and stucco to decorate the house's exterior.,4,0,1840,wood and stucco,wood,stucco,1,2
+709,activities,character,2796,0.2138769671,They questioned her character and activities for no good reason.,4,0,2198,character and activities,character,activities,1,1
+711,fulfillment,pleasure,2775,0.2064864865,Her job gave her pleasure and fulfillment along with a satisfactory salary.,5,0,2202,pleasure and fulfillment,pleasure,fulfillment,1,2
+714,despair,futility,2723,0.3657730444,Clara felt futility and despair after being fired from her new job.,3,0,1727,futility and despair,futility,despair,1,1
+715,ash,maple,2666,0.432108027,Hank saw many maple and ash trees while on his hike.,4,0,1514,maple and ash,maple,ash,1,2
+716,beauty,inspiration,2617,0.8223156286,Bridget wrote blog posts centered around inspiration and beauty in her spare time.,7,0,465,inspiration and beauty,inspiration,beauty,1,1
+718,liquids,powders,2530,0.4328063241,The factory used many different powders and liquids to make its products.,6,0,1435,powders and liquids,powders,liquids,1,2
+723,church,graveyard,2319,0.9620526089,The couple found out that the graveyard and church are right behind their new house.,7,0,87.99999996,graveyard and church,graveyard,church,1,1
+725,powers,processes,2242,0.768956289,They lacked the necessary processes and powers to finish the job.,5,0,518.0000001,processes and powers,processes,powers,1,2
+726,machinery,tractors,2213,0.4830546769,"He sold tractors and machinery for a living, but he wanted to open a bakery.",3,0,1144,tractors and machinery,tractors,machinery,1,1
+728,clay,wax,2206,0.5213055304,"Jackie loved doing different crafts, so she had a lot of wax and clay readily available to her.",12,0,1056,wax and clay,wax,clay,1,2
+730,grace,modesty,2152,0.5873605948,Chloe's grandma said that modesty and grace are qualities a person should have.,5,0,888,modesty and grace,modesty,grace,1,1
+731,brains,talent,2145,0.6904428904,Georgina had both the talent and brains to be successful at her job.,5,0,664.0000001,talent and brains,talent,brains,1,2
+732,comedy,humor,2098,0.4127740705,Ricky was confused about the difference between humor and comedy until he looked it up online.,8,0,1232,humor and comedy,humor,comedy,1,1
+735,attention,civility,2048,0.3920898438,Jane's mom said the lack of civility and attention made her very disappointed.,7,0,1245,civility and attention,civility,attention,1,2
+740,hallucinations,visions,1974,0.273556231,The man experienced visions and hallucinations when he was severely dehydrated.,4,0,1434,visions and hallucinations,visions,hallucinations,1,1
+741,commands,statements,1897,0.4048497628,The employees didn't listen to the statements and commands of the rude boss.,7,0,1129,statements and commands,statements,commands,1,2
+744,fragrance,taste,1816,0.4559471366,"She wanted to like the smoothie, but the taste and fragrance made her feel sick.",9,0,987.9999999,taste and fragrance,taste,fragrance,1,1
+746,bacteria,insects,1765,0.4549575071,Xander was afraid of insects and bacteria so he spent most of his time inside his house.,5,0,962,insects and bacteria,insects,bacteria,1,2
+748,facts,techniques,1703,0.9013505578,She wanted to discuss different techniques and facts with her new boss.,6,0,168.0000001,techniques and facts,techniques,facts,1,1
+749,anger,spite,1672,0.5633971292,George felt spite and anger towards his ex-best friend.,3,0,730,spite and anger,spite,anger,1,2
+750,money,numbers,1671,0.3674446439,Tom liked numbers and money so he decided to become an accountant.,3,0,1057,numbers and money,numbers,money,1,1
+752,abolition,emancipation,1599,0.8711694809,They learned about emancipation and abolition in their history class.,4,0,206,emancipation and abolition,emancipation,abolition,1,2
+753,nationalism,sovereignty,1597,0.500313087,He wrote a paper on sovereignty and nationalism for his political science class.,6,0,798.0000001,sovereignty and nationalism,sovereignty,nationalism,1,1
+756,background,intelligence,1562,0.685659411,Nolan had the intelligence and background to be a great teacher.,4,0,491,intelligence and background,intelligence,background,1,2
+757,battle,bloodshed,1555,0.8688102894,The soldiers blamed the bloodshed and battle on many different politicians.,5,0,204,bloodshed and battle,bloodshed,battle,1,1
+759,back,behind,1511,0.8067504964,She washed the baby's behind and back in the bath tub before putting him to bed.,5,0,291.9999999,behind and back,behind,back,1,2
+760,apprehension,terror,1482,0.3798920378,Nora felt terror and apprehension about leaving everyone she knows to move to the other side of the world.,3,0,919,terror and apprehension,terror,apprehension,1,1
+763,archaeologists,geologists,1469,0.431586113,They consulted geologists and archaeologists for the documentary they were making.,3,0,835,geologists and archaeologists,geologists,archaeologists,1,2
+767,personnel,ships,1386,0.1673881674,The company needed ships and personnel to carry out all the work they had to do.,4,0,1154,ships and personnel,ships,personnel,1,1
+769,secrecy,stealth,1319,0.3851402578,The spy used stealth and secrecy to carry out his job assignments.,4,0,811,stealth and secrecy,stealth,secrecy,1,2
+770,soldiers,subjects,1315,0.5330798479,He talked with both the subjects and soldiers about what to do next.,6,0,614,subjects and soldiers,subjects,soldiers,1,1
+773,searching,yearning,1193,0.2774518022,It took a lot of yearning and searching to figure out what she wanted to do.,6,0,862,yearning and searching,yearning,searching,1,2
+775,flight,terror,1152,0.2977430556,Marissa argued that the words terror and flight go together because she hates flying.,6,0,808.9999999,terror and flight,terror,flight,1,1
+776,gaiety,spirit,1148,0.3911149826,He admired her spirit and gaiety and enjoyed spending time with her.,4,0,699,spirit and gaiety,spirit,gaiety,1,2
+778,liberalism,progress,1123,0.6562778272,He discussed the connection between progress and liberalism with his friends who are political science majors.,6,0,386.0000001,progress and liberalism,progress,liberalism,1,1
+779,blame,hate,1113,0.6612758311,She felt hate and blame because of the poor decision she made.,3,0,377,hate and blame,hate,blame,1,2
+781,intonation,phrasing,1097,0.3947128532,Millie liked the phrasing and intonation that her teacher used when she spoke.,4,0,664,phrasing and intonation,phrasing,intonation,1,1
+783,commercialism,materialism,1074,0.5121042831,All of the materialism and commercialism in society makes Evan want to live off the grid.,4,0,524,materialism and commercialism,materialism,commercialism,1,2
+785,foreboding,gloom,1057,0.1362346263,There was a sense of gloom and foreboding that made Carrie feel anxious.,6,0,913,gloom and foreboding,gloom,foreboding,1,1

@@ -3,6 +3,10 @@ options (contrasts = c("contr.sum","cont.sum"))
 library(tidyverse)
 library(brms)
 library(RColorBrewer)
+library(ggpubr)
+library(knitr)
+library(kableExtra)
+
 
 data_n1 = read_csv('Data/data_analysis_n1.csv')
 
@@ -276,7 +280,7 @@ On the opposite side of this theoretical spectrum, another possibility is that l
 
 It is also possible that what gets stored is somewhere in between these two extremes. For example, usage-based construction grammar approaches have posited that a lot more than just words are stored -- including high frequency phrases -- but rather than storing everything, or storing only the most basic units, that storage is driven by usage [@bybee2003; @bybee2001; @goldbergConstructionsNewTheoretical2003; @morgan2024; @morganAbstractKnowledgeDirect2016; @morgan2015; @arnonMoreWordsFrequency2010; @baayenAmorphousModelMorphological2011; @odonnellProductivityReuseLanguage2016; @tomaselloConstructingLanguageUsagebased2005]. That is to say, the size of the units stored is driven by the statistical distribution of the language that the learner is producing and perceiving. For example, @bybee2003 drew an analogy to learning to play a piece on the piano:
 
-> An important result of learning to play several pieces is that new pieces are then easier to master. Why is this? I hypothesize that the player can access bits of old stored pieces and incorporate them into new pieces. The part of a new piece that uses parts of a major scale is much easier to master if the player has practiced scales than is a part with a new melody that does not hearken back to common sequences. This means that snatches of motor sequences can be reused in new contexts. The more motor sequences stored, the greater ease with which the player can master a new piece.
+> An important result of learning to play several pieces is that new pieces are then easier to master. Why is this? I hypothesize that the player can access bits of old stored pieces and incorporate them into new pieces. The part of a new piece that uses parts of a major scale is much easier to master if the player has practiced scales than is a part with a new melody that does not hearken back to common sequences. This means that snatches of motor sequences can be reused in new contexts. The more motor sequences stored, the greater ease with which the player can master a new piece [@bybee2003, p. 14-15].
 
 \noindent In this same line of thinking, @bybee2003 further argued against a strictly traditional view, stating that learning the English past tense *-ed* requires learning a series of words that contain that segment (e.g., *played*, *spilled*, *talked*) and that these are not necessarily flushed from memory after learning the English past tense marker.
 
@@ -288,7 +292,7 @@ Evidence for holistic storage is not limited to phonological effects, either. In
 
 Similarly, @odonnellProductivityReuseLanguage2016 tested 4 probabilistic models on their ability to learn the English past tense and derivational morphology. Specifically, they tested a Full-parsing model, which stores minimal-sized units only, a Full-listing model, which stores the entirety of units only, an Exemplar-based model, which stores all units and all sub-units consistent with the data, and finally a Productivity as an Inference model, which, similar to the Exemplar-based Inference model, can store both smaller and larger structures, but probabilistically determines which items to store based on the data. They found that the Inference-based model performed the best overall for both past tenses and derivational morphology. In other words, storing units of varying sizes (as opposed to just minimal or maximal-sized units) seems to be the most conducive to learning the various morphological paradigms in English.
 
-Despite the clear evidence for the holistic storage of some multi-word units, however, it is still largely unclear what determines whether a unit is stored holistically. For example, it is possible that storage is driven by either **phrasal frequency** [@bybee2001] or by the mutual **predictability** of a phrase's component parts [i.e., how predictable the whole phrase is from part of the phrase; @odonnellProductivityReuseLanguage2016]. For example, as previously stated, there is an abundance of evidence that high-frequency phrases are more susceptible to phonetic reduction than low-frequency phrases [@bybeeEffectUsageDegrees1999; @bybee2003]. Additionally, high-frequency phrases have been shown to lose the recognizability of their component parts relative to low-frequency phrases [@kapatsinskiFrequencyEmergencePrefabs2009]. For example, *up* is harder to recognize in *pick up* than in *run up*. On the other hand, in the learning literature, there is significant evidence that learning is driven by prediction error as opposed to raw co-occurrence statistics. For example, @ramscarChildrenValueInformativity2013 demonstrated that in word learning, children rely on more than simple co-occurrence statistics but also on how *informative* -- that is, how *predictive* -- a cue is of an outcome (relative to other cues). Specifically, they demonstrated that children rely on not only co-occurrence rate, but also background rate (how often a cue is present without an outcome). In other words, assuming doors have a higher co-occurrence rate and lower background rate than all the other competing cues (e.g., brown, house, room) for the word *door*, then children will learn that doors are the best predictor of the word *door* [@ramscarChildrenValueInformativity2013].
+Despite the clear evidence for the holistic storage of some multi-word units, however, it is still largely unclear what determines whether a unit is stored holistically. For example, it is possible that storage is driven by either **phrasal frequency** [@bybee2001] or by the mutual **predictability** of a phrase's component parts [i.e., how predictable the whole phrase is from part of the phrase\; @odonnellProductivityReuseLanguage2016]. For example, as previously stated, there is an abundance of evidence that high-frequency phrases are more susceptible to phonetic reduction than low-frequency phrases [@bybeeEffectUsageDegrees1999; @bybee2003]. Additionally, high-frequency phrases have been shown to lose the recognizability of their component parts relative to low-frequency phrases [@kapatsinskiFrequencyEmergencePrefabs2009]. For example, *up* is harder to recognize in *pick up* than in *run up*. On the other hand, in the learning literature, there is significant evidence that learning is driven by prediction error as opposed to raw co-occurrence statistics. For example, @ramscarChildrenValueInformativity2013 demonstrated that in word learning, children rely on more than simple co-occurrence statistics but also on how *informative* -- that is, how *predictive* -- a cue is of an outcome (relative to other cues). Specifically, they demonstrated that children rely on not only co-occurrence rate, but also background rate (how often a cue is present without an outcome). In other words, assuming doors have a higher co-occurrence rate and lower background rate than all the other competing cues (e.g., brown, house, room) for the word *door*, then children will learn that doors are the best predictor of the word *door* [@ramscarChildrenValueInformativity2013].
 
 A similar debate persists in the speech perception literature, where @pierrehumbertExemplarDynamicsWord2001 argued that internal representations reflect the raw frequency distribution of the input. On the other hand, @olejarczukDistributionalLearningErrordriven2018 argued that the learning of phonemes is driven not by co-occurrence statistics (i.e., raw frequency), but rather by surprisal (i.e., prediction error). In other words, learners are actively predicting upcoming phonemes and update their beliefs in proportion to how surprising the upcoming phoneme is. Thus the debate between co-occurrence vs predictability in the role of learning is not unique to the word learning literature.
 
@@ -324,13 +328,13 @@ Participants were presented with sentences online via ibex farm, a web-based exp
 
 #### Stimuli
 
-The experimental sentences were sentences containing compound nouns from [@staubTimeCoursePlausibility2007] which varied upon two dimensions: local plausibility and familiarity. Locally plausible sentences were sentences in which the reading at the first noun was plausible and locally implausible sentences were sentences in which the reading at the first noun in the compound was implausible (see example sentences \ref{staubsentencenovel} and \ref{staubsentencefamiliar}). Local plausibility was a within-item effect and familiarity (the frequency of the compound noun) was a between-item effect. Examples \ref{staubsentencenovel} and \ref{staubsentencefamiliar} above exemplify each condition: the first sentence in each is locally plausible while the second one is locally implausible. For example, in sentence \hyperref[staubsentencefamiliar]{2a}, it is semantically plausible that *Jenny looked out on the huge mountain...* but not semantically plausible that *Jenny heard the huge mountain* (\hyperref[staubsentencefamiliar]{2b}). Altogether, our stimuli consisted of 24 novel items, 24 familiar items \[taken from @staubTimeCoursePlausibility2007\], and 188 filler sentences in order to avoid participants discerning the experimental design.
+The experimental sentences were sentences containing compound nouns from [@staubTimeCoursePlausibility2007] which varied upon two dimensions: local plausibility and familiarity. Locally plausible sentences were sentences in which the reading at the first noun was plausible and locally implausible sentences were sentences in which the reading at the first noun in the compound was implausible (see example sentences \ref{staubsentencenovel} and \ref{staubsentencefamiliar}). Local plausibility was a within-item effect and familiarity (the frequency of the compound noun) was a between-item effect. Examples \ref{staubsentencenovel} and \ref{staubsentencefamiliar} above exemplify each condition: the first sentence in each is locally plausible while the second one is locally implausible. For example, in sentence \hyperref[staubsentencefamiliar]{2a}, it is semantically plausible that *Jenny looked out on the huge mountain...* but not semantically plausible that *Jenny heard the huge mountain* (\hyperref[staubsentencefamiliar]{2b}). Altogether, our stimuli consisted of 24 novel items, 24 familiar items [taken from @staubTimeCoursePlausibility2007], and 188 filler sentences in order to avoid participants discerning the experimental design.
 
 #### Procedure
 
 Experiment 1 is a direct replication of @staubTimeCoursePlausibility2007 using the A-Maze task [@boyceMazeMadeEasy2020] instead of eye-tracking.[^staub_rep_ext-2] In the A-maze task, participants are presented with the first word in the sentence and then have to correctly choose between an ungrammatical distractor word and the next word in the sentence. When participants select the correct word, they continue to the next word in the sentence until the sentence is finished. The distractor words for the A-maze were generated automatically following @boyceMazeMadeEasy2020 using the Gulordava model @gulordava2018colorlessgreenrecurrent. The locations of the distractor word and target word were counterbalanced so that they appeared an equal number of times on the left and right side of the screen. For each word, the reaction time was recorded along with whether the subject chose the correct item or not. See @fig-mazevisualization for a visualization of the maze task, reproduced from @boyceMazeMadeEasy2020.
 
-[^staub_rep_ext-2]: The maze task was used due to the limitations of the COVID-19 pandemic
+[^staub_rep_ext-2]: The maze task was used due to the limitations of the COVID-19 pandemic.
 
 ```{r echo = F, fig.align = 'center', warning = F, message = F, out.width = '50%'}
 #| label: fig-mazevisualization
@@ -378,11 +382,26 @@ fixefsm1 = as.data.frame(fixef(maze_staub_n1)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "Familiarity", "Plausibility:Familiarity"), times = 1))
 
 rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
 
-knitr::kable(fixefsm1, booktabs = T)
+
+fixefsm1 = fixefsm1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+#groupings=rle(n1_all_measures$measure)
+
+fixefsm1 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
+
 ```
 
 ```{r, echo = F, message = F}
@@ -407,11 +426,25 @@ fixefsm1 = as.data.frame(fixef(maze_staub_n2)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "Familiarity", "Plausibility:Familiarity"), times = 1))
 
 rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
 
-knitr::kable(fixefsm1, booktabs = T)
+
+fixefsm1 = fixefsm1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+#groupings=rle(n1_all_measures$measure)
+
+fixefsm1 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 ```
 
@@ -576,11 +609,25 @@ fixefsm1 = as.data.frame(fixef(maze_pred_n1_v1)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "Predictability", "Plausibility:Predictability"), times = 1))
 
 rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
 
-knitr::kable(fixefsm1, booktabs = T)
+
+fixefsm1 = fixefsm1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+
+fixefsm1 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
+
 
 
 ```
@@ -607,11 +654,24 @@ fixefsm1 = as.data.frame(fixef(maze_pred_n1_v2)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "LogOdds", "Plausibility:LogOdds"), times = 1))
 
 rownames(fixefsm1) = c('Intercept', 'Plausibility', 'LogOdds', 'Plausibility:LogOdds')
 
-knitr::kable(fixefsm1, booktabs = T)
+fixefsm1 = fixefsm1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+
+fixefsm1 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
+
 
 
 
@@ -639,11 +699,23 @@ fixefsm1 = as.data.frame(fixef(maze_pred_n2_v1)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability'))
 
 rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
 
-knitr::kable(fixefsm1, booktabs = T)
+fixefsm1 = fixefsm1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+
+fixefsm1 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 
 
@@ -671,11 +743,23 @@ fixefsm1 = as.data.frame(fixef(maze_pred_n2_v2)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = c('Intercept', 'Plausibility', 'LogOdds', 'Plausibility:LogOdds'))
 
 rownames(fixefsm1) = c('Intercept', 'Plausibility', 'LogOdds', 'Plausibility:LogOdds')
 
-knitr::kable(fixefsm1, booktabs = T)
+fixefsm1 = fixefsm1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+
+fixefsm1 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 
 
@@ -805,17 +889,16 @@ For each analysis, our independent variables were plausibility (high or low) and
 
 ### Results
 
-#### First Fixation Times
+#### N1 Region
 
-##### N1
+Our results at the N1 region are demonstrated in @tbl-fullmodelresultsn1staub and visualized in @fig-fullmodelresultsn1staub.
 
-Our results for the effects of plausibility and familiarity on first fixation times are described in @tbl-firstfixn1staub and visualized in @fig-firstfixn1staub.
+At the N1 region, we find main-effects of plausibility for first fixation duration, go-past time, and first-pass regression, but not for gaze times. Additionally, we find no effects of familiarity. Finally, for go-past times we find an interaction between plausibility and predictability such that the slowdown of the implausible context was greater for familiar items than novel items.
 
-We find an effect of plausibility, however we find no effect for familiarity and no interaction effect. The results suggest that regardless of familiarity, participants' first fixations are longer in the implausible context.
 
 ```{r, echo = F, message = F}
-#| label: tbl-firstfixn1staub
-#| tbl-cap: "Model results examining the effect of plausibility and frequency on first fixation times for the N1 region."
+#| label: tbl-fullmodelresultsn1staub
+#| tbl-cap: "Model results for each eye-tracking measure at the N1 region."
 
 
 
@@ -835,116 +918,10 @@ fixefsm1 = as.data.frame(fixef(model_n1_staub)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First Fixation Duration')
 
 rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
-
-knitr::kable(fixefsm1, booktabs = T)
-
-
-
-
-
-
-
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstfixn1staub
-#| fig-cap: "Visualization of the effects of plausibility and familiarity on first fixation times for the N1 region."
-
-
-model_n1_binary_plot_staub = plot(conditional_effects(model_n1_staub), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n1_binary_plot_staub = model_n1_binary_plot_staub +
-  labs(color = "Familiarity", fill = "Familiarity") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('First Fixation Duration') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n1_binary_plot_staub
-
-```
-
-##### N2
-
-Our results for the effects of plausibility and familiarity on first fixation times on the N2 region are described in @tbl-firstfixn2staub and visualized in @fig-firstfixn2staub.
-
-We find an effect of plausibility, however we find no effect for familiarity and no interaction effect. The results suggest that regardless of familiarity, participants' first fixations are longer in the implausible context.
-
-Our results suggest an effect of familiarity such that familiar items had shorter first fixation times. We find no effect of plausibility which is expected because the N2 has no difference in terms of plausibility. We also find no interaction effect. These results suggest that readers' first fixation times on the N2 region are shorter for the familiar compounds.
-
-```{r, echo = F, message = F}
-#| label: tbl-firstfixn2staub
-#| tbl-cap: "Model results examining the effect of plausibility and familiarity on first fixation times for the N2 region."
-
-
-
-percent_greater_zero = data.frame(fixef(model_n2_staub, summary = F)) %>%
-  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
-  group_by(beta_coefficient) %>%
-  summarize((sum(estimate > 0) / length(estimate)) * 100)
-  
-
-percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
-
-#table 1
-fixefsm1 = as.data.frame(fixef(model_n2_staub)) %>%
-  mutate_if(is.numeric,
-            formatC,
-            format = 'f',
-            digits = 3) %>%
-  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
-
-rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
-
-knitr::kable(fixefsm1, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstfixn2staub
-#| fig-cap: "Visualization of the effects of plausibility and familiarity on first fixation times for the N2 region."
-
-
-model_n2_binary_plot_staub = plot(conditional_effects(model_n2_staub), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n2_binary_plot_staub = model_n2_binary_plot_staub +
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  labs(color = "Familiarity", fill = "Familiarity") + 
-  ylab('First Fixation Duration') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n2_binary_plot_staub
-
-```
-
-#### Gaze/First-Pass Time
-
-##### N1
-
-Our results for the effects of plausibility and familiarity on gaze/first-pass times on the N1 region are described in @tbl-gazen1staub and visualized in @fig-gazen1staub.
-
-We find no effect of plausibility or familiarity on reading times for the N1 region. These results suggest that readers' gaze/first-pass times were not sensitive to the plausibility manipulation.
-
-```{r, echo = F, message = F}
-#| label: tbl-gazen1staub
-#| tbl-cap: "Model results examining the effect of plausibility and familiarity on gaze/first-pass times for the N1 region."
 
 
 
@@ -957,115 +934,17 @@ percent_greater_zero = data.frame(fixef(model_n1_gaze_staub, summary = F)) %>%
 percent_greater_zero = percent_greater_zero %>%
   arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
 
-#table 1
+
 fixefsm2 = as.data.frame(fixef(model_n1_gaze_staub)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'Gaze/First-Pass Duration')
 
 rownames(fixefsm2) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
-
-knitr::kable(fixefsm2, booktabs = T)
-```
-
-\newpage
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gazen1staub
-#| fig-cap: "Visualization of the effects of plausibility and familiarity on Gaze/first-pass times for the N1 region."
-
-
-model_n1_binary_gaze_plot_staub = plot(conditional_effects(model_n1_gaze_staub), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n1_binary_gaze_plot_staub = model_n1_binary_gaze_plot_staub +
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  labs(color = "Familiarity", fill = "Familiarity") + 
-  ylab('Gaze/First-Pass Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n1_binary_gaze_plot_staub
-
-```
-
-##### N2
-
-Our results for the effects of plausibility and familiarity on gaze/first-pass times on the N2 region are described in @tbl-gazen2staub and visualized in @fig-gazen2staub.
-
-We find no effect of plausibility, but we do find an effect of familiarity on reading times for the N2 region. These results suggest that readers' gaze/first-pass times on the N2 region were shorter for familiar compounds.
-
-```{r, echo = F, message = F}
-#| label: tbl-gazen2staub
-#| tbl-cap: "Model results examining the effect of plausibility and familiarity on gaze/first-pass times for the N2 region."
-
-
-
-percent_greater_zero = data.frame(fixef(model_n2_gaze_staub, summary = F)) %>%
-  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
-  group_by(beta_coefficient) %>%
-  summarize((sum(estimate > 0) / length(estimate)) * 100)
-  
-
-percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
-
-#table 1
-fixefsm2 = as.data.frame(fixef(model_n2_gaze_staub)) %>%
-  mutate_if(is.numeric,
-            formatC,
-            format = 'f',
-            digits = 3) %>%
-  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
-
-rownames(fixefsm2) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
-
-knitr::kable(fixefsm2, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gazen2staub
-#| fig-cap: "Visualization of the effects of plausibility and familiarity on gaze/first-pass times for the N2 region."
-
-
-model_n2_binary_gaze_plot_staub = plot(conditional_effects(model_n2_gaze_staub), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n2_binary_gaze_plot_staub = model_n2_binary_gaze_plot_staub +
-  labs(color = "Familiarity", fill = "Familiarity") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('Gaze/First-Pass Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n2_binary_gaze_plot_staub
-
-```
-
-#### Go-Past Time
-
-##### N1
-
-Our results for the effects of plausibility and familiarity on go-past times in the N1 region are described in @tbl-gopastn1staub and visualized in @fig-gopastn1staub.
-
-Our results suggest a main-effect of plausibility as well as an interaction effect between plausibility and familiarity such that the increase in go-past times for familiar items is much greater than the increase is for novel items.
-
-```{r, echo = F, message = F}
-#| label: tbl-gopastn1staub
-#| tbl-cap: "Model results examining the effect of plausibility and familiarity on go-past times for the N1 region."
 
 
 
@@ -1078,112 +957,17 @@ percent_greater_zero = data.frame(fixef(model_n1_regression_path_staub, summary 
 percent_greater_zero = percent_greater_zero %>%
   arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
 
-#table 1
+
 fixefsm3 = as.data.frame(fixef(model_n1_regression_path_staub)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure='Go-Past Time')
 
 rownames(fixefsm3) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
-
-knitr::kable(fixefsm3, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gopastn1staub
-#| fig-cap: "Visualization of the effect of plausibility and Familiarity on go-past times for the N1 region."
-
-
-model_n1_go_past_plot_staub = plot(conditional_effects(model_n1_regression_path_staub), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n1_go_past_plot_staub = model_n1_go_past_plot_staub +
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  labs(color = "Familiarity", fill = "Familiarity") + 
-  ylab('Go-Past Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n1_go_past_plot_staub
-```
-
-##### N2
-
-Our results for the effects of plausibility and familiarity on go-past times in the N2 region are described in @tbl-gopastn2staub and visualized in @fig-gopastn2staub.
-
-Our results suggest an effect of familiarity such that familiar items had shorter go-past times than novel items.
-
-```{r, echo = F, message = F}
-#| label: tbl-gopastn2staub
-#| tbl-cap: "Model results examining the effect of plausibility and familiarity on go-past times for the N2 region."
-
-
-
-percent_greater_zero = data.frame(fixef(model_n2_regression_path_staub, summary = F)) %>%
-  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
-  group_by(beta_coefficient) %>%
-  summarize((sum(estimate > 0) / length(estimate)) * 100)
-  
-
-percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
-
-#table 1
-fixefsm3 = as.data.frame(fixef(model_n2_regression_path_staub)) %>%
-  mutate_if(is.numeric,
-            formatC,
-            format = 'f',
-            digits = 3) %>%
-  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
-
-rownames(fixefsm3) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
-
-knitr::kable(fixefsm3, booktabs = T)
-```
-
-```{r, echo = FALSE, warning=FALSE, message=FALSE, out.width = "80%"}
-#| label: fig-gopastn2staub
-#| fig-cap: "Visualization of the effect of plausibility and familiarity on go-past times for the N2 region."
-
-
-model_n2_go_past_plot_staub = plot(conditional_effects(model_n2_regression_path_staub), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n2_go_past_plot_staub = model_n2_go_past_plot_staub +
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  labs(color = "Familiarity", fill = "Familiarity") + 
-  ylab('Go-Past Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n2_go_past_plot_staub
-
-```
-
-#### First-Pass Regression
-
-##### N1
-
-Our results for the effects of plausibility and familiarity on first-pass regressions in the N1 region are described in @tbl-firstpassn1 and visualized in @fig-firstpassn1.
-
-Our results suggest an effect of plausibility on first pass regressions for the N1 region such that implausible items had more first-pass regressions than plausible items.
-
-```{r, echo = F, message = F}
-#| label: tbl-firstpassn1staub
-#| tbl-cap: "Model results examining the effect of plausibility and familiarity on first-pass regression for the N1 region."
 
 
 
@@ -1203,19 +987,82 @@ fixefsm4 = as.data.frame(fixef(model_n1_regression_staub)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First-Pass Regression')
 
 rownames(fixefsm4) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
 
-knitr::kable(fixefsm4, booktabs = T)
+n1_all_measures = bind_rows(fixefsm1, fixefsm2, fixefsm3, fixefsm4, .id = "ID") %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "Familiarity", "Plausibility:Familiarity"), times = 4))
+
+
+n1_all_measures = n1_all_measures %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+groupings=rle(n1_all_measures$measure)
+
+n1_all_measures %>%
+  select(term, everything(), -measure, -ID) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 
 ```
 
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstpassn1staub
-#| fig-cap: "Visualization of the effect of plausibility and familiarity on first-pass regression for the N1 region."
+```{r, echo = F, fig.align = 'center', warning = F, message = F}
+#| label: fig-fullmodelresultsn1staub
+#| fig-cap: "Visualization of the effects of plausibility and familiarity on each eye-tracking measure at the N1 region."
+#| fig-width: 7
+#| fig-height: 7
 
+
+model_n1_binary_plot_staub = plot(conditional_effects(model_n1_staub), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n1_binary_plot_staub = model_n1_binary_plot_staub +
+  labs(color = "Familiarity", fill = "Familiarity") + 
+  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  ylab('First Fixation Duration') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+model_n1_binary_gaze_plot_staub = plot(conditional_effects(model_n1_gaze_staub), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n1_binary_gaze_plot_staub = model_n1_binary_gaze_plot_staub +
+  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  labs(color = "Familiarity", fill = "Familiarity") + 
+  ylab('Gaze/First-Pass Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+model_n1_go_past_plot_staub = plot(conditional_effects(model_n1_regression_path_staub), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n1_go_past_plot_staub = model_n1_go_past_plot_staub +
+  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  labs(color = "Familiarity", fill = "Familiarity") + 
+  ylab('Go-Past Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
 
 model_n1_binary_first_pass_plot_staub = plot(conditional_effects(model_n1_regression_staub), plot = F)[[3]] +
   theme_bw()
@@ -1229,21 +1076,94 @@ model_n1_binary_first_pass_plot_staub = model_n1_binary_first_pass_plot_staub +
   xlab('Plausibility') +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
+        axis.title=element_text(size  = 12)) 
 
-model_n1_binary_first_pass_plot_staub
+
+ggarrange(model_n1_binary_plot_staub, model_n1_binary_gaze_plot_staub, model_n1_go_past_plot_staub, model_n1_binary_first_pass_plot_staub, nrow = 2, ncol = 2, common.legend=T, legend = 'top')
 
 ```
 
-##### N2
+#### N2 Region
 
-Our results for the effects of plausibility and familiarity on first-pass regressions in the N2 region are described in @tbl-firstpassn2 and visualized in @fig-firstpassn2.
 
-Our results suggest an effect of familiarity on first pass-regressions for the N2 region suggesting that familiar items had fewer first-pass regressions than novel items.
+Our results at the N2 region are demonstrated in @tbl-fullmodelresultsn2staub and visualized in @fig-fullmodelresultsn2staub.
+
+At the N2 region, we find main-effects of familiarity for first fixation duration and gaze times, and marginal effects for go-past times and first-pass regression. We find no main-effect of plausibility, which is expected because the implausible condition is plausible at the N2 region. We also find no interaction effect between plausibility and familiarity.
+
+
 
 ```{r, echo = F, message = F}
-#| label: tbl-firstpassn2staub
-#| tbl-cap: "Model results examining the effect of plausibility and familiarity on first-pass regression for the N2 region."
+#| label: tbl-fullmodelresultsn2staub
+#| tbl-cap: "Results of models for each eye-tracking measure at the N2 region."
+
+
+
+percent_greater_zero = data.frame(fixef(model_n2_staub, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
+
+#table 1
+fixefsm1 = as.data.frame(fixef(model_n2_staub)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First Fixation Duration')
+
+rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
+
+
+
+percent_greater_zero = data.frame(fixef(model_n2_gaze_staub, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
+
+
+fixefsm2 = as.data.frame(fixef(model_n2_gaze_staub)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'Gaze/First-Pass Duration')
+
+rownames(fixefsm2) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
+
+
+
+percent_greater_zero = data.frame(fixef(model_n2_regression_path_staub, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
+
+
+fixefsm3 = as.data.frame(fixef(model_n2_regression_path_staub)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure='Go-Past Time')
+
+rownames(fixefsm3) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
 
 
 
@@ -1263,25 +1183,88 @@ fixefsm4 = as.data.frame(fixef(model_n2_regression_staub)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First-Pass Regression')
 
 rownames(fixefsm4) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
 
-knitr::kable(fixefsm4, booktabs = T)
+n2_all_measures = bind_rows(fixefsm1, fixefsm2, fixefsm3, fixefsm4, .id = "ID") %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "Familiarity", "Plausibility:Familiarity"), times = 4))
+
+
+n2_all_measures = n2_all_measures %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+groupings=rle(n2_all_measures$measure)
+
+n2_all_measures %>%
+  select(term, everything(), -measure, -ID) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 
 ```
 
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstpassn2staub
-#| fig-cap: "Visualization of the effect of plausibility and familiarity on first-pass regression for the N2 region."
+```{r, echo = F, fig.align = 'center', warning = F, message = F}
+#| label: fig-fullmodelresultsn2staub
+#| fig-cap: "Visualization of the effects of plausibility and familiarity on each eye-tracking measure at the N2 region."
+#| fig-width: 7
+#| fig-height: 7
 
+
+model_n2_binary_plot_staub = plot(conditional_effects(model_n2_staub), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n2_binary_plot_staub = model_n2_binary_plot_staub +
+  labs(color = "Familiarity", fill = "Familiarity") + 
+  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  ylab('First Fixation Duration') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+model_n2_binary_gaze_plot_staub = plot(conditional_effects(model_n2_gaze_staub), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n2_binary_gaze_plot_staub = model_n2_binary_gaze_plot_staub +
+  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  labs(color = "Familiarity", fill = "Familiarity") + 
+  ylab('Gaze/First-Pass Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+model_n2_go_past_plot_staub = plot(conditional_effects(model_n2_regression_path_staub), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n2_go_past_plot_staub = model_n2_go_past_plot_staub +
+  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  labs(color = "Familiarity", fill = "Familiarity") + 
+  ylab('Go-Past Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
 
 model_n2_binary_first_pass_plot_staub = plot(conditional_effects(model_n2_regression_staub), plot = F)[[3]] +
   theme_bw()
 
 
-model_n2_binary_first_pass_plot_staub = model_n2_binary_first_pass_plot_staub +
+model_n2_binary_first_pass_plot_staub = model_n1_binary_first_pass_plot_staub +
   scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
   scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
   labs(color = "Familiarity", fill = "Familiarity") + 
@@ -1289,11 +1272,14 @@ model_n2_binary_first_pass_plot_staub = model_n2_binary_first_pass_plot_staub +
   xlab('Plausibility') +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
+        axis.title=element_text(size  = 12)) 
 
-model_n2_binary_first_pass_plot_staub
+
+ggarrange(model_n2_binary_plot_staub, model_n2_binary_gaze_plot_staub, model_n2_go_past_plot_staub, model_n2_binary_first_pass_plot_staub, nrow = 2, ncol = 2, common.legend=T, legend = 'top')
 
 ```
+
+
 
 ### Discussion
 
@@ -1327,17 +1313,16 @@ For each analysis, our independent variables were plausibility (high or low) and
 
 ### Results
 
-#### First Fixation Times
 
-##### N1
+#### N1 Region
 
-First, we examined the effects of plausibility and predictability on first fixation times for the first noun. Note that in our case, since plausibility was coded as -1 for plausible and 1 for implausible, a positive coefficient estimate of plausibility corresponds to longer fixation times for implausible items. Additionally, following @houghtonTaskdependentConsequencesDisfluency2024 we also report the percentage of posterior samples greater than zero. Our model results can be found below in @tbl-firstfixn1 and a visualization can be found in @fig-firstfixn1.
+Our results at the N1 region are demonstrated in @tbl-fullmodelresultsn1 and visualized in @fig-fullmodelresultsn1.
 
-Our results for first-fixation times, while non-significant, do show an interesting trend, with the effect of plausibility in the expected direction (although with only \~78% samples greater than zero). Further, we found a small but meaningful interaction effect such that the readers' first-fixation times of low-predictability items was affected more by the local implausibility than the high-predictability items were.
+At the N1 region, we find main-effects of plausibility for only first-pass regression. We find no effect of plausibility for first fixation duration, gaze time, and go-past time. Additionally, we find no effects of predictability. Finally, we find an interaction effect between plausibility and predictability for first fixation duration and first-pass regression. These interaction effects are in the opposite direction such that the slowdown caused by the implausible condition was greater for high-predictability items relative to low-predictability items in first-pass regression, but smaller for high-predictability items relative to low-predictability items in first fixation duration.
 
 ```{r, echo = F, message = F}
-#| label: tbl-firstfixn1
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on first fixation times for the N1 region."
+#| label: tbl-fullmodelresultsn1
+#| tbl-cap: "Model results for each eye-tracking measure at the N1 region."
 
 
 
@@ -1357,107 +1342,10 @@ fixefsm1 = as.data.frame(fixef(model_n1_binary)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First Fixation Duration')
 
-rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
-
-knitr::kable(fixefsm1, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstfixn1
-#| fig-cap: "Visualization of the effects of plausibility and predictability on first fixation times for the N1 region."
-#| fig-cap-location: top
-
-
-model_n1_binary_plot = plot(conditional_effects(model_n1_binary), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n1_binary_plot = model_n1_binary_plot +
-  labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('First Fixation Duration') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n1_binary_plot
-```
-
-##### N2
-
-Our results for the effects of plausibility and predictability on first fixation times in the N2 region are described in @tbl-firstfixn2 and visualized in @fig-firstfixn2
-
-Our results demonstrate an effect of predictability on the first fixation times of the second noun in the compound noun. This is rather unsurprising because in the present study predictability is a measure of how expected the second noun is given the first. There also is not much of a plausibility effect on the N2, which is also not particularly surprising because the second noun eliminates the local implausibility making both sentences plausible at the N2 region.
-
-```{r, echo = F, message = F}
-#| label: tbl-firstfixn2
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on first fixation times for the N2 region."
-
-
-
-percent_greater_zero = data.frame(fixef(model_n2, summary = F)) %>%
-  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
-  group_by(beta_coefficient) %>%
-  summarize((sum(estimate > 0) / length(estimate)) * 100)
-  
-
-percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
-
-#table 1
-fixefsm1 = as.data.frame(fixef(model_n2)) %>%
-  mutate_if(is.numeric,
-            formatC,
-            format = 'f',
-            digits = 3) %>%
-  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
-
-rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
-
-knitr::kable(fixefsm1, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstfixn2
-#| fig-cap: "Visualization of the effects of plausibility and predictability on first fixation times for the N2 region."
-
-
-model_n2_binary_plot = plot(conditional_effects(model_n2), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n2_binary_plot = model_n2_binary_plot +
-  labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('First Fixation Duration') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n2_binary_plot
-
-```
-
-#### Gaze/First-Pass Time
-
-##### N1
-
-Our results for the effects of plausibility and predictability on gaze/first-pass times for the N1 region are presented in @tbl-gazen1 and visualized in @fig-gazen1.
-
-Our results demonstrate no effect of either plausibility or predictability on the gaze times at the N1 region. We further examined our filler items to rule out an error with the eye-tracker. Our filler items contain a frequency manipulation and an analysis of the filler items demonstrated that the frequency manipulation did effect gaze times in our filler items, suggesting that the results here are not due to any malfunction of the eye-tracker or cleaning procedure. We report the effects found in the filler items at the end of this section.
-
-```{r, echo = F, message = F}
-#| label: tbl-gazen1
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on Gaze/first-pass times for the N1 region."
+rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
 
 
 
@@ -1470,115 +1358,17 @@ percent_greater_zero = data.frame(fixef(model_n1_binary_gaze, summary = F)) %>%
 percent_greater_zero = percent_greater_zero %>%
   arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
 
-#table 1
+
 fixefsm2 = as.data.frame(fixef(model_n1_binary_gaze)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'Gaze/First-Pass Duration')
 
 rownames(fixefsm2) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
-
-knitr::kable(fixefsm2, booktabs = T)
-```
-
-\newpage
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gazen1
-#| fig-cap: "Visualization of the effects of plausibility and predictability on Gaze/first-pass times for the N1 region."
-
-
-model_n1_binary_gaze_plot = plot(conditional_effects(model_n1_binary_gaze), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n1_binary_gaze_plot = model_n1_binary_gaze_plot +
-  labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('Gaze/First-Pass Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n1_binary_gaze_plot
-
-```
-
-##### N2
-
-Our results for the effects of plausibility and predictability on gaze/first-pass times for the N2 region are presented in @tbl-gazen1 and visualized in @fig-gazen1.
-
-Our results demonstrate no effect of either plausibility or predictability on the gaze times at the N2 region. This is surprising because the effect of predictability should facilitate reading at the N2.
-
-```{r, echo = F, message = F}
-#| label: tbl-gazen2
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on Gaze/first-pass times for the N2 region."
-
-
-
-percent_greater_zero = data.frame(fixef(model_n2_binary_gaze, summary = F)) %>%
-  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
-  group_by(beta_coefficient) %>%
-  summarize((sum(estimate > 0) / length(estimate)) * 100)
-  
-
-percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
-
-#table 1
-fixefsm2 = as.data.frame(fixef(model_n2_binary_gaze)) %>%
-  mutate_if(is.numeric,
-            formatC,
-            format = 'f',
-            digits = 3) %>%
-  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
-
-rownames(fixefsm2) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
-
-knitr::kable(fixefsm2, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gazen2
-#| fig-cap: "Visualization of the effects of plausibility and predictability on Gaze/first-pass times for the N2 region."
-
-
-model_n2_binary_gaze_plot = plot(conditional_effects(model_n2_binary_gaze), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n2_binary_gaze_plot = model_n2_binary_gaze_plot +
-  labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('Gaze/First-Pass Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n2_binary_gaze_plot
-
-```
-
-#### Go-Past Time
-
-##### N1
-
-Our results for the effects of plausibility and predictability on go-past times for the N1 region are presented in @tbl-gopastn1 and visualized in @fig-gopastn1.
-
-The results for go-past times show no effect of predictability and plausibility on the N1 region.
-
-```{r, echo = F, message = F}
-#| label: tbl-gopastn1
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on go-past times for the N1 region."
 
 
 
@@ -1591,112 +1381,17 @@ percent_greater_zero = data.frame(fixef(model_n1_binary_go_past, summary = F)) %
 percent_greater_zero = percent_greater_zero %>%
   arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
 
-#table 1
+
 fixefsm3 = as.data.frame(fixef(model_n1_binary_go_past)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure='Go-Past Time')
 
 rownames(fixefsm3) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
-
-knitr::kable(fixefsm3, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gopastn1
-#| fig-cap: "Visualization of the effect of plausibility and predictability on go-past times for the N1 region."
-
-
-model_n1_go_past_plot = plot(conditional_effects(model_n1_binary_go_past), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n1_go_past_plot = model_n1_go_past_plot +
-  labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('Go-Past Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n1_go_past_plot
-```
-
-##### N2
-
-Our results for the effects of plausibility and predictability on go-past times for the N2 region are presented in @tbl-gopastn2 and visualized in @fig-gopastn2.
-
-Our results for the N2 region similarly show no effect of predictability and plausibility on go-past times.
-
-```{r, echo = F, message = F}
-#| label: tbl-gopastn2
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on go-past times for the N2 region."
-
-
-
-percent_greater_zero = data.frame(fixef(model_n2_binary_go_past, summary = F)) %>%
-  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
-  group_by(beta_coefficient) %>%
-  summarize((sum(estimate > 0) / length(estimate)) * 100)
-  
-
-percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
-
-#table 1
-fixefsm3 = as.data.frame(fixef(model_n2_binary_go_past)) %>%
-  mutate_if(is.numeric,
-            formatC,
-            format = 'f',
-            digits = 3) %>%
-  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
-
-rownames(fixefsm3) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
-
-knitr::kable(fixefsm3, booktabs = T)
-```
-
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gopastn2
-#| fig-cap: "Visualization of the effect of plausibility and predictability on go-past times for the N2 region."
-
-
-model_n2_go_past_plot = plot(conditional_effects(model_n2_binary_go_past), plot = F)[[3]] +
-  theme_bw()
-
-
-model_n2_go_past_plot = model_n2_go_past_plot +
-  labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  ylab('Go-Past Time') +
-  xlab('Plausibility') +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_n2_go_past_plot
-
-```
-
-#### First-Pass Regression
-
-##### N1
-
-Our results for the effects of predictability and plausibility on the first-pass regressions on the N1 region are presented in @tbl-firstpassn1 and visualized in @fig-firstpassn1.
-
-Our results suggest that readers are more likely to regress after the first fixation in the implausible condition compared to the plausible condition. Further, this plausibility effect is larger for high-predictability items than low predictability items. This is surprising because predictability is a measure of the N2, not the N1 and if readers are anticipating the N2 then it should alleviate the local implausibility at the N1 (which would result in a negative interaction effect, i.e. the opposite trend from what we see here).
-
-```{r, echo = F, message = F}
-#| label: tbl-firstpassn1
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on first-pass regression for the N1 region."
 
 
 
@@ -1716,18 +1411,82 @@ fixefsm4 = as.data.frame(fixef(model_n1_binary_first_pass)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First-Pass Regression')
 
 rownames(fixefsm4) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
 
-knitr::kable(fixefsm4, booktabs = T)
+n1_all_measures_exp4 = bind_rows(fixefsm1, fixefsm2, fixefsm3, fixefsm4, .id = "ID") %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "Predictability", "Plausibility:Predictability"), times = 4))
+
+n1_all_measures_exp4 = n1_all_measures_exp4 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+
+
+groupings=rle(n1_all_measures_exp4$measure)
+
+n1_all_measures_exp4 %>%
+  select(term, everything(), -measure, -ID) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 
 ```
 
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstpassn1
-#| fig-cap: "Visualization of the effect of plausibility and predictability on first-pass regression for the N1 region."
+```{r, echo = F, out.width = '100%', fig.align = 'center', warning = F, message = F}
+#| label: fig-fullmodelresultsn1
+#| fig-cap: "Visualization of the effects of plausibility and predictability on each eye-tracking measure at the N1 region."
+#| fig-width: 7
+#| fig-height: 7
+
+
+model_n1_binary_plot = plot(conditional_effects(model_n1_binary), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n1_binary_plot = model_n1_binary_plot +
+  labs(color = "Predictability", fill = "Predictability") + 
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  ylab('First Fixation Duration') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+model_n1_binary_gaze_plot = plot(conditional_effects(model_n1_binary_gaze), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n1_binary_gaze_plot = model_n1_binary_gaze_plot +
+  labs(color = "Predictability", fill = "Predictability") + 
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  ylab('Gaze/First-Pass Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+model_n1_go_past_plot = plot(conditional_effects(model_n1_binary_go_past), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n1_go_past_plot = model_n1_go_past_plot +
+  labs(color = "Predictability", fill = "Predictability") + 
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  ylab('Go-Past Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
 
 
 model_n1_binary_first_pass_plot = plot(conditional_effects(model_n1_binary_first_pass), plot = F)[[3]] +
@@ -1736,27 +1495,98 @@ model_n1_binary_first_pass_plot = plot(conditional_effects(model_n1_binary_first
 
 model_n1_binary_first_pass_plot = model_n1_binary_first_pass_plot +
   labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
   ylab('First-Pass Regression') +
   xlab('Plausibility') +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
+        axis.title=element_text(size  = 12)) 
 
-model_n1_binary_first_pass_plot
+
+ggarrange(model_n1_binary_plot, model_n1_binary_gaze_plot, model_n1_go_past_plot, model_n1_binary_first_pass_plot, nrow = 2, ncol = 2, common.legend=T, legend = 'top')
 
 ```
 
-##### N2
+#### N2 Region
 
-Our results for the effects of predictability and plausibility on first-pass regressions in the N1 region are presented in @tbl-firstpassn2 and visualized in @fig-firstpassn2.
 
-Our results no effect of predictability or plausibility. In other words, unexpectedly high-predictability items had similar first-pass regressions as low-predictability items in the N2 region.
+Our results at the N2 region are demonstrated in @tbl-fullmodelresultsn2 and visualized in @fig-fullmodelresultsn2.
+
+At the N2 region, we find a main-effect of predictability for only the first fixation duration measure. We find no effect of plausibility, as expected because the N2 region eliminates the implausibility effect. We also find no interaction between plausibility and predictability in any of the measures.
 
 ```{r, echo = F, message = F}
-#| label: tbl-firstpassn2
-#| tbl-cap: "Model results examining the effect of plausibility and predictability on first-pass regression for the N2 region."
+#| label: tbl-fullmodelresultsn2
+#| tbl-cap: "Model results for each eye-tracking measure at the N2 region."
+
+
+
+percent_greater_zero = data.frame(fixef(model_n2, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
+
+#table 1
+fixefsm1 = as.data.frame(fixef(model_n2)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First Fixation Duration')
+
+rownames(fixefsm1) = c('Intercept', 'Plausibility', 'Familiarity', 'Plausibility:Familiarity')
+
+
+
+percent_greater_zero = data.frame(fixef(model_n2_binary_gaze, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
+
+
+fixefsm2 = as.data.frame(fixef(model_n2_binary_gaze)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'Gaze/First-Pass Duration')
+
+rownames(fixefsm2) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
+
+
+
+percent_greater_zero = data.frame(fixef(model_n2_binary_go_past, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'predictability_binary1', 'condition1:predictability_binary1')))
+
+
+fixefsm3 = as.data.frame(fixef(model_n2_binary_go_past)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure='Go-Past Time')
+
+rownames(fixefsm3) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
 
 
 
@@ -1776,20 +1606,81 @@ fixefsm4 = as.data.frame(fixef(model_n2_binary_first_pass)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = 'First-Pass Regression')
 
 rownames(fixefsm4) = c('Intercept', 'Plausibility', 'Predictability', 'Plausibility:Predictability')
 
-knitr::kable(fixefsm4, booktabs = T)
+n2_all_measures_exp4 = bind_rows(fixefsm1, fixefsm2, fixefsm3, fixefsm4, .id = "ID") %>%
+  mutate(term = rep(c("Intercept", "Plausibility", "Predictability", "Plausibility:Predictability"), times = 4))
+
+n2_all_measures_exp4 = n2_all_measures_exp4 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+
+groupings=rle(n2_all_measures_exp4$measure)
+
+n2_all_measures_exp4 %>%
+  select(term, everything(), -measure, -ID) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 
 ```
 
-\newpage
+```{r, echo = F, out.width = '100%', fig.align = 'center', warning = F, message = F}
+#| label: fig-fullmodelresultsn2
+#| fig-cap: "Visualization of the effects of plausibility and predictability on each eye-tracking measure at the N2 region."
+#| fig-width: 7
+#| fig-height: 7
 
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstpassn2
-#| fig-cap: "Visualization of the effect of plausibility and predictability on first-pass regression for the N2 region."
+
+model_n2_binary_plot = plot(conditional_effects(model_n2), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n2_binary_plot = model_n2_binary_plot +
+  labs(color = "Predictability", fill = "Predictability") + 
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  ylab('First Fixation Duration') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+model_n2_binary_gaze_plot = plot(conditional_effects(model_n2_binary_gaze), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n2_binary_gaze_plot = model_n2_binary_gaze_plot +
+  labs(color = "Predictability", fill = "Predictability") + 
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  ylab('Gaze/First-Pass Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+model_n2_go_past_plot = plot(conditional_effects(model_n2_binary_go_past), plot = F)[[3]] +
+  theme_bw()
+
+
+model_n2_go_past_plot = model_n2_go_past_plot +
+  labs(color = "Predictability", fill = "Predictability") + 
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  ylab('Go-Past Time') +
+  xlab('Plausibility') +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
 
 
 model_n2_binary_first_pass_plot = plot(conditional_effects(model_n2_binary_first_pass), plot = F)[[3]] +
@@ -1798,31 +1689,43 @@ model_n2_binary_first_pass_plot = plot(conditional_effects(model_n2_binary_first
 
 model_n2_binary_first_pass_plot = model_n2_binary_first_pass_plot +
   labs(color = "Predictability", fill = "Predictability") + 
-  scale_color_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
-  scale_fill_discrete(labels = c("Familiar", "Novel"), type = c('#298c8c', '#800074')) +
+  scale_color_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
+  scale_fill_discrete(labels = c("High", "Low"), type = c('#298c8c', '#800074')) +
   ylab('First-Pass Regression') +
   xlab('Plausibility') +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
+        axis.title=element_text(size  = 12)) 
 
-model_n2_binary_first_pass_plot
+
+ggarrange(model_n2_binary_plot, model_n2_binary_gaze_plot, model_n2_go_past_plot, model_n2_binary_first_pass_plot, nrow = 2, ncol = 2, common.legend=T, legend = 'top')
 
 ```
 
+
 #### Filler Items
 
-In order to confirm that our results weren't due to measurement error, we used examined our filler items to sanity check our findings. Our filler items contained a frequency manipulation where some items were low-frequency and some were high-frequency. The Psycholinguistics literature has demonstrated the robustness of the effects of frequency on reading measures, thus we examined our filler items to confirm that that the results for Gaze/First-Pass times and Go-Past time were not due to measurement error.
+In addition to our experimental stimuli, we also included sentences that varied with respect to the frequency of the word. For example, in the below sentences, *satchel* is low-frequency and *account* is high-frequency. Thus, in order to confirm that the results in Experiment 4 were not due to measurement error, we examined the effect of frequency in our filler items on each of the eye-tracking measures.
 
-##### First Fixation Times
+\begin{enumerate} 
 
-Our results for the effects of frequency on first fixation times for our filler items is presented in @tbl-firstfixationfiller and visualized in @fig-firstfixationfiller.
+    \item \textbf{Low-frequency}
+    \begin{enumerate}
+        \item[\textbf{1}] Take your money out of the satchel and pay off the debt.
+    \end{enumerate}
+    \item \textbf{High-frequency}
+    \begin{enumerate}
+        \item[\textbf{2}] Take your money out of the account and pay off the debt.
+    \end{enumerate} \label{staubsentencefamiliar}
+\end{enumerate}
 
-Our results, unsurprisingly, demonstrate longer first fixation times for low frequency items compared to high frequency items.
+Our results are presented in @tbl-filleritemsall and visualized in @fig-filleritemsall. We find an effect of frequency in each of the four eye-tracking measures we looked at.
+
+
 
 ```{r, echo = F, message = F}
-#| label: tbl-firstfixationfiller
-#| tbl-cap: "Model results examining the effect of frequency on first fixation times in our filler materials."
+#| label: tbl-filleritemsall
+#| tbl-cap: "Model results for filler items for each eye-tracking measure"
 
 
 
@@ -1836,53 +1739,16 @@ percent_greater_zero = percent_greater_zero %>%
   arrange(match(beta_coefficient, c('Intercept', 'filler_higher_freq1')))
 
 #table 1
-fixefsm4 = as.data.frame(fixef(first_fixation_filler)) %>%
+fixefsm1 = as.data.frame(fixef(first_fixation_filler)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = "First Fixation Duration")
 
-rownames(fixefsm4) = c('Intercept', 'Frequency')
-
-knitr::kable(fixefsm4, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '60%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstfixationfiller
-#| fig-cap: "Visualization of the effect of frequency on first fixation times in our filler materials."
-
-
-model_first_fixation_filler_plot = plot(conditional_effects(first_fixation_filler), plot = F)[[1]] +
-  theme_bw()
-
-
-model_first_fixation_filler_plot = model_first_fixation_filler_plot +
-  ylab('First Fixation') +
-  xlab('Frequency') +
-  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_first_fixation_filler_plot
-
-
-
-
-```
-
-##### Gaze/First-Pass Time
-
-Our results for the effects of frequency on gaze/first-pass times for our filler items is presented in @tbl-gazefiller and visualized in @fig-gazefiller.
-
-Similarly, our results demonstrate longer gaze times for low-frequency items compared to high-frequency ones. This suggests that the results we found in Experiment 4 are not due to measurement error.
-
-```{r, echo = F, message = F}
-#| label: tbl-gazefiller
-#| tbl-cap: "Model results examining the effect of frequency on gaze/first-pass times in our filler materials."
+rownames(fixefsm1) = c('Intercept', 'Frequency')
 
 
 
@@ -1896,50 +1762,16 @@ percent_greater_zero = percent_greater_zero %>%
   arrange(match(beta_coefficient, c('Intercept', 'filler_higher_freq1')))
 
 #table 1
-fixefsm4 = as.data.frame(fixef(gaze_filler)) %>%
+fixefsm2 = as.data.frame(fixef(gaze_filler)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = "Gaze/First-Pass Duration")
 
-rownames(fixefsm4) = c('Intercept', 'Frequency')
-
-knitr::kable(fixefsm4, booktabs = T)
-
-```
-
-```{r, echo = F, out.width = '60%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gazefiller
-#| fig-cap: "Visualization of the effect of frequency on gaze/first-pass times in our filler materials."
-
-
-model_gaze_filler_plot = plot(conditional_effects(gaze_filler), plot = F)[[1]] +
-  theme_bw()
-
-
-model_gaze_filler_plot = model_gaze_filler_plot +
-  ylab('Gaze/First-Pass Times') +
-  xlab('Frequency') +
-  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_gaze_filler_plot
-
-```
-
-##### Go-Past Time
-
-Our results for the effects of frequency on go-past times for our filler items is presented in @tbl-gopastfiller and visualized in @fig-gopastfiller.
-
-For go-past times as well, we do find an effect such that low-frequency items had longer go-past times. These results further confirm that the results found in Experiment 4 were not due to measurement error.
-
-```{r, echo = F, message = F}
-#| label: tbl-gopastfiller
-#| tbl-cap: "Model results examining the effect of frequency on go-past times in our filler materials."
+rownames(fixefsm2) = c('Intercept', 'Frequency')
 
 
 
@@ -1953,51 +1785,17 @@ percent_greater_zero = percent_greater_zero %>%
   arrange(match(beta_coefficient, c('Intercept', 'filler_higher_freq1')))
 
 #table 1
-fixefsm4 = as.data.frame(fixef(go_past_filler)) %>%
+fixefsm3 = as.data.frame(fixef(go_past_filler)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = "Go-Past Time")
 
-rownames(fixefsm4) = c('Intercept', 'Frequency')
+rownames(fixefsm3) = c('Intercept', 'Frequency')
 
-knitr::kable(fixefsm4, booktabs = T)
-
-
-```
-
-```{r, echo = F, out.width = '60%', fig.align = 'center', warning = F, message = F}
-#| label: fig-gopastfiller
-#| fig-cap: "Visualization of the effect of frequency on go-past times in our filler materials."
-
-
-model_go_past_filler_plot = plot(conditional_effects(go_past_filler), plot = F)[[1]] +
-  theme_bw()
-
-
-model_go_past_filler_plot = model_go_past_filler_plot +
-  ylab('Go-Past Times') +
-  xlab('Frequency') +
-  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
-  theme_bw() +
-  theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
-
-model_go_past_filler_plot
-
-```
-
-##### First-Pass Regression
-
-Finally, our results for the first-pass regression rates of our filler items is presented in @tbl-firstpassregressionfiller and visualized in @fig-firstpassregressionfiller.
-
-The results of first-pass regressions demonstrate a greater rate of first-pass regressions for low frequency items relative to high frequency items. These results taken together suggest that the effects of plausibility and predictability on each of the eye-tracking measures was not a consequence of measurement error.
-
-```{r, echo = F, message = F}
-#| label: tbl-firstpassregressionfiller
-#| tbl-cap: "Model results examining the effect of frequency on first-pass regressions in our filler materials."
 
 
 
@@ -2017,19 +1815,79 @@ fixefsm4 = as.data.frame(fixef(first_pass_filler)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(measure = "First-Pass Regression")
 
 rownames(fixefsm4) = c('Intercept', 'Frequency')
 
-knitr::kable(fixefsm4, booktabs = T)
+
+
+fillers_exp4 = bind_rows(fixefsm1, fixefsm2, fixefsm3, fixefsm4, .id = "ID") %>%
+  mutate(term = rep(c("Intercept", "Frequency"), times = 4))
 
 
 
+
+
+groupings=rle(fillers_exp4$measure)
+
+fillers_exp4 %>%
+  select(term, everything(), -measure, -ID) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 9, full_width = FALSE) %>%
+  group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 ```
 
-```{r, echo = F, out.width = '60%', fig.align = 'center', warning = F, message = F}
-#| label: fig-firstpassregressionfiller
-#| fig-cap: "Visualization of the effect of frequency on first-pass regressions in our filler materials."
+
+
+```{r, echo = F, fig.align = 'center', warning = F, message = F}
+#| label: fig-filleritemsall
+#| fig-cap: "Visualization of the effects of frequency on each eye-tracking measure for filler items."
+#| fig-width: 7
+#| fig-height: 7
+
+
+model_first_fixation_filler_plot = plot(conditional_effects(first_fixation_filler), plot = F)[[1]] +
+  theme_bw()
+
+
+model_first_fixation_filler_plot = model_first_fixation_filler_plot +
+  ylab('First Fixation') +
+  xlab('Frequency') +
+  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+
+model_gaze_filler_plot = plot(conditional_effects(gaze_filler), plot = F)[[1]] +
+  theme_bw()
+
+
+model_gaze_filler_plot = model_gaze_filler_plot +
+  ylab('Gaze/First-Pass Times') +
+  xlab('Frequency') +
+  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
+
+
+model_go_past_filler_plot = plot(conditional_effects(go_past_filler), plot = F)[[1]] +
+  theme_bw()
+
+
+model_go_past_filler_plot = model_go_past_filler_plot +
+  ylab('Go-Past Times') +
+  xlab('Frequency') +
+  scale_x_discrete(breaks = c(0, 1), labels = c("Low", "High")) +
+  theme_bw() +
+  theme(axis.text=element_text(size = 12),
+        axis.title=element_text(size  = 12)) 
 
 
 model_first_pass_regression_filler_plot = plot(conditional_effects(first_pass_filler), plot = F)[[1]] +
@@ -2042,36 +1900,38 @@ model_first_pass_regression_filler_plot = model_first_pass_regression_filler_plo
   scale_x_discrete(breaks = c(0, 1), labels = c("High", "Low")) +
   theme_bw() +
   theme(axis.text=element_text(size = 12),
-        axis.title=element_text(size  = 14)) 
+        axis.title=element_text(size  = 12)) 
 
-model_first_pass_regression_filler_plot
+
+ggarrange(model_first_fixation_filler_plot, model_gaze_filler_plot, model_go_past_filler_plot, model_first_pass_regression_filler_plot, nrow = 2, ncol = 2)
 
 ```
 
+
 ### Discussion
 
-The results in Experiment 4 confirmed an effect of plausibility in first-fixation times for low-predictability items, but not for high-predictability items. This is difficult to reconcile with the first-pass regressions where the opposite pattern is observed: there is an effect of plausibility on first-pass regressions for high-predictability items but not low-predictability items.
+In Experiment 4, we find an effect of plausibility only in first-pass regressions. Interestingly, we do find an effect of plausibility in first-fixation times for low-predictability items, but not for high-predictability items. While this follows our theoretical prediction that high-predictability items may be able to overcome the local implausibility, the results are difficult to reconcile with the results we see for first-pass regressions. For first-pass regressions, we observe the opposite pattern: there is an effect of plausibility on first-pass regressions for high-predictability items but not low-predictability items.
 
 We also find no effect of plausibility for gaze duration or go-past times, which was unexpected. Further, upon inspecting our filler items we were able to confirm that this was not a consequence of measurement error.
 
 ## Conclusion
 
-The present studies examined the processing of compound nouns in locally implausible and locally plausible contexts, specifically with respect to their phrasal frequency and predictability. In Experiment 1 we replicated @staubTimeCoursePlausibility2007 using the A-maze task [@boyceMazeMadeEasy2020] and found an increase in reaction time for the implausible condition at N1 region, but no interaction effect between plausibility and familiarity. Additionally at the N2 region, we found an increase in reaction time for the plausible condition relative to the implausible condition and a decrease in reaction time for high predictability items relative to low predictability items.
+The present study examined the processing of compound nouns in locally implausible and locally plausible contexts, specifically with respect to their phrasal frequency and predictability. In Experiment 1 we replicated @staubTimeCoursePlausibility2007 using the A-maze task [@boyceMazeMadeEasy2020] and found an increase in reaction time for the implausible condition at N1 region, but no interaction effect between plausibility and familiarity. Additionally at the N2 region, we found an increase in reaction time for the plausible condition relative to the implausible condition and a decrease in reaction time for high predictability items relative to low predictability items.
 
 In Experiment 2 we extended Experiment 1 using predictability as the key measure instead of phrasal frequency. Similar to Experiment 1, we found an increase in reaction time for the implausible condition at the N1 region, but again found no interaction effect between plausibility and predictability. Also similar to Experiment 1, we found an increase in reaction time at the N2 region for the plausible condition and a decrease in reaction time for the high predictability items.
 
-In Experiments 3 and 4 we replicated the two experiments with eye-tracking. In Experiment 3, we find an effect of plausibility in first fixation times, go-past times, and first-pass regressions. We also find an interaction effect in go-past times such that high-frequency items had higher go-past times in the implausible condition, but low-frequency items did not. In Experiment 4, we find an effect of plausibility in first-fixation times for low-predictability items (but not high-predictability items) and an an effect of plausibility in first-pass regressions for high-predictability items but not low-predictability items.
+In Experiments 3 and 4 we replicated the two experiments with eye-tracking. In Experiment 3, we found an effect of plausibility in first fixation times, go-past times, and first-pass regressions. We also found an interaction effect in go-past times such that high-frequency items had higher go-past times in the implausible condition, but low-frequency items did not. In Experiment 4, we find an effect of plausibility in first-fixation times for low-predictability items (but not high-predictability items) and an an effect of plausibility in first-pass regressions for high-predictability items but not low-predictability items.
 
-Overall the results of experiments 1 and 2 suggest that the predictability of the second noun in the compound (given the first noun) has very little facilitatory effect on the processing of the first noun. Importantly, the increase in reaction time in the implausible condition for the N1 region was not mediated by the predictability of the compound noun. If participants were predicting the second noun upon reading the first noun, then we might expect to have seen a decrease in reaction time for the high-predictable items in the implausible condition relative to the low-predictability items.
+Overall the results of experiments 1 and 2 suggest that the frequency or predictability of the second noun in the compound (given the first noun) has very little facilitatory effect on the processing of the first noun in implausible contexts relative to plausible contexts. That is, the increase in reaction time in the implausible condition for the N1 region was not mediated by the frequency or predictability of the compound noun. If participants were predicting the second noun upon reading the first noun, then we might expect to have seen a decrease in reaction time for the high-predictable items in the implausible condition relative to the low-predictability items because the second noun always eliminated the local implausibility.
 
-Experiments 3 and 4 provide mixed-evidence. On one hand, there seems to be a general effect of implausibility, however in some reading measures such as first-fixation times, predictability seemed to alleviate this effect. On the other hand, for other measures, implausible contexts actually affected familiar/high-predictability items more than the novel/low-predictability items.
+Experiments 3 and 4 provide mixed-evidence. On one hand, there seems to be a general effect of implausibility regardless of frequency or predictability, however in some reading measures such as first-fixation times in Experiment 4, predictability seemed to alleviate the slowdown in the implausible condition. On the other hand, for other measures, the slowdown generated by the implausible contexts was actually exacerbated for high-frequency or high-predictability items (e.g., first-pass regression times in both Experiment 3 and Experiment 4).
 
-There are a few possible explanations for the results we found. One possibility is simply that our high-predictability compound nouns aren't stored holistically. It is important to note that our compound nouns were the most predictable compound nouns in the entire Google *n*-grams corpus, thus it seems unlikely that they weren't predictable enough to be stored, though it may be that English compound nouns have relatively low predictability relative to other multi-word phrases. Instead it may be possible that predictability isn't the driving force of storage.
+There are a few possible explanations for the results we found. One possibility is simply that our high-predictability compound nouns aren't stored holistically. It is important to note that our compound nouns were the most predictable compound nouns in the entire Google *n*-grams corpus, thus it seems unlikely that they weren't predictable enough to be stored, though it may be that English compound nouns have relatively low predictability relative to other multi-word phrases. 
 
 Another possibility is that the high-predictability compound nouns are stored holistically, but the processing consequences of them being stored holistically are such that there is no facilitatory effect in the processing of the first noun in the compound noun. This would certainly beg the question, however, of what exactly the processing consequences of holistic storage are. Perhaps the primary advantages to holistic storage are in the domain of production, rather than processing.
 
-Finally, it is possible that there may be competing forces. On the one hand, high-predictability items may help overcome the local implausibility (as evidenced by the alleviation in first-fixation times found in Experiment 4). On the other hand, there's also evidence from the literature that people are generally more acceptable of low-frequency words in novel contexts than high-frequency words [@harmonPuttingOldTools2017]. It is possible that these competing forces explain the mixed-results in the eye-tracking experiments.
+<!-- It is also possible that there may be competing forces. On the one hand, high-predictability items may help overcome the local implausibility (as evidenced by the alleviation in first-fixation times found in Experiment 4). On the other hand, there's also evidence from the literature that people are generally more acceptable of low-frequency words in novel contexts than high-frequency words [@harmonPuttingOldTools2017]. It is possible that encountering a low-frequ It is possible that these competing forces explain the mixed-results in the eye-tracking experiments. NOTE: This actually can't be the case, because the frequency was not a measure of the first word -->
 
-Finally, with respect to the increase in reaction time at the N2 region in the plausible condition that we found in Experiments 1 and 2, we do not see this effect in Experiments 3 and 4, suggesting that this effect may be a task-specific effect. This result suggests that in the maze task, participants have a bias to analyze the first noun as the head noun and then have to reinterpret the sentence once it is clear that the noun is not the head noun. Further, since we don't see the same effect in the implausible condition, participants may not fully commit to an interpretation that is implausible.
+Finally, with respect to the increase in reaction time at the N2 region in the plausible condition that we found in Experiments 1 and 2, we do not see this effect in Experiments 3 and 4, suggesting that this effect may be a task-specific effect. This result suggests that in the maze task, participants may have a bias to analyze the first noun as the head noun and then have to reinterpret the sentence once it is clear that the noun is not the head noun. Further, since we don't see the same effect in the implausible condition, participants may not fully commit to an interpretation that is implausible.
 
-In summary, the present study contributes to the current theories of sentence processing by demonstrating that predictability may not be the driving factor behind holistic storage, however given the lack of research demonstrating the specific processing consequences of holistic storage, it is possible that rather than predictability not driving holistic storage, either our task doesn't elicit a measurable effect of holistic storage, or holistic storage of a compound noun just doesn't facilitate the processing of the first noun in compound nouns.
+In summary, the present study contributes to the current theories of sentence processing by demonstrating that during sentence processing, readers do not seem to access the holistic representation at the first noun (because then they would be able to overcome the implausibility). Instead, it is possible that if compound nouns are stored holistically, perhaps readers don't access the holistic representation until they have heard sufficient evidence for that representation. That is, even though *peanut* is predictive of *butter*, there are still many other words that can occur after *peanut*. Thus, readers may not access the holistic representation until they hear enough of the compound noun to rule out other competing possibilities. 

@@ -16,7 +16,14 @@ book:
     - Chapters/Introduction/introduction.qmd
     - Chapters/Compound Nouns/staub_rep_ext.qmd
     - Chapters/Recognizability/Write-up/quarto-writeup.qmd
+    - Chapters/LLM Ordering Prefs/Writeup/writeup.qmd
+    - Chapters/LLM Storage/Writeup/writeup.qmd
+    - Chapters/frequency-dependent preference extremity/frequency-dependent preference extremity.qmd
     - Chapters/references.qmd
+  appendices: 
+    - Chapters/appendix_model_results.qmd
+    - Chapters/appendix_llm_individual_constraints.qmd
+    - Chapters/appendix_llm_stimuli.qmd
   
   output-file: houghton_dissertation
   #image: dissertation_image.png

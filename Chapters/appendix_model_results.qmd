@@ -1,0 +1,59 @@
+# Full Model Results {#sec-full-model-results .appendix}
+
+::: {#tbl-model_results_full}
+```{=latex}
+\begin{table}
+    \centering
+    \begin{tabular}{l|cccc|cccc}
+    \hline 
+        \textbf{GPT-2} & & & & & \textbf{GPT-2XL} \\
+        \hline
+         & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} \\
+         \hline
+         Intercept & -0.10 & 0.10 & -0.30 & 0.10 & 0.05 & 0.09 & -0.13 & 0.23\\
+         AbsPref & -0.52 & 0.64 & -1.81 & 0.69 & -0.89 & 0.63 & -2.17 & 0.29 \\
+         Observed & \textbf{4.62} & 0.50 & 3.66 & 5.59 & \textbf{5.34} & 0.46 & 4.45 & 6.25 \\
+         Freq & -0.04 & 0.06 & -0.15 & 0.07 & -0.01 & 0.05 & -0.11 & 0.09 \\
+         AbsPref:Freq & 0.10 & 0.39 & -0.66 & 0.86 & -0.17 & 0.36 & -0.87 & 0.53 \\
+         Observed:Freq & \textbf{0.96} & 0.24 & 0.49 & 1.43 & \textbf{1.01} & 0.21 & 0.59 & 1.43 \\
+         \hline
+         \textbf{Llama-2 7B} & & & & & \textbf{Llama-2 13B} \\
+        \hline
+         & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} \\
+         \hline
+         Intercept & 0.22 & 0.13 & -0.03 & 0.47 & 0.12 & 0.08 & -0.04 & 0.27 \\
+         AbsPref & 1.11 & 0.84 & -0.40 & 2.91 &  0.32 & 0.54 & -0.72 & 1.38  \\
+         Observed & \textbf{3.07} & 0.64 & 1.81 & 4.31 & \textbf{5.25} & 0.40 & 4.46 & 6.05\\
+         Freq & 0.04 & 0.07 & -0.10 & 0.17 & -0.08 & 0.04 & -0.16 & 0.01 \\
+         AbsPref:Freq & -0.32 & 0.47 & -1.24 & 0.59 & -0.02 & 0.32 & -0.64 & 0.60 \\
+         Observed:Freq & 0.23 & 0.28 & -0.33 & 0.78 & \textbf{0.72} & 0.19 & 0.34 & 1.09  \\
+         \hline
+         \textbf{Llama-3 8B} & & & & & \textbf{Llama-3 70B}\\
+        \hline
+         & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} \\
+         \hline
+         Intercept & 0.15 & 0.09 & -0.03 & 0.33 & 0.04 & 0.05 & -0.06 & 0.14 \\
+         AbsPref & 0.23 & 0.59 & -0.92 & 1.42 & 0.10 & 0.38 & -0.63 & 0.85  \\
+         Observed & \textbf{5.64} & 0.46 & 4.75 & 6.54 & \textbf{5.00} & 0.27 & 4.49 & 5.52 \\
+         Freq & -0.07 & 0.05 & -0.17 & 0.03 & -0.05 & 0.03 & -0.11 & 0.00  \\
+         AbsPref:Freq & 0.07 & 0.36 & -0.63 & 0.78 & -0.11 & 0.21 & -0.52 & 0.30 \\
+         Observed:Freq & \textbf{0.60} & 0.22 & 0.18 & 1.03 & \textbf{0.65} & 0.12 & 0.41 & 0.89 \\
+         \hline
+          \textbf{OLMo 1B} & & & & & \textbf{OLMo 7B}\\
+        \hline
+         & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} & \textbf{Est.} & \textbf{Err.} & \textbf{2.5} & \textbf{97.5} \\
+         \hline
+         Intercept & 0.06 & 0.08 & -0.09 & 0.22 & 0.04 & 0.07 & -0.10 & 0.18 \\
+         AbsPref & 0.69 & 0.54 & -0.33 & 1.79 & -0.86 & 0.51 & -1.88 & 0.11\\
+         Observed & \textbf{4.36} & 0.39 & 3.58 & 5.12 & \textbf{5.37} & 0.36 & 4.67 & 6.08 \\
+         Freq & 0.06 & 0.04 & -0.02 & 0.14 & 0.01 & 0.04 & -0.07 & 0.08 \\
+         AbsPref:Freq & -0.12 & 0.31 & -0.73 & 0.47 & 0.10 & 0.28 & -0.47 & 0.64 \\
+         Observed:Freq & \textbf{0.81} & 0.19 & 0.44 & 1.17 & \textbf{0.70} & 0.17 & 0.37 & 1.04  \\
+         \hline
+    \end{tabular}
+
+\end{table}
+```
+
+Model results for each language model. The Estimate is given in the "Est." column, the standard deviation of the posterior is given in the "Err." column. The columns labeled 2.5 and 97.5 represent the lower and upper confidence interval boundaries. AbsPref is the abstract ordering preferences, Observed is the observed preference in corpus data, and Freq is the overall frequency of the binomial.
+:::

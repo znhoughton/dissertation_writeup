@@ -1,0 +1,3277 @@
+---
+title: "data_preparation"
+author: "Zachary Houghton"
+date: "2024-05-15"
+output: 
+  html_document:
+    toc: true
+    theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(brms)
+library(interactions)
+library(ggh4x)
+library(purrr)
+library(ggpubr)
+```
+
+## Data Preparation
+
+
+```{r}
+
+data = read_csv('../Data/sentences.csv') %>%
+  mutate(alpha_binom = paste(WordA, 'and', WordB))
+
+corpus_sentences = read_csv('../Data/corpus_sentences.csv') %>%
+  mutate(alpha_binom = paste(WordA, 'and', WordB)) %>%
+  mutate(already_in_data = ifelse(alpha_binom %in% data$alpha_binom, 1, 0)) %>%
+  select(WordA, WordB, OverallFreq, RelFreq, 'Sentence (WordA and WordB)', 'Sentence (WordB and WordA)', alpha_binom, already_in_data) %>%
+  na.omit(Sentence)
+
+corpus_sentences_no_duplicates = corpus_sentences %>%
+  filter(already_in_data == 0)
+
+corpus_sentences_no_duplicates = corpus_sentences_no_duplicates %>%
+  select(-already_in_data)
+
+data = data %>%
+  full_join(corpus_sentences_no_duplicates) %>%
+  select(-alpha_binom)
+```
+
+
+
+```{r}
+#index the first word in the binomial, since the binomials are always three words, we can assume that the second and third words are the index+1 and index+2 respectively. 
+data = data %>%
+  rowwise() %>%
+  mutate(first_word_index = which(unlist(str_split(`Sentence (WordA and WordB)`, ' ')) == WordA)) %>%
+  filter(!is.na(OverallFreq)) %>%
+  mutate(RelFreq = ifelse(is.na(RelFreq), 0, RelFreq)) %>%
+  ungroup() %>%
+  mutate(Item = row_number())
+
+
+```
+
+```{r}
+
+
+alpha_sentences = data %>%
+  select(-`Sentence (WordB and WordA)`) %>%
+  mutate(alpha_order = 1)  %>%
+  mutate(BinomFreq = OverallFreq * RelFreq) %>%
+  mutate(Binomial = paste(WordA, 'and', WordB)) %>%
+  rename('Sentence' = 'Sentence (WordA and WordB)') %>%
+  mutate(Word1 = WordA, Word2 = WordB) 
+
+
+nonalpha_sentences = data %>%
+  select(-`Sentence (WordA and WordB)`) %>%
+  mutate(alpha_order = 0) %>%
+  mutate(BinomFreq = OverallFreq * (1-RelFreq)) %>%
+  mutate(Binomial = paste(WordB, 'and', WordA)) %>%
+  rename('Sentence' = 'Sentence (WordB and WordA)')  %>%
+  mutate(Word1 = WordB, Word2 = WordA) 
+
+
+all_sentences = alpha_sentences %>%
+  full_join(nonalpha_sentences)
+
+file_path = '../Data/all_sentences.csv'
+#corpus = corpus[1:2,] # for debugging
+
+
+if (!file.exists(file_path)) {
+  
+write_csv(all_sentences, file_path)
+
+}
+
+```
+
+## Analysis
+
+First analysis is to test whether an increase in BinomFreq results in a greater difference between the representation of the phrase and the representation of the individual pieces. The interaction term with RelFreq is included because it seems plausible that relative frequency may also play an important role. For example if the binomial X and Y has a frequency of 3000, but the binomial Y and X also has a frequency of 3000, then these may not have separate representations. But if X and Y has a frequency of 3000, but Y and X only has a frequency of 10, then these may have drastically different representations. In other words, an increase in Binomial frequency may only result in a larger cosine difference if the relative frequency is also higher.
+
+Item here may also be a bit misleading, Item here refers to a given sentence context, which is the same for a given binomial regardless of order. Thus the sentence context for intents and purposes is the same as the sentence context for purposes and intents. The Item intercept is included because there may be certain sentence contexts that result in a higher or lower cosine difference.
+
+$$
+CosineSim \sim BinomFreq + (1|Item) 
+$$
+
+### Olmo-7b
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+```
+
+#### Model:
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+
+m1 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data,
+         family = gaussian(),
+         warmup = 10000,
+         iter = 20000,
+         cores = 4,
+         chains = 4,
+         control = list(max_treedepth = 15, adapt_delta = 0.95),
+         file = '../Data/model1')
+
+fixef(m1)
+
+m2 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data_m2,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         file = '../Data/model2')
+
+fixef(m2)
+
+# conditional_effects(m1, ask = F)
+# conditional_effects(m2, ask = F)
+```
+
+Now let's look at the relationship between the alphabetical vs nonalphabetical cosine distance. To do this, we'll get a new variable which is the cosine distance of the alphabetical minus the cosine distance of the nonalphabetical. In other words, this variable will represent how much more similar the alphabetical item is to its parts than the nonalphabetical. A greater value will mean that the alphabetical form is more similar to its pieces than nonalphabetical, a more negative value will mean that the nonalphabetical form is more similar to its pieces.
+
+```{r}
+cosine_data_m3 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(cosine_diff = cosine_sim - first(cosine_sim)) %>%
+  group_by(Item) %>%
+  top_n(1, abs(cosine_diff)) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+```
+
+One prediction is that for items with a large overall frequency, the effect of relative frequency on this difference will be larger. Now we can actually use RelFreq because it's meaningful: a more positive RelFreq means more preferred in the Alphabetical form. A larger cosine_diff means the alpha form is more similar to its parts. Thus a prediction is that for items with a high overall frequency, a larger relative frequency may result in a smaller cosine_diff (i.e., a more obscure relationship between the meaning of the phrase and its pieces). For items with a high overall frequency, a more negative relative frequency might result in a smaller cosine diff.
+
+On the other hand, for items with a small overall frequency, the effect of relative frequency on cosine diff may be negligible.
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+
+m3 = brm(cosine_diff ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m3,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model3')
+
+fixef(m3)
+
+
+
+# conditional_effects(m3, ask = F)
+
+
+
+post_samples_m3 = as.data.frame(fixef(m3, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m3$CenteredLogOverallFreq < 0) / length(post_samples_m3$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m3$RelFreq > 0) / length(post_samples_m3$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m3$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m3$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m3, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+```
+
+What if instead of the difference, we get a log odds ratio?
+
+```{r}
+cosine_data_m4 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4.1')
+
+fixef(m4)
+
+# conditional_effects(m4, ask = F)
+
+
+
+post_samples_m4 = as.data.frame(fixef(m4, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m4$CenteredLogOverallFreq < 0) / length(post_samples_m4$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m4$RelFreq > 0) / length(post_samples_m4$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m4$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m4$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', interval = T)
+
+olmo7b_plot = conditional_effects(m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+```
+
+### GPT 2
+
+```{r}
+cosine_data = read_csv('../Data/gpt2_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+```
+
+#### Model
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+
+m1 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data,
+         family = gaussian(),
+         warmup = 10000,
+         iter = 20000,
+         cores = 4,
+         chains = 4,
+         control = list(max_treedepth = 15, adapt_delta = 0.95),
+         file = '../Data/model1_gpt2')
+
+fixef(m1)
+
+m2 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data_m2,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         file = '../Data/model2_gpt2')
+
+fixef(m2)
+
+# conditional_effects(m1, ask = F)
+# conditional_effects(m2, ask = F)
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+cosine_data_m3 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(cosine_diff = cosine_sim - first(cosine_sim)) %>%
+  group_by(Item) %>%
+  top_n(1, abs(cosine_diff)) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+m3 = brm(cosine_diff ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m3,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model3_gpt2')
+
+fixef(m3)
+
+
+
+# conditional_effects(m3, ask = F)
+
+
+
+post_samples_m3 = as.data.frame(fixef(m3, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m3$CenteredLogOverallFreq < 0) / length(post_samples_m3$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m3$RelFreq > 0) / length(post_samples_m3$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m3$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m3$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m3, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+
+
+cosine_data_m4 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_gpt2')
+
+fixef(m4)
+
+gpt2_plot = conditional_effects(m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)), ask = F)
+
+
+
+post_samples_m4 = as.data.frame(fixef(m4, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m4$CenteredLogOverallFreq < 0) / length(post_samples_m4$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m4$RelFreq > 0) / length(post_samples_m4$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m4$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m4$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', interval = T)
+```
+
+### GPT 2-XL
+
+```{r}
+cosine_data = read_csv('../Data/gpt2-xl_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+```
+
+#### Model
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+
+m1 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data,
+         family = gaussian(),
+         warmup = 10000,
+         iter = 20000,
+         cores = 4,
+         chains = 4,
+         control = list(max_treedepth = 15, adapt_delta = 0.95),
+         file = '../Data/model1_gpt')
+
+fixef(m1)
+
+m2 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data_m2,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         file = '../Data/model2_gpt')
+
+fixef(m2)
+
+
+
+# conditional_effects(m1, ask = F)
+# conditional_effects(m2, ask = F)
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+cosine_data_m3 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(cosine_diff = cosine_sim - first(cosine_sim)) %>%
+  group_by(Item) %>%
+  top_n(1, abs(cosine_diff)) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+m3 = brm(cosine_diff ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m3,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model3_gpt')
+
+fixef(m3)
+# 
+# conditional_effects(m3, ask = F)
+# 
+
+
+post_samples_m3 = as.data.frame(fixef(m3, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m3$CenteredLogOverallFreq < 0) / length(post_samples_m3$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m3$RelFreq > 0) / length(post_samples_m3$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m3$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m3$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m3, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+
+
+cosine_data_m4 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_gpt')
+
+fixef(m4)
+
+
+
+
+# conditional_effects(m4, ask = F)
+
+
+
+post_samples_m4 = as.data.frame(fixef(m4, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m4$CenteredLogOverallFreq < 0) / length(post_samples_m4$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m4$RelFreq > 0) / length(post_samples_m4$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m4$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m4$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', interval = T)
+
+gpt2xl_plot = conditional_effects(m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+```
+
+### Llama2 7b
+
+### 
+
+```{r}
+cosine_data = read_csv('../Data/meta-llama_Llama-2-7b-hf_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+```
+
+#### Model
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+
+m1 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data,
+         family = gaussian(),
+         warmup = 10000,
+         iter = 20000,
+         cores = 4,
+         chains = 4,
+         control = list(max_treedepth = 15, adapt_delta = 0.95),
+         file = '../Data/model1_llama')
+
+fixef(m1)
+
+m2 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data_m2,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         file = '../Data/model2_llama')
+
+fixef(m2)
+
+# conditional_effects(m1, ask = F)
+# conditional_effects(m2, ask = F)
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+cosine_data_m3 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(cosine_diff = cosine_sim - first(cosine_sim)) %>%
+  group_by(Item) %>%
+  top_n(1, abs(cosine_diff)) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+m3 = brm(cosine_diff ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m3,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model3_llama')
+
+fixef(m3)
+
+
+
+
+# conditional_effects(m3, ask = F)
+
+
+
+post_samples_m3 = as.data.frame(fixef(m3, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m3$CenteredLogOverallFreq < 0) / length(post_samples_m3$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m3$RelFreq > 0) / length(post_samples_m3$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m3$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m3$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m3, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+
+
+cosine_data_m4 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_llama')
+
+fixef(m4)
+
+# conditional_effects(m4, ask = F)
+
+
+
+post_samples_m4 = as.data.frame(fixef(m4, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m4$CenteredLogOverallFreq < 0) / length(post_samples_m4$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m4$RelFreq > 0) / length(post_samples_m4$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m4$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m4$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', interval = T)
+
+llama2_plot = conditional_effects(m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+```
+
+### Olmo 1b
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+```
+
+#### Model
+
+```{r}
+options(contrasts = c("contr.sum","contr.sum"))
+
+m1 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data,
+         family = gaussian(),
+         warmup = 10000,
+         iter = 20000,
+         cores = 4,
+         chains = 4,
+         control = list(max_treedepth = 15, adapt_delta = 0.95),
+         file = '../Data/model1_olmo1b')
+
+fixef(m1)
+
+m2 = brm(cosine_sim ~ LogBinomFreq + (1|Item),
+         data = cosine_data_m2,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         file = '../Data/model2_olmo1b')
+
+fixef(m2)
+
+# conditional_effects(m1, ask = F)
+# conditional_effects(m2, ask = F)
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+cosine_data_m3 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(cosine_diff = cosine_sim - first(cosine_sim)) %>%
+  group_by(Item) %>%
+  top_n(1, abs(cosine_diff)) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+m3 = brm(cosine_diff ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m3,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model3_olmo1b')
+
+fixef(m3)
+
+#conditional_effects(m3, ask = F)
+
+
+
+post_samples_m3 = as.data.frame(fixef(m3, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m3$CenteredLogOverallFreq < 0) / length(post_samples_m3$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m3$RelFreq > 0) / length(post_samples_m3$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m3$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m3$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m3, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+
+
+cosine_data_m4 = cosine_data %>%
+  group_by(Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+options(contrasts = c("contr.sum","contr.sum"))
+
+m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_olmo1b')
+
+fixef(m4)
+
+# conditional_effects(m4, ask = F)
+
+
+
+post_samples_m4 = as.data.frame(fixef(m4, summary = F))
+
+post_samples_OverallFreq = sum(post_samples_m4$CenteredLogOverallFreq < 0) / length(post_samples_m4$CenteredLogOverallFreq)
+  
+post_samples_RelFreq = sum(post_samples_m4$RelFreq > 0) / length(post_samples_m4$RelFreq)
+
+post_samples_overallfreq_relfreq = sum(post_samples_m4$`CenteredLogOverallFreq:RelFreq` < 0) / length(post_samples_m4$`CenteredLogOverallFreq:RelFreq`)
+
+print(post_samples_OverallFreq)
+print(post_samples_RelFreq)
+print(post_samples_overallfreq_relfreq) #not significant but damn close
+
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', plot.points = T)
+interact_plot(m4, pred = 'CenteredLogOverallFreq', modx = 'RelFreq', interval = T)
+
+olmo1b_plot = conditional_effects(m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+```
+
+### Olmo1b at different layers
+##### Main Model:
+
+```{r, out.width='100%'}
+options(contrasts = c("contr.sum","contr.sum"))
+
+cosine_data = read_csv('../Data/allenai_OLMo-1B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+#cosine_data$layer = factor(cosine_data$layer, levels = c('1', '3', '6', '14', '-2'))
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_main_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+
+fixed_effects_main = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = 'main')
+
+
+posterior_main = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = 'main')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_main_all_layers <- bind_rows(plot_data_list)
+
+olmo_main_all_layers$layer = factor(olmo_main_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_main_all_layers = olmo_main_all_layers %>%
+  filter(layer != 16)
+
+olmo_main_all_layers$RelFreq = factor(olmo_main_all_layers$RelFreq)
+
+olmo_main_all_layers_plot = olmo_main_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 425000')
+olmo_main_all_layers_plot
+
+```
+
+##### Step 425000 (1783B Tokens)
+
+```{r, out.width='100%'}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step425000-tokens1783B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step425000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+
+fixed_effects_425000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '425000')
+
+
+posterior_425000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '425000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_425000_all_layers <- bind_rows(plot_data_list)
+
+olmo_425000_all_layers$layer = factor(olmo_425000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_425000_all_layers = olmo_425000_all_layers %>%
+  filter(layer != 16)
+
+olmo_425000_all_layers$RelFreq = factor(olmo_425000_all_layers$RelFreq)
+
+
+olmo_425000_all_layers_plot = olmo_425000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 425000')
+
+olmo_425000_all_layers_plot
+```
+
+
+
+##### Step 100000 (419B Tokens)
+
+
+```{r, out.width='100%'}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step100000-tokens419B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step100000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+
+fixed_effects_100000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '100000')
+
+
+posterior_100000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '100000')
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_100000_all_layers <- bind_rows(plot_data_list)
+
+olmo_100000_all_layers$layer = factor(olmo_100000_all_layers$layer, levels = names(cosine_data_list)) 
+
+olmo_100000_all_layers = olmo_100000_all_layers %>%
+  filter(layer != 16)
+
+olmo_100000_all_layers$RelFreq = factor(olmo_100000_all_layers$RelFreq)
+
+olmo_100000_all_layers_plot = olmo_100000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 425000')
+
+olmo_100000_all_layers_plot
+```
+
+##### Step 99000 (415B)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step99000-tokens415B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step99000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_99000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '99000')
+
+
+posterior_99000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '99000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_99000_all_layers <- bind_rows(plot_data_list)
+
+olmo_99000_all_layers$layer = factor(olmo_99000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_99000_all_layers = olmo_99000_all_layers %>%
+  filter(layer != 16)
+
+olmo_99000_all_layers$RelFreq = factor(olmo_99000_all_layers$RelFreq)
+
+olmo_99000_all_layers_plot = olmo_99000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_99000_all_layers_plot
+```
+
+##### Step 98000 (411B)
+
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step98000-tokens411B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step98000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_98000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '98000')
+
+
+posterior_98000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '98000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_98000_all_layers <- bind_rows(plot_data_list)
+
+olmo_98000_all_layers$layer = factor(olmo_98000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_98000_all_layers = olmo_98000_all_layers %>%
+  filter(layer != 16)
+
+olmo_98000_all_layers$RelFreq = factor(olmo_98000_all_layers$RelFreq)
+
+olmo_98000_all_layers_plot = olmo_98000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_98000_all_layers_plot
+```
+
+##### Step 97000 (407B)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step97000-tokens407B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step97000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_97000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '97000')
+
+
+posterior_97000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '97000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_97000_all_layers <- bind_rows(plot_data_list)
+
+olmo_97000_all_layers$layer = factor(olmo_97000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_97000_all_layers = olmo_97000_all_layers %>%
+  filter(layer != 16)
+
+olmo_97000_all_layers$RelFreq = factor(olmo_97000_all_layers$RelFreq)
+
+olmo_97000_all_layers_plot = olmo_97000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_97000_all_layers_plot
+```
+
+##### Step 96000 (403B)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step96000-tokens403B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step96000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_96000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '96000')
+
+
+posterior_96000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '96000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_96000_all_layers <- bind_rows(plot_data_list)
+
+olmo_96000_all_layers$layer = factor(olmo_96000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_96000_all_layers = olmo_96000_all_layers %>%
+  filter(layer != 16)
+
+olmo_96000_all_layers$RelFreq = factor(olmo_96000_all_layers$RelFreq)
+
+olmo_96000_all_layers_plot = olmo_96000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_96000_all_layers_plot
+```
+
+##### Step 95000 (398B)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step95000-tokens398B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step95000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_95000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '95000')
+
+
+posterior_95000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '95000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_95000_all_layers <- bind_rows(plot_data_list)
+
+olmo_95000_all_layers$layer = factor(olmo_95000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_95000_all_layers = olmo_95000_all_layers %>%
+  filter(layer != 16)
+
+olmo_95000_all_layers$RelFreq = factor(olmo_95000_all_layers$RelFreq)
+
+olmo_95000_all_layers_plot = olmo_95000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_95000_all_layers_plot
+```
+
+
+##### Step 90000 (377B)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step90000-tokens377B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step90000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_90000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '90000')
+
+
+posterior_90000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '90000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_90000_all_layers <- bind_rows(plot_data_list)
+
+olmo_90000_all_layers$layer = factor(olmo_90000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_90000_all_layers = olmo_90000_all_layers %>%
+  filter(layer != 16)
+
+olmo_90000_all_layers$RelFreq = factor(olmo_90000_all_layers$RelFreq)
+
+olmo_90000_all_layers_plot = olmo_90000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_90000_all_layers_plot
+```
+
+
+
+##### Step 80000 (336B Tokens)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step80000-tokens336B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step80000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_80000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '80000')
+
+
+posterior_80000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '80000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_80000_all_layers <- bind_rows(plot_data_list)
+
+olmo_80000_all_layers$layer = factor(olmo_80000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_80000_all_layers = olmo_80000_all_layers %>%
+  filter(layer != 16)
+
+olmo_80000_all_layers$RelFreq = factor(olmo_80000_all_layers$RelFreq)
+
+olmo_80000_all_layers_plot = olmo_80000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_80000_all_layers_plot
+```
+
+
+##### Step 70000 (294B Tokens)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step70000-tokens294B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step70000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_70000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '70000')
+
+
+posterior_70000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '70000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_70000_all_layers <- bind_rows(plot_data_list)
+
+olmo_70000_all_layers$layer = factor(olmo_70000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_70000_all_layers = olmo_70000_all_layers %>%
+  filter(layer != 16)
+
+olmo_70000_all_layers$RelFreq = factor(olmo_70000_all_layers$RelFreq)
+
+olmo_70000_all_layers_plot = olmo_70000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_70000_all_layers_plot
+```
+
+
+##### Step 60000(252B Tokens)
+
+```{r}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step60000-tokens252B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step60000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_60000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '60000')
+
+
+posterior_60000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '60000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_60000_all_layers <- bind_rows(plot_data_list)
+
+olmo_60000_all_layers$layer = factor(olmo_60000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_60000_all_layers = olmo_60000_all_layers %>%
+  filter(layer != 16)
+
+olmo_60000_all_layers$RelFreq = factor(olmo_60000_all_layers$RelFreq)
+
+olmo_60000_all_layers_plot = olmo_60000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_60000_all_layers_plot
+```
+
+
+##### Step 50000 (210B Tokens)
+
+```{r, out.width='100%'}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step50000-tokens210B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layergith
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step50000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_50000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '50000')
+
+
+posterior_50000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '50000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_50000_all_layers <- bind_rows(plot_data_list)
+
+olmo_50000_all_layers$layer = factor(olmo_50000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_50000_all_layers = olmo_50000_all_layers %>%
+  filter(layer != 16)
+
+olmo_50000_all_layers$RelFreq = factor(olmo_50000_all_layers$RelFreq)
+
+olmo_50000_all_layers_plot = olmo_50000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 50000')
+
+olmo_50000_all_layers_plot
+
+```
+
+
+##### Step 40000 (168B Tokens)
+
+```{r, out.width='100%'}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step40000-tokens168B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step40000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_40000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '40000')
+
+
+posterior_40000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '40000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_40000_all_layers <- bind_rows(plot_data_list)
+
+olmo_40000_all_layers$layer = factor(olmo_40000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_40000_all_layers = olmo_40000_all_layers %>%
+  filter(layer != 16)
+
+olmo_40000_all_layers$RelFreq = factor(olmo_40000_all_layers$RelFreq)
+
+olmo_40000_all_layers_plot = olmo_40000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 425000')
+
+olmo_40000_all_layers_plot
+
+```
+
+##### Step 30000 (126B Tokens)
+
+```{r, out.width='100%'}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step30000-tokens126B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step30000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_30000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '30000')
+
+
+posterior_30000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '30000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_30000_all_layers <- bind_rows(plot_data_list)
+
+olmo_30000_all_layers$layer = factor(olmo_30000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_30000_all_layers = olmo_30000_all_layers %>%
+  filter(layer != 16)
+
+
+olmo_30000_all_layers$RelFreq = factor(olmo_30000_all_layers$RelFreq)
+
+olmo_30000_all_layers_plot = olmo_30000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 425000')
+
+olmo_30000_all_layers_plot
+
+```
+
+##### Step 20000 (84B tokens)
+
+```{r, out.width='100%'}
+cosine_data = read_csv('../Data/allenai_OLMo-1B_step20000-tokens84B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial'))
+
+cosine_data$layer = factor(cosine_data$layer)
+
+cosine_data = cosine_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+cosine_data_m2 = cosine_data %>%
+  filter(LogBinomFreq > 0) #These items might be driving the effect, let's make sure this isn't the case
+#test_na = cosine_data[is.na(cosine_data$cosine_diffs),]
+
+
+cosine_data_m4 = cosine_data %>%
+  #filter(layer=='-2') %>%
+  group_by(layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+cosine_data_list = cosine_data_m4 %>%
+  split(.$layer)
+
+# Optionally, assign each dataframe in the list to its own variable (not recommended for large numbers of variables)
+list2env(
+  setNames(cosine_data_list, paste0("cosine_data_l", names(cosine_data_list))),
+  envir = .GlobalEnv
+)
+
+layer_numbers = gsub("cosine_data_l", "", names(cosine_data_list)) %>% as.integer()
+
+# Define the model fitting function
+fit_model = function(data, layer) {
+  brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+      data = data,
+      family = gaussian(),
+      warmup = 2000,
+      iter = 4000,
+      cores = 4,
+      chains = 4,
+      file = paste0('../Data/model4_olmo1b_step20000_l', layer))
+}
+
+# Apply the model fitting function to each dataframe in the list
+models = map2(cosine_data_list, layer_numbers, fit_model)
+
+fixed_effects_20000 = map2_dfr(
+  models,                     # List of models
+  layer_numbers,                   # Corresponding layer numbers
+  ~ fixef(.x, summary = TRUE) %>%  # Extract fixed effects for each model
+    as.data.frame() %>%
+    rownames_to_column("fixed-effect") %>% # Convert row names to a column
+    mutate(
+      term = str_replace(`fixed-effect`, "\\.\\.\\..*", ""),  # Clean up row names
+      layer = .y                                    # Add the layer number
+    )
+) %>%
+  mutate(checkpoint = '20000')
+
+
+posterior_20000 = map2_dfr(
+  models,                       # List of models
+  layer_numbers,                     # Corresponding layer numbers
+  ~ {
+    # Extract posterior samples for the fixed effect
+    post_samples = as.data.frame(fixef(.x, summary = FALSE))
+    
+    # Compute the proportion of samples where the term < 0
+    proportion = sum(post_samples$`CenteredLogOverallFreq:RelFreq` < 0) / 
+                  length(post_samples$`CenteredLogOverallFreq:RelFreq`)
+    
+    # Return a dataframe with layer and proportion
+    tibble(
+      layer = .y,                    # Layer number
+      proportion = proportion        # Computed proportion
+    )
+  }
+) %>%
+  mutate(checkpoint = '20000')
+
+
+generate_plot_data = function(model, layer) {
+  conditional_effects(model, plot = FALSE, effects = "CenteredLogOverallFreq:RelFreq", int_conditions = list(RelFreq = c(-0.25, 0, 0.25)))[[1]] %>%
+    mutate(layer = as.character(layer))  # Assign the layer as a string
+}
+
+# Apply the function iteratively to all models
+plot_data_list = map2(models, layer_numbers, generate_plot_data)
+
+# Combine all layers into one dataframe
+olmo_20000_all_layers <- bind_rows(plot_data_list)
+
+olmo_20000_all_layers$layer = factor(olmo_20000_all_layers$layer, levels = names(cosine_data_list))
+
+olmo_20000_all_layers = olmo_20000_all_layers %>%
+  filter(layer != 16)
+
+olmo_20000_all_layers$RelFreq = factor(olmo_20000_all_layers$RelFreq)
+
+olmo_20000_all_layers_plot = olmo_20000_all_layers %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = RelFreq)) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = RelFreq), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() #+
+  #ggtitle('Checkpoint: 425000')
+
+olmo_20000_all_layers_plot
+```
+
+### Aggregate data
+
+```{r message = F}
+options(contrasts = c("contr.sum","contr.sum"))
+
+cosine_data = read_csv('../Data/allenai_OLMo-1B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = 'main')
+
+cosine_data_425000 = read_csv('../Data/allenai_OLMo-1B_step425000-tokens1783B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '425000')
+
+cosine_data_100000 = read_csv('../Data/allenai_OLMo-1B_step100000-tokens419B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '100000')
+
+cosine_data_99000 = read_csv('../Data/allenai_OLMo-1B_step99000-tokens415B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '99000')
+
+cosine_data_98000 = read_csv('../Data/allenai_OLMo-1B_step98000-tokens411B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '98000')
+
+cosine_data_97000 = read_csv('../Data/allenai_OLMo-1B_step97000-tokens407B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '97000')
+
+cosine_data_96000 = read_csv('../Data/allenai_OLMo-1B_step96000-tokens403B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '96000')
+
+cosine_data_95000 = read_csv('../Data/allenai_OLMo-1B_step95000-tokens398B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '95000')
+
+cosine_data_90000 = read_csv('../Data/allenai_OLMo-1B_step90000-tokens377B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '90000')
+
+cosine_data_80000 = read_csv('../Data/allenai_OLMo-1B_step80000-tokens336B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '80000')
+
+cosine_data_70000 = read_csv('../Data/allenai_OLMo-1B_step70000-tokens294B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '70000')
+
+cosine_data_60000 = read_csv('../Data/allenai_OLMo-1B_step60000-tokens252B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '60000')
+
+cosine_data_50000 = read_csv('../Data/allenai_OLMo-1B_step50000-tokens210B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '50000')
+
+cosine_data_40000 = read_csv('../Data/allenai_OLMo-1B_step40000-tokens168B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '40000')
+
+cosine_data_30000 = read_csv('../Data/allenai_OLMo-1B_step30000-tokens126B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '30000')
+
+cosine_data_20000 = read_csv('../Data/allenai_OLMo-1B_step20000-tokens84B_compositional_cosine_diffs.csv') %>%
+  left_join(all_sentences, by = c('binom' = 'Binomial')) %>%
+  mutate(checkpoint = '20000')
+
+aggregate_data = cosine_data %>%
+  full_join(cosine_data_425000) %>%
+  full_join(cosine_data_100000) %>%
+  full_join(cosine_data_99000) %>%
+  full_join(cosine_data_98000) %>%
+  full_join(cosine_data_97000) %>%
+  full_join(cosine_data_96000) %>%
+  full_join(cosine_data_95000) %>%
+  full_join(cosine_data_90000) %>%
+  full_join(cosine_data_80000) %>%
+  full_join(cosine_data_70000) %>%
+  full_join(cosine_data_60000) %>%
+  full_join(cosine_data_50000) %>%
+  full_join(cosine_data_40000) %>%
+  full_join(cosine_data_30000) %>%
+  full_join(cosine_data_20000) 
+
+
+aggregate_data$layer = factor(aggregate_data$layer)
+
+aggregate_data = aggregate_data %>%
+  mutate(Item = factor(Item)) %>%
+  mutate(LogBinomFreq = log(BinomFreq+1)) %>%
+  mutate(RelFreq = RelFreq - 0.5) %>% #centering RelFreq
+  filter(!Item %in% c(125, 176)) %>% #these two items were giving llama13 some trouble
+  rename('cosine_sim' = cosine_diffs)
+
+
+aggregate_data = aggregate_data %>%
+  #filter(layer=='-2') %>%
+  group_by(checkpoint, layer, Item) %>%
+  arrange(desc(binom), .by_group = T) %>%
+  mutate(log_odds_cosine = log(cosine_sim/first(cosine_sim))) %>% #larger value means that the alphabetical form is more similar to its parts than the nonalphabetical
+  group_by(checkpoint, layer, Item) %>%
+  mutate(LogOverallFreq = log(OverallFreq+1)) %>%
+  top_n(1, abs(log_odds_cosine)) %>%
+  ungroup() %>%
+  mutate(CenteredLogOverallFreq = LogOverallFreq - mean(LogOverallFreq))
+
+# Split the data into a named list of dataframes by layer
+
+
+```
+
+#### Aggregate Model Results
+
+```{r message = F}
+
+fixefs_all = fixed_effects_main %>%
+  full_join(fixed_effects_425000) %>%
+  full_join(fixed_effects_100000) %>%
+  full_join(fixed_effects_50000) %>%
+  full_join(fixed_effects_40000) %>%
+  full_join(fixed_effects_30000) %>%
+  full_join(fixed_effects_20000)
+
+fixefs_all$checkpoint = factor(fixefs_all$checkpoint, levels=c('20000', '30000', '40000', '50000', '100000', '425000', 'main'))
+
+posterior_all = posterior_main %>%
+  full_join(posterior_425000) %>%
+  full_join(posterior_100000) %>%
+  full_join(posterior_50000) %>%
+  full_join(posterior_40000) %>%
+  full_join(posterior_30000) %>%
+  full_join(posterior_20000)
+
+posterior_all$checkpoint = factor(posterior_all$checkpoint, levels=c('20000', '30000', '40000', '50000', '100000', '425000', 'main'))
+
+```
+
+#### Aggregate Plot
+
+Plot of model predictions
+
+```{r out.width='100%'}
+require(grid)   # for the textGrob() function
+
+
+olmo_20000_all_layers_plot2 = olmo_20000_all_layers_plot +
+  theme(plot.margin=unit(c(0.5,0.5,0.5,1), 'cm'))
+olmo_30000_all_layers_plot2 = olmo_30000_all_layers_plot +
+  theme(plot.margin=unit(c(0.5,0.5,0.5,1), 'cm'))
+olmo_40000_all_layers_plot2 = olmo_40000_all_layers_plot +
+  theme(plot.margin=unit(c(0.5,0.5,0.5,1), 'cm'))
+olmo_50000_all_layers_plot2 = olmo_50000_all_layers_plot +
+  theme(plot.margin=unit(c(0.5,0.5,0.5,1), 'cm'))
+olmo_100000_all_layers_plot2 = olmo_100000_all_layers_plot +
+  theme(plot.margin=unit(c(0.5,0.5,0.5,1), 'cm'))
+olmo_main_all_layers_plot2 = olmo_main_all_layers_plot +
+  theme(plot.margin=unit(c(0.5,0.5,0.5,1), 'cm'))
+
+
+figure = ggarrange(olmo_20000_all_layers_plot2 + rremove("ylab") + rremove("xlab"), olmo_30000_all_layers_plot2 + rremove("ylab") + rremove("xlab"), olmo_40000_all_layers_plot2 + rremove("ylab") + rremove("xlab"), olmo_50000_all_layers_plot2 + rremove("ylab") + rremove("xlab"),  olmo_100000_all_layers_plot2 + rremove("ylab") + rremove("xlab"), olmo_main_all_layers_plot2 + rremove("ylab") + rremove("xlab"),# remove axis labels from plots
+                    labels = c('20000', '30000', '40000', '50000', '100000', 'main'),
+                    ncol = 3, nrow = 2,
+                    common.legend = TRUE, legend = "bottom",
+                    align = "hv", 
+                    font.label = list(size = 10, color = "black", face = "bold", family = NULL, position = "top"))
+
+annotate_figure(figure, left = textGrob("Log Odds Cosine", rot = 90, vjust = 1, gp = gpar(cex = 1.3)),
+                    bottom = textGrob("Overall Frequency", gp = gpar(cex = 1.3)))
+
+# ggarrange(olmo_20000_all_layers_plot, olmo_30000_all_layers_plot, olmo_40000_all_layers_plot, olmo_50000_all_layers_plot, olmo_100000_all_layers_plot, olmo_main_all_layers_plot, common.legend = T, labels = c('20000', '30000', '40000', '50000', '100000', 'main'))
+
+```
+
+
+Plot of actual data
+
+```{r out.width='100%'}
+
+#aggregate_data$RelFreq = factor(aggregate_data$RelFreq, levels = NULL)
+aggregate_data$checkpoint = factor(aggregate_data$checkpoint, levels = c('20000', '30000', '40000', '50000', '60000', '70000', '80000', '90000', '95000', '96000', '97000', '98000', '99000', '100000', '425000', 'main'))
+aggregate_data$layer = factor(aggregate_data$layer)
+
+write_csv(aggregate_data, '../Data/aggregate_data.csv')
+
+aggregate_data = aggregate_data %>%
+  filter(checkpoint %in% c('20000', '40000', '60000', '80000', '100000', 'main'))
+
+
+
+aggregate_data = aggregate_data %>%
+  mutate(RelFreq_group = ifelse(RelFreq < 0, "nonalpha", "alpha"))
+
+
+aggregate_data_plot = ggplot(aggregate_data, aes(
+     x = CenteredLogOverallFreq,
+     y = log_odds_cosine,
+     color = RelFreq_group
+   )) +
+     geom_point(alpha = 0.2) +
+     geom_smooth(method = 'lm', formula = y ~ x, se = TRUE, linewidth = 1) +
+     ylab('Log Odds Cosine') +
+     xlab('Centered Log Overall Frequency') +
+     facet_grid(checkpoint ~ layer) +
+     theme_bw() +
+     scale_color_manual(
+       values = c("nonalpha" = "turquoise3", "alpha" = "deeppink2"),
+       name = "RelFreq Group"
+     ) +
+     coord_cartesian(ylim = c(-0.5, 0.5))
+
+aggregate_data_plot
+
+```
+
+
+
+## Plots
+
+```{r fig.height=15, fig.width=15}
+library(ggpubr)
+
+gpt2 = gpt2_plot[[1]] %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  ggtitle('GPT2 Model') +
+  theme_bw()
+
+gpt2xl = gpt2xl_plot[[1]] %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  ggtitle('GPT2-XL Model') +
+  theme_bw()
+
+olmo1b = olmo1b_plot[[1]] %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  ggtitle('OlmO 1B Model') +
+  theme_bw()
+
+
+olmo7b = olmo7b_plot[[1]] %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  ggtitle('OlmO 7B Model') +
+  theme_bw() 
+
+llama2 = llama2_plot[[1]] %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  ggtitle('Llama2 7B Model') +
+  theme_bw() 
+
+ggarrange(gpt2, gpt2xl, olmo1b, olmo7b, llama2, nrow=3,ncol=2, align='v')
+#ggarrange(gpt2_plot, gpt2xl_plot, olmo1b_plot, olmo7b_plot, llama2_plot, nrow=3)
+
+```
+
+### Animated Plot for Olmo Steps
+
+#### Transition over checkpoint for each layer
+
+```{r, out.width='100%'}
+
+library(gganimate)
+# 
+olmo1b_plot_step425000 = olmo_425000_all_layers %>%
+  mutate('step' = 425000)
+
+olmo1b_plot_step100000 = olmo_100000_all_layers %>%
+  mutate('step' = 100000)
+
+olmo1b_plot_step50000 = olmo_50000_all_layers %>%
+  mutate('step' = 50000)
+
+olmo1b_plot_step40000 = olmo_40000_all_layers %>%
+  mutate('step' = 40000)
+
+olmo1b_plot_step30000 = olmo_30000_all_layers %>%
+  mutate('step' = 30000)
+
+olmo1b_plot_step20000 = olmo_20000_all_layers %>%
+  mutate('step' = 20000)
+
+olmo1b_plot_all_steps = olmo1b_plot_step425000 %>%
+  full_join(olmo1b_plot_step100000) %>%
+  full_join(olmo1b_plot_step50000) %>%
+  full_join(olmo1b_plot_step40000) %>%
+  full_join(olmo1b_plot_step30000) %>%
+  full_join(olmo1b_plot_step20000)
+
+#olmo1b_plot_all_steps$step = factor(olmo1b_plot_all_steps$step)
+olmo1b_plot_all_steps$layer = factor(olmo1b_plot_all_steps$layer)
+
+olmo_animated_plot = data=olmo1b_plot_all_steps %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~layer, ncol = 4) +
+  theme_bw() 
+
+
+
+anim = olmo_animated_plot + transition_time(step) +
+  ease_aes('linear') +
+  labs(title = "Step: {round(frame_time, 0)}")
+
+animate(anim,
+        fps = 20,
+        duration=20
+)
+
+```
+
+#### Transition over layer for each checkpoint
+
+```{r, out.width='100%'}
+
+# library(gganimate)
+# 
+olmo1b_plot_step425000 = olmo_425000_all_layers %>%
+  mutate('step' = 425000)
+
+olmo1b_plot_step100000 = olmo_100000_all_layers %>%
+  mutate('step' = 100000)
+
+olmo1b_plot_step50000 = olmo_50000_all_layers %>%
+  mutate('step' = 50000)
+
+olmo1b_plot_step40000 = olmo_40000_all_layers %>%
+  mutate('step' = 40000)
+
+olmo1b_plot_step30000 = olmo_30000_all_layers %>%
+  mutate('step' = 30000)
+
+olmo1b_plot_step20000 = olmo_20000_all_layers %>%
+  mutate('step' = 20000)
+
+olmo1b_plot_all_steps = olmo1b_plot_step425000 %>%
+  full_join(olmo1b_plot_step100000) %>%
+  full_join(olmo1b_plot_step50000) %>%
+  full_join(olmo1b_plot_step40000) %>%
+  full_join(olmo1b_plot_step30000) %>%
+  full_join(olmo1b_plot_step20000)
+
+
+olmo1b_plot_all_steps$step = factor(olmo1b_plot_all_steps$step)
+olmo1b_plot_all_steps$layer = as.numeric(olmo1b_plot_all_steps$layer)
+
+olmo_animated_plot = data=olmo1b_plot_all_steps %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_wrap(~step, ncol = 4) +
+  theme_bw() 
+
+
+
+anim = olmo_animated_plot + transition_time(layer) +
+  ease_aes('linear') +
+  labs(title = "Layer: {round(frame_time, 0)}")
+
+animate(anim,
+        fps = 20,
+        duration=20
+)
+
+```
+### Static plots:
+
+```{r}
+olmo1b_plot_all_steps %>%
+  filter(layer %in% c(1, 6, 11, 16)) %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_grid(layer~step) +
+  theme_bw() 
+  
+```
+
+
+
+### Plot of all layers for all checkpoints
+```{r, message=FALSE, out.width="140%"}
+
+olmo_main_all_layers = olmo_main_all_layers %>%
+  mutate('checkpoint' = 'main')
+olmo_425000_all_layers = olmo_425000_all_layers %>%
+  mutate('checkpoint'= '425000')
+olmo_100000_all_layers = olmo_100000_all_layers %>%
+  mutate('checkpoint'= '100000')
+olmo_50000_all_layers = olmo_50000_all_layers %>%
+  mutate('checkpoint'= '50000')
+olmo_40000_all_layers = olmo_40000_all_layers %>%
+  mutate('checkpoint'= '40000')
+olmo_30000_all_layers = olmo_30000_all_layers %>%
+  mutate('checkpoint' = '30000')
+olmo_20000_all_layers = olmo_20000_all_layers %>%
+  mutate('checkpoint'= '20000')
+
+olmo_all_layers_all_checkpoints = olmo_main_all_layers %>%
+  full_join(olmo_425000_all_layers) %>%
+  full_join(olmo_100000_all_layers) %>%
+  full_join(olmo_50000_all_layers) %>%
+  full_join(olmo_40000_all_layers) %>%
+  full_join(olmo_30000_all_layers) %>%
+  full_join(olmo_20000_all_layers) 
+
+olmo_all_layers_all_checkpoints$layer = factor(olmo_all_layers_all_checkpoints$layer, levels = c('1', '3', '6', '14', '-2'))
+olmo_all_layers_all_checkpoints$checkpoint = factor(olmo_all_layers_all_checkpoints$checkpoint, levels = c('20000', '30000', '40000', '50000', '100000', '425000', 'main'))
+
+olmo_all_layers_all_checkpoints_plot = olmo_all_layers_all_checkpoints %>%
+  ggplot(aes(x=CenteredLogOverallFreq, y = estimate__, color = factor(RelFreq))) +
+  geom_smooth(method='lm', formula=y~x, se=F) +
+  geom_ribbon(aes(ymin=lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab ('Log Odds Cosine') +
+  xlab('Centered Log Overall Frequency') +
+  facet_grid(checkpoint~layer) +
+  theme_bw() 
+
+olmo_all_layers_all_checkpoints_plot
+
+```
+
+
+```{r include = F}
+# ggplot(data = cosine_data, aes(x = LogBinomFreq, y = cosine_sim, color = RelFreq)) +
+#   geom_point() + 
+#   geom_smooth(method='lm') +
+#   theme_bw()
+# 
+# ggplot(data = cosine_data_m2, aes(x = LogBinomFreq, y = cosine_sim, color = RelFreq)) +
+#   geom_point() + 
+#   geom_smooth(method='lm') +
+#   theme_bw()
+```
+
+```{r include = F}
+# ggplot(data = cosine_data, aes(x = log(OverallFreq), y = cosine_sim, color = RelFreq)) +
+#   geom_point() + 
+#   geom_smooth(method='lm') +
+#   theme_bw()
+# 
+# ggplot(data = cosine_data, aes(x = RelFreq, y = cosine_sim, color = log(OverallFreq))) +
+#   geom_point() + 
+#   geom_smooth(method='lm') +
+#   theme_bw()
+
+```

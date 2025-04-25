@@ -1,3 +1,4 @@
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \addtokomafont{disposition}{\rmfamily}
 \KOMAoptions{chapterprefix=true,appendixprefix=true}
 \KOMAoptions{headings=small}
@@ -11,6 +12,7 @@
 \usepackage{indentfirst}
 \usepackage{chngcntr}
 \counterwithin{figure}{section}
+\counterwithin{table}{section}
 \usepackage{gb4e} \noautomath
 \usepackage{amsmath}
-\usepackage{breqn}
+\usepackage{pdflscape}
