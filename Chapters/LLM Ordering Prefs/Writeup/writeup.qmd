@@ -3,6 +3,8 @@ library(tidyverse)
 library(brms)
 library(here)
 library(ggh4x)
+library(knitr)
+library(kableExtra)
 
 data_main_model = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), '/allenai_OLMo-7B-0424-hf.csv'))
 corpus = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), '/nonce_binoms.csv'))
@@ -128,9 +130,9 @@ fixefs_m3 = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), "/fixefs_m
 
 ## Introduction
 
-Large language models have stormed the media in the last few years, becoming a popular topic in the scientific literature. Their rise to fame has brought with them many heated debates regarding whether large language models constitute human-like models of language or whether their behavior is completely different from humans [@piantadosiChapterModernLanguage; @piantadosiMeaningReferenceLarge2022; @benderDangersStochasticParrots2021; @bender2020climbingnlumeaning].
+Large language models have stormed the media in the last few years, becoming a popular topic in the scientific literature. Their rise to fame has brought with them many heated debates regarding whether large language models constitute human-like models of language or whether their behavior is completely different from humans [@piantadosiChapterModernLanguage; @piantadosiMeaningReferenceLarge2022; @benderDangersStochasticParrots2021; @bender2020climbingnlumeaning]. For example, there has been an ongoing debate about whether large language models learn any knowledge about the meaning of words. @bender2020climbingnlumeaning has argued that large language models, which are only trained on the form, have no way of learning anything about meaning. They pointed out that large language models do not have the rich information that humans receive, such as the referent of the form. However, @piantadosiMeaningReferenceLarge2022 rebutted this claim by arguing that co-occurrence statistics can be extremely informative about a word's meaning. For example, they argued that many words, such as "justice", contain no clear referent and instead have to be learned by humans based on the context that they occur in. It seems plausible that large language models could learn at least some information about the meaning of words in a similar manner.
 
-Many of these debates have centered around the tradeoff between computation and storage: how much are these models simply reproducing from their training data vs how much of their productions are novel utterances using learned linguistic patterns? On one hand, there is no doubt that large language models store and reproduce large chunks of language. In fact, OpenAI is even being sued by *The New York Times* for allegedly reproducing entire articles verbatim.[^writeup-1] This sentiment – that large language models are nothing but glorified copy cats – has been echoed by several other prominent linguists [@bender2020climbingnlumeaning; @benderDangersStochasticParrots2021; c.f., @piantadosiMeaningReferenceLarge2022].
+Other debates have centered around the tradeoff between computation and storage: how much are these models simply reproducing from their training data vs how much of their productions are novel utterances using learned linguistic patterns? On one hand, there is no doubt that large language models store and reproduce large chunks of language. In fact, OpenAI is even being sued by *The New York Times* for allegedly reproducing entire articles verbatim.[^writeup-1] This sentiment – that large language models are nothing but glorified copy cats – has been echoed by several other prominent linguists [@bender2020climbingnlumeaning; @benderDangersStochasticParrots2021; c.f., @piantadosiMeaningReferenceLarge2022].
 
 [^writeup-1]: <https://nytco-assets.nytimes.com/2023/12/NYT_Complaint_Dec2023.pdf>
 
@@ -138,9 +140,7 @@ Specifically, proponents of the "LLMs as copy cats" argument have pointed out th
 
 [^writeup-2]: This is magnitudes larger than the 350 million words that the average college-aged speaker has seen in their lifetime [@levyProcessingExtraposedStructures2012].
 
-A similar debate in the field has centered around whether large language models learn any knowledge about the meaning of words. For example, @bender2020climbingnlumeaning have argued that large language models, which are only trained on the form, have no way of learning anything about meaning. They pointed out that large language models do not have the rich information that humans receive, such as the referent of the form. However, @piantadosiMeaningReferenceLarge2022 rebutted this claim by arguing that co-occurrence statistics can be extremely informative about a word's meaning. For example, they argued that many words, such as "justice", contain no clear referent and instead have to be learned by humans based on the context that they occur in. It seems plausible that large language models could learn at least some information about the meaning of words in a similar manner.
-
-These debates, however, have been highly theoretical and speculative and very few empirical studies have been done to actually investigate these questions [c.f., @lasriSubjectVerbAgreement2022 @lebrun2022evaluatingdistributionaldistortion; @mccoyHowMuchLanguage2023; @panareexplicitbelief]. Thus in the present paper we address these debates by taking an in-depth look at large language models' abilities to learn abstract knowledge beyond simply the statistics of individual tokens. Specifically we examine the ordering of novel binomials in English (Noun *and* Noun constructions, e.g., *cats and dogs*). The nouns in binomials can be ordered without affecting the meaning of the phrase much (e.g., *cats and dogs* vs *dogs and cats*). Despite this, human preferences for which noun should be placed first vary in strength. For example, there is a pretty strong preference for *bread and butter* as opposed to *butter and bread*. However, both *computers and monitors* and *monitors and computers* are natural. Binomials are a useful test case because there is a great deal of evidence demonstrating that human ordering preferences are driven by abstract preferences, such as a preference for more powerful words to be placed first (e.g., *god and man* vs *man and god*). Thus by examining binomials varying in frequency, we can gain insight into whether large language models are learning abstract preferences and to what degree they learn similarly to humans.
+These debates, however, have been highly theoretical and speculative and very few empirical studies have been done to actually investigate these questions [c.f., @lasriSubjectVerbAgreement2022; @lebrun2022evaluatingdistributionaldistortion; @mccoyHowMuchLanguage2023; @panareexplicitbelief]. Thus in the present paper we address these debates by taking an in-depth look at large language models' abilities to learn abstract knowledge beyond simply the statistics of individual tokens. Specifically we examine the ordering of novel binomials in English (Noun *and* Noun constructions, e.g., *cats and dogs*). The nouns in binomials can be ordered without affecting the meaning of the phrase much (e.g., *cats and dogs* vs *dogs and cats*). Despite this, human preferences for which noun should be placed first vary in strength. For example, there is a pretty strong preference for *bread and butter* as opposed to *butter and bread*. However, both *computers and monitors* and *monitors and computers* are natural. Binomials are a useful test case because there is a great deal of evidence demonstrating that human ordering preferences are driven by abstract preferences, such as a preference for more powerful words to be placed first (e.g., *god and man* vs *man and god*). Thus by examining binomials varying in frequency, we can gain insight into whether large language models are learning abstract preferences and to what degree they learn similarly to humans.
 
 ### Abstractions in Large Language Models
 
@@ -152,15 +152,15 @@ Research using other language models have also yielded similar results. For exam
 
 Additionally, there's evidence that inducing abstractions facilitates performance in large language models. For example, @zhengTakeStepBack2024 used a novel prompting technique to enable LLMs to use abstractions when reasoning. They found that LLMs hallucinate less when they implement abstractions in their reasoning. Similarly, @mccoyUniversalLinguisticInductive2020 demonstrated that large language models can use abstractions, such as an abstract preference for certain syllable structures, to learn language more easily. Their results suggest that inducing abstractions may help reduce the amount of training that large language models require.
 
-Finally, here is also evidence that transformer models can learn abstractions from other domains as well. For example, @tartagliniDeepNeuralNetworks2023 examined the ability of a transformer model in a same-different task (i.e., determining if two entities in an image are the same). They found that some models can reach near perfect accuracy on items they have never seen before. Since models are learning abstractions in other domains, it also stands to reason that they may be learning abstractions in language-related tasks as well.
+Finally, there is also evidence that transformer models can learn abstractions from other domains as well. For example, @tartagliniDeepNeuralNetworks2023 examined the ability of a transformer model in a same-different task (i.e., determining if two entities in an image are the same). They found that some models can reach near perfect accuracy on items they have never seen before. Since models are learning abstractions in other domains, it also stands to reason that they may be learning abstractions in language-related tasks as well.
 
 ### Abstractions in Humans
 
-Abstractions have been a part of just about every linguistic theory, including both generativist and non-generativist theories. This is not surprising since one of the hallmarks of human language learning is the ability to produce novel, never-heard-before utterances. In order to do so, most theories posit that humans leverage our remarkable ability to learn linguistic patterns beyond simple co-occurrence rates [c.f., @ambridgeStoredAbstractionsRadical2020]. For example, when presented a novel noun, children are able to consistently produce the proper plural form of that noun [@berkoChildsLearningEnglish1958]. Similarly, children are able to leverage similarities across different contexts to learn a word's general meaning [@yuRapidWordLearning2007].
+Abstractions have been a part of just about every linguistic theory, including both generativist and non-generativist theories. This is not surprising since one of the hallmarks of human language learning is the ability to produce novel, never-heard-before utterances. In order to do so, most theories posit that humans leverage their remarkable ability to learn linguistic patterns beyond simple co-occurrence rates [c.f., @ambridgeStoredAbstractionsRadical2020]. For example, when presented a novel noun, children are able to consistently produce the proper plural form of that noun [@berkoChildsLearningEnglish1958]. Similarly, children are able to leverage similarities across different contexts to learn a word's general meaning [@yuRapidWordLearning2007].
 
-There have been several studies showing human ordering preferences for binomials are driven, at least in part, by abstract ordering preferences [@morganAbstractKnowledgeDirect2016; @morgan2015; @morgan2024]. In order to examine the abstract ordering preferences of humans across binomial constructions, @morgan2016 coded a list of binomials for a variety of semantic, phonological, and metric constraints that affect human ordering preferences for binomials [@benorChickenEggProbabilistic2006] and used this corpus to train a logistic regression model that predicted the probability that a binomial will occur in alphabetical form (A and B, a neutral reference order). They demonstrated that their logistic regression model performs significantly better than chance in predicting the ordering of attested binomials from @siyanova-chanturiaSeeingPhraseTime2011's items.
+Abstractions also play a large part in the way that humans linearize their thoughts into sentences [@morgan2024; @morganAbstractKnowledgeDirect2016]. For example, there have been several studies showing human ordering preferences for binomials are driven, at least in part, by abstract ordering preferences [@morganAbstractKnowledgeDirect2016; @morgan2015; @morgan2024]. In order to examine this, @morganAbstractKnowledgeDirect2016 coded a list of binomials for a variety of semantic, phonological, and metric constraints that affect human ordering preferences for binomials [@benorChickenEggProbabilistic2006]. They trained a logistic regression model on this corpus to predict the probability that a binomial will occur in alphabetical order (A and B, a neutral reference order) as a function of these constraints. They demonstrated that their logistic regression model performs significantly better than chance in predicting the ordering of attested binomials from @siyanova-chanturiaSeeingPhraseTime2011's items (which the model was not trained on).
 
-The logistic regression combines the various constraints into a single generative preference constraint that can be used to examine human ordering preferences. Thus, @morganAbstractKnowledgeDirect2016 created a separate list of 42 novel and 42 attested binomials and once again coded them for the previously-mentioned constraints. They found that human ordering preferences for binomials with a low overall frequency (where overall frequency is the number of times the binomial occurs in either ordering) are driven by this generative preference constraint, even after accounting for the relative frequency (the proportion of times the binomial occurs in one ordering over the other) of the binomial. Further, they found that human ordering preferences for high-frequency binomials are primarily driven by relative frequency rather than generative preferences. Interestingly, more recently @morgan2024 also demonstrated that generative preferences exert a constant effect throughout the frequency spectrum, affecting even high-frequency binomials (although the effect is weaker for high-frequency binomials). In other words, even in cases where humans have experienced a binomial many times, their ordering preferences aren't driven exclusively by their experience with the binomial.
+The logistic regression model they used combines the various constraints into a single generative preference constraint that can be used to examine human ordering preferences. Thus, @morganAbstractKnowledgeDirect2016 created a separate list of 42 novel and 42 attested binomials and once again coded them for the previously-mentioned constraints. They then examined how human ordering preferences (operationalized as self-paced reading times) are affected by 1) generative preferences (estimated using the logistic regression model), 2) relative frequency (for a given binomial, the proportion of occurrences in alphabetical order to non alphabetical order), and 3) overall frequency (the total occurrences of the binomial in alphabetical and nonalphabetical ordering). They found a significant effect of generative preferences for low-frequency binomials, but not for high-frequency binomials. This suggests that humans rely on their compositional knowledge when they have little experience with an item, but rely on their item-specific experience when they have enough experience with an item. Interestingly, more recently @morgan2024 also demonstrated that generative preferences exert a constant effect throughout the frequency spectrum, affecting even high-frequency binomials (although the effect is weaker for high-frequency binomials). In other words, even in cases where humans have experienced a binomial many times, their ordering preferences aren't driven exclusively by their experience with the binomial.
 
 Since human ordering preferences deviate from the observed preferences [i.e., humans aren't simply reproducing binomials in the same order they they heard them; @morgan2024], ordering preferences thus present a useful test case for large language models. If large language models learn representations beyond simply memorizing the training dataset or superficially reproducing word co-occurrences, they may learn abstract ordering preferences similar to humans, and this may be reflected in their binomial ordering preferences.
 
@@ -232,7 +232,7 @@ Our full model results are presented in the appendix (@tbl-model_results_full) a
 
 Our results are similar across all the large language models we tested. Specifically, we find no effect of abstract ordering preferences and no interaction effect between abstract ordering preference and overall frequency. We do find an effect of observed preference suggesting that the models are mostly reproducing the ordering preferences found in their training. We also find an interaction effect between observed preference and overall frequency, suggesting that the effect of observed frequency is stronger for high-frequency items.
 
-![Results for each beta coefficient estimate from each model. Models are arranged from smallest to largest from left to right. The x-axis contains each coefficient and the y-axis contains the predicted beta coefficient of the respective model. Error bars indicate 95\\% credible intervals.](/Chapters/LLM%20Ordering%20Prefs/Figures/full_plot.pdf){#fig-results}
+![Results for each beta coefficient estimate from each model. Models are arranged from smallest to largest from left to right. The x-axis contains each coefficient and the y-axis contains the predicted beta coefficient of the respective model. Error bars indicate 95\\% credible intervals.](/Chapters/LLM%20Ordering%20Prefs/Figures/full_plot.pdf){#fig-results width=100%}
 
 ### Discussion
 
@@ -315,15 +315,42 @@ The results for the first analysis are presented below in @tbl-exp1m1. Our resul
 #| tbl-cap: "Model results examining the effect of AbsPref on LogOdds(AandB)."
 
 #table 1
+
+percent_greater_zero = data.frame(fixef(Olmo_main_genpref, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'AbsPref')))
+
+#table 1
 fixefsm1 = as.data.frame(fixef(Olmo_main_genpref)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
-            digits = 3)
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c("Intercept", "AbsPref"), times = 1))
 
 rownames(fixefsm1) = c('Intercept', 'AbsPref')
 
-knitr::kable(fixefsm1, booktabs = T)
+fixefsm1 = fixefsm1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+#groupings=rle(n1_all_measures$measure)
+
+fixefsm1 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
+
 ```
 
 ```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
@@ -357,16 +384,43 @@ The results of our second model suggest that the model's ordering preferences we
 #| label: tbl-exp1bigrams
 #| tbl-cap: "Model results examining the effect of AbsPref and Bigram Probabilities on LogOdds(AandB)."
 
+
+
+percent_greater_zero = data.frame(fixef(Olmo_main_genpref_log_odds, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'AbsPref')))
+
 #table 1
 fixefsm2 = as.data.frame(fixef(Olmo_main_genpref_log_odds)) %>%
   mutate_if(is.numeric,
             formatC,
             format = 'f',
-            digits = 3)
+            digits = 3) %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c('Intercept', 'AbsPref', 'BigramProbs', 'AbsPref:BigramProbs'), times = 1))
 
 rownames(fixefsm2) = c('Intercept', 'AbsPref', 'BigramProbs', 'AbsPref:BigramProbs')
 
-knitr::kable(fixefsm2, booktabs = T)
+
+fixefsm2 = fixefsm2 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+#groupings=rle(n1_all_measures$measure)
+
+fixefsm2 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 ```
 
@@ -400,11 +454,25 @@ percent_greater_zero = percent_greater_zero %>%
 
 fixefsm3 = fixefsm3 %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = c('Intercept', 'Culture', 'Power', 'Freq', 'Len'))
 
 rownames(fixefsm3) = c('Intercept', 'Culture', 'Power', 'Freq', 'Len')
 
-knitr::kable(fixefsm3, booktabs = T)
+
+fixefsm3 = fixefsm3 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+#groupings=rle(n1_all_measures$measure)
+
+fixefsm3 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 ```
 
 The model is most sensitive to the Power constraint, however there appears to be a marginal effect of Culture as well, since nearly 95% of the posterior samples are greater than zero despite the credible interval crossing zero. Surprisingly, there also appears to be a negative effect of length with a slight preference to place the longer word first, which is the opposite direction from what we see in humans. Length is often correlated with frequency, since frequent words tend to be shorter. As such, we ran a model without frequency to determine whether the negative effect of length was do to co-linearity with frequency. However, dropping frequency from the model did not affect the effect of length. Further, we also ran a model with only length as the predictor and for that model as well the estimate of length remained negative.
@@ -479,6 +547,7 @@ Our model estimates for the effect of AbsPref on LogOdds(AandB) at each checkpoi
 #| label: tbl-exp2m1
 #| tbl-cap: "Model results examining the effect of AbsPref on LogOdds(AandB) for each checkpoint."
 
+
 #table 1
 fixefsexp2m1 = fixefs_m1 %>%
   left_join(checkpoint_tokens_key) %>%
@@ -489,13 +558,26 @@ fixefsexp2m1 = fixefs_m1 %>%
             formatC,
             format = 'f',
             digits = 3) %>%
-  select(-n_billion_tokens, -checkpoint, -Parameter) 
+  select(-n_billion_tokens, -checkpoint, -Parameter) %>%
+  mutate()
 
 
-fixefsexp2m1 = fixefsexp2m1[,c('num_tokens', 'Estimate', 'Est.Error', 'Q2.5', 'Q97.5')]
+fixefsexp2m1 = fixefsexp2m1[,c('num_tokens', 'Estimate', 'Est.Error', 'Q2.5', 'Q97.5', '% Samples > 0')]
 fixefsexp2m1 = rename(fixefsexp2m1, 'Number of Tokens' = num_tokens)
 
-knitr::kable(fixefsexp2m1, booktabs = T, align = rep("r", ncol(fixefsexp2m1)))
+fixefsexp2m1 = fixefsexp2m1 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+#groupings=rle(n1_all_measures$measure)
+
+fixefsexp2m1 %>%
+  #select(term, everything()) %>%
+  #rename(` ` = term) %>%
+  kable(align = c('l', 'r', 'r', 'r', 'r', 'r'), digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
 
 ```
 

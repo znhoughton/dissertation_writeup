@@ -138,7 +138,7 @@ data_verbs_up = read_csv('../Data/Stimuli - Phrasal verbs.csv') %>%
   mutate(Lemma = paste(Verb, Up, sep = ' '))
 ```
 
-# The effects of frequency and predictability on the recognition of *up* in English verb+up collocations.
+# The effects of frequency and predictability on the recognition of *up* in English verb+up collocations
 
 ## Introduction
 
@@ -210,7 +210,7 @@ A visualization of what a stored representation with and without internal struct
 
 ![The U-shaped effect of the frequency of verb+*up* constructions on the speed with which *up* is detected, reproduced from @kapatsinskiFrequencyEmergencePrefabs2009.](Figures/kapatsinskiradicke_graph.png){#fig-kapatsinskiplot}
 
-![A diagram of two ways the word *pick up* could be stored. The left tree demonstrates a stored representation of *pick up*, where the internal structure is still intact. The right tree demonstrates a holistically stored unit, where there is a loss of internal structure. Note that both of these are stored structures, as opposed to a compositional representation of *pick up* which would be comprised of the individual representations *pick* and *up*.](Figures/syntax_tree.png){#fig-lossinternalstructure width="109"}
+![A diagram of two ways the word *pick up* could be stored. The left tree demonstrates a stored representation of *pick up*, where the internal structure is still intact. The right tree demonstrates a holistically stored unit, where there is a loss of internal structure. Note that both of these are stored structures, as opposed to a compositional representation of *pick up* which would be comprised of the individual representations *pick* and *up*.](Figures/syntax_tree.png){#fig-lossinternalstructure width="200"}
 
 It's worth noting that in the case of phrasal verbs like *pick up*, it can't be the case that the entire internal representation is lost because it is possible to syntactically alternate it (e.g., *pick up the cup* vs *pick the cup up*). However, it is possible that semantic or lemma information is lost in the holistic representation. That is, it is possible that syntactic and/or morphological information may be preserved even if semantic or lemma information is lost. In other words, loss of internal representation may happen at different levels as opposed to being an all-or-nothing process.
 
@@ -294,7 +294,6 @@ Participants were presented with audio sentences via Pavlovia (<https://pavlovia
 
 The data was analyzed using General Additive Mixed models, as implemented in the *mgcv* package [@wood2011fast] within the R programming environment [@Rpackage]. General Additive Mixed Models are models that allow us to model our outcome variable as a combination of the predictors. GAMMs differ from generalized linear regression models in that they allow the predictors to be modeled as non-linear functions, similar to polynomial regression. Specifically, in a Generalized Additive Mixed Model, beta-coefficients are replaced with a smooth function, which is a combination of splines. The more splines that we include, the more wiggly our line will be. In order to avoid overfitting, GAMMs also include a penalty term, $\lambda$, which can be modified to penalize more wiggly lines that aren't justified by the data. While the predictors are allowed to vary non-linearly, the linking function in our case was linear (i.e., response time varied linearly with the spline functions). Our decision to use GAMMs was driven by our hypothesis that recognition times may vary non-linearly as a function of frequency and/or predictability [as suggested by @kapatsinskiFrequencyEmergencePrefabs2009].
 
-
 For all of our models, the dependent variable was the time it took for participants to react to the onset of the target segment in experimental sentences/sentences containing *up* (i.e., the time it took participants to press the button after hearing *up*).
 
 In order to visualize the surface of the interaction effect between frequency and predictability, we first ran a model with our independent variable as the interaction between log-predictability and log-frequency, which was allowed to vary non-linearly, and duration of the segment, which was not allowed to vary non-linearly. Additionally, we also included random intercepts for participant, trial, and item, as well as random by-participant slopes for predictability, frequency, their interaction, and trial. All our random-effects were allowed to be wiggly (non-linear). Our model formula is included below in @eq-gamminteraction. This model allows us to visualize the surface of the interaction effect. Note that in GAMMs, the syntax `ti()` is used to model the interaction effects since it produces a tensor product interaction from which the main-effects have been excluded. On the other hand `te()` models the full tensor product smooth without the main-effects excluded. Thus when modeling the main-effects with the interaction effect we use `ti()` and when modeling the surface (that is, without separating the main-effects from the interaction) we use `te()`.
@@ -303,9 +302,9 @@ $$
 \begin{aligned}log(RT) & \sim te(Predictability, Frequency) + Duration + s(participant, bs = \text{`}re\text{'}) + \\ & s(Item, bs = \text{`}re\text{'}) + s(trial, bs = \text{`}re\text{'}) + \\ & s(Predictability, Frequency, participant, bs = \text{`}re\text{'}) \end{aligned}
 $$ {#eq-gamminteraction}
 
-The results of this model are presented in @tbl-gamModelTab and visualized in @fig-gam2dplot1. We found no significant effect of the tensor product smooth.[^quarto-writeup-6] Although the tensor product smooth for the interaction effect was not significant, it's possible that phrasal verbs and non-phrasal verbs behave differently and that could be obscuring the interaction effect. Thus, we ran an additional model examining whether the interaction effect was different for phrasal verbs versus non-phrasal verbs. The model equation is included below in @eq-gamphrasal:
+The results of this model are presented in @tbl-gamModelTab and visualized in @fig-gam2dplot1. We found no significant effect of the tensor product smooth.[^quarto-writeup-5] Although the tensor product smooth for the interaction effect was not significant, it's possible that phrasal verbs and non-phrasal verbs behave differently and that could be obscuring the interaction effect. Thus, we ran an additional model examining whether the interaction effect was different for phrasal verbs versus non-phrasal verbs. The model equation is included below in @eq-gamphrasal:
 
-[^quarto-writeup-6]: We also examined the interaction between frequency and predictability on accuracy (whether they correctly responded to whether *up* was present in the sentence) and similarly found no significant effect.
+[^quarto-writeup-5]: We also examined the interaction between frequency and predictability on accuracy (whether they correctly responded to whether *up* was present in the sentence) and similarly found no significant effect.
 
 $$
 \begin{aligned}log(RT) & \sim te(Predictability, Frequency, by = PhrasalVerb) + Duration \\ & + s(participant, bs = \text{`}re\text{'}) + s(Item, bs = \text{`}re\text{'})  + s(trial, bs = \text{`}re\text{'}) \\ & + s(Predictability, Frequency, Participant, bs = \text{`}re\text{'}) \end{aligned}
@@ -319,9 +318,9 @@ $$
 \begin{aligned}log(RT) & \sim ti(Predictability) + ti(Frequency) + ti(Predictability, Frequency) \\ & + Duration + s(participant, bs = \text{`}re\text{'}) + s(Item, bs = \text{`}re\text{'})  + s(trial, bs = \text{`}re\text{'}) \\ & + s(Predictability, Frequency, Trial, Participant, bs = \text{`}re\text{'}) \end{aligned}
 $$ {#eq-gammFull}
 
-Our results are presented in @tbl-gamModelInterTab and visualized in @fig-gammodelinterplot. The results demonstrated a significant main-effect of predictability (*p* \< 0.05), but no significant effect of frequency (*p* = 0.327), and no significant interaction effect.[^quarto-writeup-7]
+Our results are presented in @tbl-gamModelInterTab and visualized in @fig-gammodelinterplot. The results demonstrated a significant main-effect of predictability (*p* \< 0.05), but no significant effect of frequency (*p* = 0.327), and no significant interaction effect.[^quarto-writeup-6]
 
-[^quarto-writeup-7]: We ran a follow-up model without the interaction to determine whether including the interaction effect takes away our power to detect an effect of frequency, however the results for our main-effects are consistent regardless of whether we include the interaction between frequency and predictability in the model.
+[^quarto-writeup-6]: We ran a follow-up model without the interaction to determine whether including the interaction effect takes away our power to detect an effect of frequency, however the results for our main-effects are consistent regardless of whether we include the interaction between frequency and predictability in the model.
 
 To summarize the results of our generalized additive models, we found no interaction effect between frequency and predictability, no main effect of frequency, but we do find a significant main effect of predictability.
 
@@ -369,15 +368,25 @@ summary_table = as.data.frame(summary_model1$s.table) %>%
   mutate_if(is.numeric,
             round,
             digits = 2) %>%
-  mutate('p-value' = pvalue(`p-value`))# %>%
-  #mutate('p-value' = case_when(`p-value` > 0.05 ~ '',
-                               #`p-value` > 0.01 ~ '*',
-                               #`p-value` > 0.001 ~ '**'))
+  mutate('p-value' = pvalue(`p-value`)) %>%
+  mutate(term = rep(c('te(log-predictability, log-frequency)', 's(trial)', 's(participant)', 's(item)', 's(log-predictability, log-frequency, trial, participant)'), times = 1))
 
 rownames(summary_table) = c('te(log-predictability, log-frequency)', 's(trial)', 's(participant)', 's(item)', 's(log-predictability, log-frequency, trial, participant)')
 
 
-knitr::kable(summary_table, booktabs = T)
+last_col = ncol(summary_table)
+
+summary_table = summary_table %>%
+  mutate(across(c(edf, Ref.df, `F`), as.numeric))
+
+summary_table %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(align = c('l', 'r', 'r', 'r', 'r', 'r', 'r'), digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '22em') 
 
 
 #apa_table(summary_table)
@@ -399,16 +408,24 @@ summary_table2 = as.data.frame(summary_model2$s.table) %>%
   mutate_if(is.numeric,
             round,
             digits = 2) %>%
-  mutate('p-value' = pvalue(`p-value`))
+  mutate('p-value' = pvalue(`p-value`)) %>%
+  mutate(term = rep(c('te(log-predictability, log-frequency):Nonphrasal', 'te(log-predictability, log-frequency):Phrasal', 's(trial)', 's(participant)', 's(item)', 's(log-predictability, log-frequency, trial, participant)'), times = 1))
 
 rownames(summary_table2) = c('te(log-predictability, log-frequency):Nonphrasal', 'te(log-predictability, log-frequency):Phrasal', 's(trial)', 's(participant)', 's(item)', 's(log-predictability, log-frequency, trial, participant)')
 
-knitr::kable(summary_table2, booktabs = T)
-#apa_table(summary_table2)
-          #caption = 'Model results for the Generalized Additive Mixed Model cotaining the interaction between frequency and predictability for phrasal vs nonphrasal verbs.',
-          #placement = 'H')
+last_col = ncol(summary_table2)
 
-#print(xtable(summary_table2, caption = 'Model results for the Generalized Additive Mixed Model cotaining the interaction between frequency and predictability for phrasal vs nonphrasal verbs.', label = 'tab:gamm_phrasal_nonphrasal', auto = T), comment = F, caption.placement = 'top', type = 'latex', latex.environments = 'flushleft')
+summary_table2 = summary_table2 %>%
+  mutate(across(c(edf, Ref.df, `F`), as.numeric))
+
+summary_table2 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(align = c('l', 'r', 'r', 'r', 'r', 'r', 'r'), digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '22em') 
 
 ```
 
@@ -421,16 +438,25 @@ summary_table3 = as.data.frame(summary_model3$s.table) %>%
   mutate_if(is.numeric,
             round,
             digits = 2) %>%
-  mutate('p-value' = pvalue(`p-value`))
+  mutate('p-value' = pvalue(`p-value`)) %>%
+  mutate(term = rep(c('ti(log-frequency)', 'ti(log-predictability)', 'ti(log-frequency, log-predictability)', 's(participant)', 's(item)', 's(log-predictability, log-frequency, participant)'), times = 1))
 
 rownames(summary_table3) = c('ti(log-frequency)', 'ti(log-predictability)', 'ti(log-frequency, log-predictability)', 's(participant)', 's(item)', 's(log-predictability, log-frequency, participant)')
 
+last_col = ncol(summary_table3)
 
-knitr::kable(summary_table3, booktabs = T)
-          #caption = 'Model results for the Generalized Additive Mixed Model cotaining Frequency, Predictability, and the interaction between them.',
-          #placement = 'H')
+summary_table3 = summary_table3 %>%
+  mutate(across(c(edf, Ref.df, `F`), as.numeric))
 
-#print(xtable(summary_table3, caption = 'Model results for the Generalized Additive Mixed Model cotaining Frequency, Predictability, and the interaction between them.', label = 'tab:gamm_full', auto = T), comment = F, caption.placement = 'top', type = 'latex', latex.environments = 'flushleft')
+summary_table3 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(align = c('l', 'r', 'r', 'r', 'r', 'r', 'r'), digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '22em') 
+
 ```
 
 ```{r, echo = F, message = F, results='asis'}
@@ -458,11 +484,24 @@ percent_greater_zero = percent_greater_zero %>%
 
 summary_table4 = summary_table4 %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c('Intercept', 'log-frequency', 'log-predictability', 'duration', 'log-predictability^2', 'log-frequency^2'), times = 1))
 
 rownames(summary_table4) = c('Intercept', 'log-frequency', 'log-predictability', 'duration', 'log-predictability^2', 'log-frequency^2')
 
-knitr::kable(summary_table4, booktabs = T)
+
+summary_table4 = summary_table4 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+summary_table4 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '10em')
+
 #apa_table(summary_table4,
           #caption = 'Model results for the Bayesian quadratic regression model containing fixed-effects for frequency, predictability, and their quadratics.',
           #placement = 'H')
@@ -491,11 +530,24 @@ summary_table5 = as.data.frame(fixef(brms_freq_quadratic_no_interaction)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c('Intercept', 'log-frequency', 'Duration', 'log-frequency^2'), times = 1))
 
 rownames(summary_table5) = c('Intercept', 'log-frequency', 'Duration', 'log-frequency^2')
 
-knitr::kable(summary_table5, booktabs = T)
+
+summary_table5 = summary_table5 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+summary_table5 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '10em')
+
 #apa_table(summary_table5,
           #caption = '(ref:brmsFreqCaption)',
           #placement = 'H')
@@ -523,11 +575,24 @@ summary_table6 = as.data.frame(fixef(brms_predic_quadratic_no_interaction)) %>%
             format = 'f',
             digits = 3) %>%
   mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
-  rename('% Samples > 0' = `percent_greater_zero`)
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(term = rep(c('Intercept', 'log-predictability', 'Duration', 'log-predictability^2'), times = 1))
 
 rownames(summary_table6) = c('Intercept', 'log-predictability', 'Duration', 'log-predictability^2')
 
-knitr::kable(summary_table6, booktabs = T)
+
+summary_table6 = summary_table6 %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+summary_table6 %>%
+  select(term, everything()) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  #group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '10em')
+
 
 #apa_table(summary_table6,
 #          caption = '(ref:brmsPredicCaption)',
@@ -536,8 +601,6 @@ knitr::kable(summary_table6, booktabs = T)
 
 #print(xtable(summary_table6, caption = 'Results for the Bayesian quadratic regression model containing only predidctability and $predictability^2$', label = 'tab:brms_predic_quadratic', auto = T), comment = F, caption.placement = 'top', type = 'latex', latex.environments = 'flushleft')
 ```
-
-
 
 ```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F, eval = F}
 #| label: fig-FreqOnlyBetaPlot
@@ -598,10 +661,18 @@ plot(sm(getViz(mod_gam1), 1)) + l_fitRaster() + l_fitContour() + l_points(shape 
 #| fig-cap: "Plot of the interaction effect between predictability and frequency of our GAM model containing the interaction between frequency and predictability for phrasal vs nonphrasal verbs. Brighter colors denote longer reaction times. The left graph is the predicted effect for phrasal verbs (e.g., pick up), the right graph is the predicted effect for non-phrasal verbs (e.g., walk up)."
 
 
-nonphrasal_plot = plot(sm(getViz(mod_gam_phrasal_nonphrasal), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
+nonphrasal_plot = plot(sm(getViz(mod_gam_phrasal_nonphrasal), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2')) +
+  theme(
+    axis.title.x = element_text(size = 16),
+    axis.title.y = element_text(size = 16)
+  )
 
-phrasal_plot = plot(sm(getViz(mod_gam_phrasal_nonphrasal), 2)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
-
+phrasal_plot = plot(sm(getViz(mod_gam_phrasal_nonphrasal), 2)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2')) +
+  theme(
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14)
+  )
+ 
 
 gridPrint(nonphrasal_plot, phrasal_plot, ncol=2)
 ```
@@ -635,6 +706,7 @@ ggplot(newdata, aes(x=log_predic, y=fit)) +
   ylab('Predicted Effect on Recognition Time') +
   theme_bw()
 ```
+
 ```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
 #| label: fig-FullQuadraticPlot
 #| fig-cap: "Visualization of the model results from @tbl-brmsQuadraticNoInter for frequency (top) and predictability (bottom). Frequencies are per million."
@@ -652,13 +724,11 @@ brms_quadratic_no_interaction %>%
   ggplot(aes(x = .value, y = .variable)) +
   stat_halfeye() +
   xlab('Posterior Distribution') +
-  ylab('Beta Coefficent for each fixed-effect') +
+  ylab('Beta Coefficent') +
   scale_y_discrete(labels = beta_coef_labels) + 
   theme_bw()
 
 ```
-
-
 
 ## Discussion
 
@@ -672,9 +742,9 @@ It is possible that the slowdown for the high frequency and high predictability 
 
 To break it down further, there is a good deal of evidence that different mental representations compete for recognition [@oppenheimLexicalCompetitionDemand2019; c.f. @staubInfluenceClozeProbability2015]. A representation is selected once it receives sufficiently more activation than its competitors [@mcclellandInteractiveActivationModel1981]. For example, in picture-naming tasks in which participants are tasked with naming a picture while confronted with a distractor word, participants are generally slower to produce the intended word when the distractor word is semantically related to the picture [@starreveldSemanticInterferenceOrthographic1995; @schriefersExploringTimeCourse1990; @mcclellandInteractiveActivationModel1981]. This effect is not restricted to production as we see similar competition effects in comprehension as well. For example, @magnusonDynamicsLexicalCompetition2007 examined the role of competition in word recognition using a visual world paradigm, where participants saw words on a screen and were instructed to select the word that they heard. To measure word-recognition, an eye-tracker was used to track pupil fixations. In each of the trials there was a single distractor image. They found that words with low cohort density (i.e., words that have fewer phonological competitors) showed a larger proportion of target to nontarget fixations. That is, participants looked the distractor image less relative to the target word when the word had fewer competitors. Given the inhibitory effects of competition, it is possible that the delay in reaction time for *up* in high-frequency and predictability phrases may be a consequence of an additional representation competing with the compositional representation. However, there is also evidence that competition has no effect on comprehension [@staubInfluenceClozeProbability2015]. Using reaction time data from a cloze completion task, @staubInfluenceClozeProbability2015 demonstrated that a RACE model with neither facilitation nor inhibition between competitors can account for the data. Thus the evidence for competition effects in comprehension is mixed. Note that this account is agnostic about whether the holistic representation has lost its internal structure or not: simply having an additional representation to compete with can cause the slowdown.
 
-Lastly it is possible that rather than being driven by competition, listeners are simply accessing a holistically stored representation of the phrase that lacks internal structure. This interpretation seems quite likely given that we see a U-shaped effect in both phrasal (e.g., *pick up*) and non-phrasal verbs (e.g., *stir up*). Phrasal verbs have a syntactic alternation that may lead to all of them being stored, regardless of whether they are frequent/predictable or not. For example, In a corpus study, @hampeTransitivePhrasalVerbs2012 argued that *Verb-Object-Particle* (e.g., *pick the ball up*) constructions and *Verb-Particle-Object* (e.g., *pick up the ball*) constructions are two distinct constructions,[^quarto-writeup-8] as opposed to being two alternative realizations of a single constructions. In contrast, non-phrasal verbs can be generated through compositional knowledge (e.g., *walk up*). This suggests that phrasal verbs may be stored holistically regardless of frequency/predictability, while non-phrasal verbs may be generated compositionally unless they are frequent or predictable enough. If the increase in reaction time is simply due to competition between the holistically stored representation and the individual word-level representations, then if all phrasal verbs are stored we would expect all of the phrasal verbs to be recognized more slowly. This is because all of the phrasal verbs, regardless of frequency, would have an additional representation that would compete for activation. However, we only see a slowdown for the most frequent or most predictable phrases, suggesting that storage alone isn't driving the effect. Instead, it is the combination of storage and usage that leads to loss of internal representation.
+Lastly it is possible that rather than being driven by competition, listeners are simply accessing a holistically stored representation of the phrase that lacks internal structure. This interpretation seems quite likely given that we see a U-shaped effect in both phrasal (e.g., *pick up*) and non-phrasal verbs (e.g., *stir up*). Phrasal verbs have a syntactic alternation that may lead to all of them being stored, regardless of whether they are frequent/predictable or not. For example, In a corpus study, @hampeTransitivePhrasalVerbs2012 argued that *Verb-Object-Particle* (e.g., *pick the ball up*) constructions and *Verb-Particle-Object* (e.g., *pick up the ball*) constructions are two distinct constructions,[^quarto-writeup-7] as opposed to being two alternative realizations of a single constructions. In contrast, non-phrasal verbs can be generated through compositional knowledge (e.g., *walk up*). This suggests that phrasal verbs may be stored holistically regardless of frequency/predictability, while non-phrasal verbs may be generated compositionally unless they are frequent or predictable enough. If the increase in reaction time is simply due to competition between the holistically stored representation and the individual word-level representations, then if all phrasal verbs are stored we would expect all of the phrasal verbs to be recognized more slowly. This is because all of the phrasal verbs, regardless of frequency, would have an additional representation that would compete for activation. However, we only see a slowdown for the most frequent or most predictable phrases, suggesting that storage alone isn't driving the effect. Instead, it is the combination of storage and usage that leads to loss of internal representation.
 
-[^quarto-writeup-8]: However, the same study also makes the claim that these templates are different from more lexically specific constructions, thus it is unclear in what ways these templates may pattern similarly to holistically stored lexical items.
+[^quarto-writeup-7]: However, the same study also makes the claim that these templates are different from more lexically specific constructions, thus it is unclear in what ways these templates may pattern similarly to holistically stored lexical items.
 
 One explanation for why high frequency and high predictability items may not have an intact internal representation is that the internal structure for those items may never have been learned to begin with. Children are experts at statistical learning and use transitional probabilities to divide the continuous speech stream [@saffranStatisticalLearning8MonthOld1996]. High predictability phrases in the present study, by definition, have higher transitional probabilities between words. Thus if children are relying on transitional probabilities to separate speech into individual words, the individual words in the most predictable phrases may not be separated out of the speech stream initially.
 
