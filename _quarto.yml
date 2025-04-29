@@ -19,6 +19,7 @@ book:
     - Chapters/LLM Ordering Prefs/Writeup/writeup.qmd
     - Chapters/LLM Storage/Writeup/writeup.qmd
     - Chapters/frequency-dependent preference extremity/frequency-dependent preference extremity.qmd
+    - Chapters/conclusion.qmd
     - Chapters/references.qmd
   appendices: 
     - Chapters/appendix_model_results.qmd
