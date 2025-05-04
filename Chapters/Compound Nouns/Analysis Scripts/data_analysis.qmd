@@ -1,0 +1,645 @@
+---
+title: "Data analysis"
+---
+
+# Experiment 1
+
+```{r}
+library(tidyverse)
+library(brms)
+options (contrasts = c("contr.sum","cont.sum"))
+```
+
+## Prep Data
+
+```{r}
+data_for_analysis_v2b = read_csv("../Data/data for analysis.csv")
+
+data_correct_only = data_for_analysis_v2b[!(data_for_analysis_v2b$correct=="no"),]
+data_n1 = data_correct_only[(data_correct_only$whichfirst==1),]
+data_n2 = data_correct_only[(data_correct_only$whichfirst==0),]
+data_correct_and_incorrect = data_for_analysis_v2b
+data_correct_and_incorrect_n1 = data_correct_and_incorrect[(data_correct_and_incorrect$whichfirst=="1"),]
+data_correct_and_incorrect_n2 = data_correct_and_incorrect[(data_correct_and_incorrect$whichfirst=="0"),]
+
+length(unique(data_n1$subject)) 
+length(unique(data_n2$subject)) 
+length(data_n1$subject) 
+length(data_n2$subject) 
+
+data_n1 = data_n1 %>%
+  rename(
+    item = group
+  )
+
+data_n2 = data_n2 %>%
+  rename(
+    item = group
+  )
+
+
+
+            
+
+```
+
+## Model
+
+```{r}
+model_n1 =
+  brm (rt ~ plausibility*familiarity + (1 + plausibility*familiarity|subject) + (1 + plausibility|item), data = data_n1, chains = 4, cores = 5, 
+       warmup = 1000, iter = 6000, thin = 4, 
+       file = '../Data/model_n1_sum_coding.rds',
+       prior = c(set_prior("student_t(3, 6.83, 100)", class = "Intercept"),
+                 set_prior("student_t(3, 0, 100)", class = "b"),
+                 set_prior("student_t(3, 0, 100)", class = "sd")))
+
+model_n2 = brm (rt ~ plausibility*familiarity + (1 + plausibility*familiarity|subject) + (1 + plausibility|item), data = data_n2, chains = 4, cores = 5, 
+                file = '../Data/model_n2_sum_coding.rds',
+                warmup = 1000, iter = 6000, thin = 4, control = list(adapt_delta = 0.99),
+                prior = c(set_prior("student_t(3, 6.87, 100)", class = "Intercept"),
+                          set_prior("student_t(3, 0, 100)", class = "b"),
+                          set_prior("student_t(3, 0, 100)", class = "sd")))
+
+
+
+#model_n1 = readRDS("../Data/model_n1_sum_coding.rds")
+#model_n2 = readRDS("../Data/model_n2_sum_coding.rds")
+```
+
+## Baye's Factor
+
+```{r}
+model_n1_bayesfactor_interaction =
+  brm (rt ~ 0 + Intercept + plausibility*familiarity + (1 + plausibility*familiarity|subject) + (1 + plausibility|item), 
+       data = data_n1, chains = 4, cores = 5, 
+       warmup = 1000, iter = 6000, thin = 4, 
+       sample_prior = TRUE,
+       file = '../Data/bayesfactor_model_exp1',
+       prior = c(set_prior("normal(0,10)", class = "b", coef = "Intercept"),
+                 set_prior("cauchy(0,10)", class = "sd"),
+                 set_prior("normal(0, 0.2)", class = "b", coef = "plausibility1"),
+                 set_prior("normal(0, 0.2)", class = "b", coef = "familiarity1"),
+                 set_prior("normal(0, 0.2)", class = "b", coef = "plausibility1:familiarity1")   
+                 ))
+
+summary(model_n1_bayesfactor_interaction)
+h1_famil = hypothesis(model_n1_bayesfactor_interaction, "plausibility1:familiarity1 = 0")
+h1_famil
+1 / h1_famil$hypothesis$Evid.Ratio
+
+plot(h1_famil)
+
+```
+
+# Experiment 2
+
+## Pre Data
+
+```{r}
+data_for_analysis_v2b = read_csv("../Data/data for analysis2.csv")
+#######################
+
+
+
+data_correct_only = data_for_analysis_v2b[!(data_for_analysis_v2b$correct=="no"),]
+data_n1 = data_correct_only[(data_correct_only$whichfirst==1),]
+data_n2 = data_correct_only[(data_correct_only$whichfirst==0),]
+data_correct_and_incorrect = data_for_analysis_v2b
+data_correct_and_incorrect_n1 = data_correct_and_incorrect[(data_correct_and_incorrect$whichfirst=="1"),]
+data_correct_and_incorrect_n2 = data_correct_and_incorrect[(data_correct_and_incorrect$whichfirst=="0"),]
+
+length(unique(data_n1$subject))
+length(unique(data_n2$subject))
+length(data_n1$subject)
+length(data_n2$subject)
+
+
+data_n1 = data_n1 %>%
+  rename(
+    item = group
+  )
+
+data_n2 = data_n2 %>%
+  rename(
+    item = group
+  )
+```
+
+## Models
+
+```{r}
+n1_model1 =
+  brm (rt ~ plausibility*Predictability + (1 + plausibility*Predictability|subject) + (1 + plausibility|item), data = data_n1, chains = 4, cores = 4, 
+       warmup = 1000, iter = 6000, thin = 4,
+       file = '../Data/N1_simple1.rds',
+       prior = c(set_prior("student_t(3, 6.83, 100)", class = "Intercept"),
+                 set_prior("student_t(3, 0, 100)", class = "b"),
+                 set_prior("student_t(3, 0, 100)", class = "sd")))
+
+
+n1_model2 =
+  brm (rt ~ plausibility*logoddsratio + (1 + plausibility*logoddsratio|subject) + (1 + plausibility|item), data = data_n1, chains = 4, cores = 5, 
+       file = '../Data/N1_simple2.rds',
+       warmup = 1000, iter = 6000, thin = 4, control = list(adapt_delta = 0.99),
+       prior = c(set_prior("student_t(3, 6.83, 100)", class = "Intercept"),
+                 set_prior("student_t(3, 0, 100)", class = "b"),
+                 set_prior("student_t(3, 0, 100)", class = "sd")))
+ 
+ n2_model1 =
+  brm (rt ~ plausibility*Predictability + (1 + plausibility*Predictability|subject) + (1 + plausibility|item), data = data_n2, chains = 4, cores = 5, 
+       file = '../Data/N2_simple1.rds',
+       warmup = 1000, iter = 6000, thin = 4, control = list(adapt_delta = 0.99),
+       prior = c(set_prior("student_t(3, 6.83, 100)", class = "Intercept"),
+                 set_prior("student_t(3, 0, 100)", class = "b"),
+                 set_prior("student_t(3, 0, 100)", class = "sd")))
+
+n2_model2 =
+  brm (rt ~ plausibility*logoddsratio + (1 + plausibility*logoddsratio|subject) + (1 + plausibility|item), data = data_n2, chains = 4, cores = 5, 
+       file = '../Data/N2_simple2.rds',
+       warmup = 1000, iter = 6000, thin = 4, control = list(adapt_delta = 0.99),
+       prior = c(set_prior("student_t(3, 6.83, 100)", class = "Intercept"),
+                 set_prior("student_t(3, 0, 100)", class = "b"),
+                 set_prior("student_t(3, 0, 100)", class = "sd")))
+```
+
+## Baye's Factor
+
+```{r}
+model_n1_bayesfactor_interaction_exp5 =
+  brm (rt ~ 0 + Intercept + plausibility*Predictability + (1 + plausibility*Predictability|subject) + (1 + plausibility|item), 
+       file = '../Data/bayesfactor_model_exp2',
+       data = data_n1, chains = 4, cores = 5, 
+       warmup = 1000, iter = 6000, thin = 4, 
+       sample_prior = TRUE,
+       prior = c(set_prior("normal(0,10)", class = "b", coef = "Intercept"),
+                 set_prior("cauchy(0,10)", class = "sd"),
+                 set_prior("normal(0, 0.2)", class = "b", coef = "plausibility1"),
+                 set_prior("normal(0, 0.2)", class = "b", coef = "Predictability1"),
+                 set_prior("normal(0, 0.2)", class = "b", coef = "plausibility1:Predictability1")   
+       ))
+
+summary(model_n1_bayesfactor_interaction_exp5)
+h1_predict = hypothesis(model_n1_bayesfactor_interaction_exp5, "plausibility1:Predictability1 = 0")
+h1_predict
+
+1 / h1_predict$hypothesis$Evid.Ratio
+h1_predict$hypothesis$Evid.Ratio
+```
+
+# Experiment 3
+
+## Data Preparation
+
+```{r}
+data_analysis = read_csv('../Data/data_analysis_exp3.csv')
+
+
+data_analysis_n1 = data_analysis %>%
+  filter(region == 'n1')
+
+data_analysis_n2 = data_analysis %>%
+  filter(region == 'n2')
+```
+
+## Models
+
+```{r}
+data_analysis_first_fixation_n1 = data_analysis_n1 %>%
+  filter(is.numeric(FIRST_FIXATION_DURATION)) #%>%
+
+model_n1 =
+  brm(FIRST_FIXATION_DURATION ~ condition*frequency + (1 + condition*frequency|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       control = list(adapt_delta = 0.95),
+       file = '../Data/model_n1_staub')
+
+
+model_n2 =
+  brm(FIRST_FIXATION_DURATION ~ condition*frequency + (1 + condition*frequency|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n2, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       control = list(adapt_delta = 0.95),
+       file = '../Data/model_n2_staub')
+
+
+model_n1_gaze =
+  brm(GAZE_DURATION ~ condition*frequency + (1 + frequency*condition|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n1_staub, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_gaze_staub')
+
+
+data_analysis_first_fixation_n2 = data_analysis_n2 %>%
+  filter(is.numeric(FIRST_FIXATION_DURATION))
+
+#data_analysis_first_fixation_n2 = data_analysis_n2 %>%
+  #filter(is.numeric(FIRST_FIXATION_DURATION))
+data_analysis_first_fixation_n2_staub = data_analysis_first_fixation_n2 
+
+# priors = c(prior(student_t(3, 0, 1), class = 'sd'),     #pretty standard sd and sigma priors
+#            prior(student_t(3, 0, 1), class = 'sigma'), 
+#            prior(lkj(1), class = 'cor'), 
+#            prior(student_t(3, 0, 1), class = 'Intercept'), 
+#            prior(student_t(3, 0, 1), class = 'b'))
+
+model_n2_gaze =
+  brm(GAZE_DURATION ~ condition*frequency + (1 + frequency*condition|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n2_staub, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 8000, 
+       iter = 16000, 
+       thin = 4,
+       #prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n2_gaze_staub2')
+
+
+data_analysis_regression_path_n1_staub = data_analysis_n1 %>%
+  filter(is.numeric(REGRESSION_PATH_DURATION)) #%>% 
+  #mutate(REGRESSION_PATH_DURATION = log(REGRESSION_PATH_DURATION))
+
+priors = c(prior(student_t(3, 0, 20), class = 'sd'),     #pretty standard sd and sigma priors
+           prior(student_t(3, 0, 20), class = 'sigma'), 
+           prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 20), class = 'Intercept'), 
+           prior(student_t(3, 0, 20), class = 'b'))
+
+model_n1_regression_path =
+  brm(REGRESSION_PATH_DURATION ~ condition*frequency + (1 + condition*frequency|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_path_n1_staub, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 15000, 
+       iter = 30000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99, max_treedepth = 15),
+       file = '../Data/model_n1_regression_path_staub')
+
+
+
+model_n2_regression_path =
+  brm(REGRESSION_PATH_DURATION ~ condition*frequency + (1 + condition*frequency|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_path_n2_staub, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 15000, 
+       iter = 30000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n2_regression_path_staub')
+
+
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           #prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'), 
+           prior(normal(0, 0.2), class = 'b')) 
+
+data_analysis_regression_n1_staub = data_analysis_n1 %>%
+  filter(FIRST_PASS_REGRESSION != '.') %>%
+  mutate(FIRST_PASS_REGRESSION = as.numeric(FIRST_PASS_REGRESSION))
+
+
+model_n1_regression =
+  brm(FIRST_PASS_REGRESSION ~ condition*frequency + (1 + condition*frequency|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_n1_staub, 
+       family = bernoulli(),
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_regression_staub')
+
+
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           #prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'), 
+           prior(normal(0, 0.2), class = 'b')) 
+
+data_analysis_regression_n2_staub = data_analysis_n2 %>%
+  filter(FIRST_PASS_REGRESSION != '.') %>%
+  mutate(FIRST_PASS_REGRESSION = as.numeric(FIRST_PASS_REGRESSION))
+
+
+model_n2_regression =
+  brm(FIRST_PASS_REGRESSION ~ condition*frequency + (1 + condition*frequency|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_n2_staub, 
+       family = bernoulli(),
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n2_regression_staub')
+```
+
+# Experiment 4
+
+## Data Preparation
+
+```{r}
+
+data_analysis = read_csv('../Data/data_analysis_exp4.csv')
+
+
+data_analysis_n1 = data_analysis %>%
+  filter(region == 'n1')
+
+data_analysis_n2 = data_analysis %>%
+  filter(region == 'n2')
+```
+
+## Models
+
+```{r}
+
+data_analysis_first_fixation_n1 = data_analysis_n1 %>%
+  filter(is.numeric(FIRST_FIXATION_DURATION)) #%>%
+  #mutate(FIRST_FIXATION_DURATION = log(FIRST_FIXATION_DURATION)) %>%
+  #mutate(GAZE_DURATION = log(GAZE_DURATION))
+
+data_analysis_first_fixation_n2 = data_analysis_n2 %>%
+  filter(is.numeric(FIRST_FIXATION_DURATION)) #%>%
+  #mutate(FIRST_FIXATION_DURATION = log(FIRST_FIXATION_DURATION))  %>%
+  #mutate(GAZE_DURATION = log(GAZE_DURATION))
+
+model_n1 =
+  brm(FIRST_FIXATION_DURATION ~ plausibility*log_predictability + (1 + plausibility*log_predictability|subject) + (1 + plausibility|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 6000, 
+       iter = 12000, 
+       thin = 4,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1')
+
+model_n1_just_plaus =
+  brm(FIRST_FIXATION_DURATION ~ plausibility + (1 + plausibility|subject) + (1 + plausibility|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 6000, 
+       iter = 12000, 
+       thin = 4,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_just_plause_first_fixation')
+       
+#condition is the binary implausible/plausible
+model_n1_binary = brm(FIRST_FIXATION_DURATION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       control = list(adapt_delta = 0.95),
+       file = '../Data/model_n1_binary')
+
+
+model_n1_binary_plaus_continuous_pred =
+  brm(FIRST_FIXATION_DURATION ~ condition*log_predictability + (1 + condition*log_predictability|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       control = list(adapt_delta = 0.95),
+       file = '../Data/model_n1_binary_plaus_continuous_pred')
+
+
+model_n1_just_binary_plaus =
+  brm(FIRST_FIXATION_DURATION ~ condition + (1 + condition|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       control = list(adapt_delta = 0.95),
+       file = '../Data/model_n1_just_binary_plaus_first_fixation')
+
+model_n2 = brm (FIRST_FIXATION_DURATION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + plausibility|item), 
+                data = data_analysis_first_fixation_n2, 
+                chains = 4, 
+                cores = 4, 
+                warmup = 4000, 
+                iter = 8000, 
+                thin = 4, 
+                control = list(adapt_delta = 0.99),
+                file = '../Data/model_n2'
+)
+
+
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'), 
+           prior(normal(0, 0.2), class = 'b'))
+
+model_n1_gaze =
+  brm(GAZE_DURATION ~ plausibility*log_predictability + (1 + plausibility*log_predictability|subject) + (1 + plausibility|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_gaze')
+       
+#condition is the binary implausible/plausible
+model_n1_binary_gaze = brm(GAZE_DURATION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_binary_gaze')
+
+
+model_n1_binary_plaus_continuous_pred_gaze =
+  brm(GAZE_DURATION ~ condition*log_predictability + (1 + condition*log_predictability|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_first_fixation_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_binary_plaus_continuous_pred_gaze')
+
+
+model_n2_gaze = brm (GAZE_DURATION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + plausibility|item), 
+                data = data_analysis_first_fixation_n2, 
+                chains = 4, 
+                cores = 4, 
+                warmup = 4000, 
+                iter = 8000, 
+                thin = 4, 
+                prior = priors,
+                control = list(adapt_delta = 0.99),
+                file = '../Data/model_n2_gaze'
+)
+
+
+data_analysis_regression_path_n1 = data_analysis_n1 %>%
+  filter(is.numeric(REGRESSION_PATH_DURATION)) #%>%
+  #mutate(REGRESSION_PATH_DURATION = log(REGRESSION_PATH_DURATION))
+
+data_analysis_regression_path_n2 = data_analysis_n2 %>%
+  filter(is.numeric(REGRESSION_PATH_DURATION)) #%>%
+  #mutate(REGRESSION_PATH_DURATION = log(REGRESSION_PATH_DURATION))
+
+model_n1_regression_path =
+  brm(REGRESSION_PATH_DURATION ~ plausibility*log_predictability + (1 + plausibility*log_predictability|subject) + (1 + plausibility|compound_noun), 
+       data = data_analysis_regression_path_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 6000, 
+       iter = 12000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_regression_path')
+       
+#condition is the binary implausible/plausible
+model_n1_binary_regression_path = brm(REGRESSION_PATH_DURATION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_path_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 6000, 
+       iter = 12000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_binary_regression_path')
+
+
+model_n1_binary_plaus_continuous_pred_regression_path =
+  brm(REGRESSION_PATH_DURATION ~ condition*log_predictability + (1 + condition*log_predictability|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_path_n1, 
+       chains = 4, 
+       cores = 4, 
+       warmup = 6000, 
+       iter = 12000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_binary_plaus_continuous_pred_regression_path')
+
+model_n2_regression_path = brm (REGRESSION_PATH_DURATION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + plausibility|item), 
+                data = data_analysis_regression_path_n2, 
+                chains = 4, 
+                cores = 4, 
+                warmup = 4000, 
+                iter = 8000, 
+                thin = 4, 
+                prior = priors,
+                control = list(adapt_delta = 0.99),
+                file = '../Data/model_n2_regression_path'
+)
+
+
+
+priors = c(prior(student_t(3, 0, 2.5), class = 'sd'),     #pretty standard sd and sigma priors
+           #prior(student_t(3, 0, 2.5), class = 'sigma'), 
+           prior(lkj(1), class = 'cor'), 
+           prior(student_t(3, 0, 2.5), class = 'Intercept'), 
+           prior(normal(0, 0.2), class = 'b')) 
+
+data_analysis_regression_n1 = data_analysis_n1 %>%
+  filter(FIRST_PASS_REGRESSION != '.') %>%
+  mutate(FIRST_PASS_REGRESSION = as.numeric(FIRST_PASS_REGRESSION))
+
+data_analysis_regression_n2 = data_analysis_n2 %>% #Why are all of these NA values??
+  filter(FIRST_PASS_REGRESSION != '.') %>%
+  mutate(FIRST_PASS_REGRESSION = as.numeric(FIRST_PASS_REGRESSION))
+
+model_n1_regression =
+  brm(FIRST_PASS_REGRESSION ~ plausibility*log_predictability + (1 + plausibility*log_predictability|subject) + (1 + plausibility|compound_noun), 
+       data = data_analysis_regression_n1, 
+       family = bernoulli(),
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_regression')
+       
+#condition is the binary implausible/plausible
+model_n1_binary_regression = brm(FIRST_PASS_REGRESSION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_n1, 
+       family = bernoulli(),
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_binary_regression')
+
+
+model_n1_binary_plaus_continuous_pred_regression =
+  brm(FIRST_PASS_REGRESSION ~ condition*log_predictability + (1 + condition*log_predictability|subject) + (1 + condition|compound_noun), 
+       data = data_analysis_regression_n1, 
+       family = bernoulli(),
+       chains = 4, 
+       cores = 4, 
+       warmup = 4000, 
+       iter = 8000, 
+       thin = 4,
+       prior = priors,
+       control = list(adapt_delta = 0.99),
+       file = '../Data/model_n1_binary_plaus_continuous_pred_regression')
+
+
+model_n2_regression = brm(FIRST_PASS_REGRESSION ~ condition*predictability_binary + (1 + condition*predictability_binary|subject) + (1 + plausibility|item), 
+                data = data_analysis_regression_n2, 
+                family = bernoulli(),
+                chains = 4, 
+                cores = 4, 
+                warmup = 4000, 
+                iter = 8000, 
+                thin = 4, 
+                prior = priors,
+                control = list(adapt_delta = 0.99),
+                file = '../Data/model_n2_regression'
+)
+```
+
+## Fillers
