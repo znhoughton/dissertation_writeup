@@ -167,6 +167,7 @@
 \usepackage{gb4e} \noautomath
 \usepackage{amsmath}
 \usepackage{pdflscape}
+\usepackage{gb4e}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -1065,7 +1066,7 @@ the first noun. That is, \emph{picked up the monkey} is plausible. On
 the other hand, 1b is locally implausible because the interpretation at
 the first noun is implausible; \emph{spread out the monkey} is not
 plausible. Sentences 2a and 2b are analogous but with a high frequency
-compound noun (where frequency is the number of times the phrase
+compound noun (where frequency is the number of times the compound noun
 occurred, not the number of times the individual words did).
 
 Staub et al. (\citeproc{ref-staubTimeCoursePlausibility2007}{2007})
@@ -1245,13 +1246,13 @@ argued that language models cannot learn meaning because they are
 trained on only the form of the language. They operationalized meaning
 as the relationship between form and communicative intent. However, as
 Piantadosi \& Hill
-(\citeproc{ref-piantadosiMeaningReferenceLarge2022}{2022}) stated in his
-rebuttal, this view of meaning ignores a well-known aspect of human
-language: meaning is not as simple as an association between a form and
-a referent. For example, the meaning \emph{justice} has no real-world
-referent. Instead, people learn these abstract words through their
-relationship with other words. This type of learning is something that
-large language models do well
+(\citeproc{ref-piantadosiMeaningReferenceLarge2022}{2022}) stated in
+their rebuttal, this view of meaning ignores a well-known aspect of
+human language: meaning is not as simple as an association between a
+form and a referent. For example, the meaning \emph{justice} has no
+real-world referent. Instead, people learn these abstract words through
+their relationship with other words. This type of learning is something
+that large language models do well
 (\citeproc{ref-piantadosiChapterModernLanguage}{Piantadosi, 2023}).
 
 Additionally, while there have been many arguments that large language
@@ -1647,28 +1648,30 @@ On the other hand, Staub et al.
 effects of plausibility on the reading times of familiar and novel
 compound nouns, which were compound nouns with high and low phrasal
 frequency respectively. Participants read sentences which contained a
-novel compound noun or a familiar compound noun (See the sentences
-below) in a plausible condition (a) or an implausible condition (b).
-Crucially, the second noun in the compound eliminated the local
-implausibility such that every sentence was plausible after reading the
-second noun. For example, in 1b \emph{The zookeeper spread out the
-monkey\ldots{}} is locally implausible, however upon reading the second
-noun in the compound, \emph{medicine}, the local implausibility is
-eliminated.
+novel compound noun or a familiar compound noun (See \ref{staubitems})
+in a plausible condition (e.g., \ref{novelplaus}) or an implausible
+condition (e.g., \ref{novelimplaus}). Crucially, the second noun in the
+compound eliminated the local implausibility such that every sentence
+was plausible after reading the second noun. For example, in
+\ref{novelimplaus}, \emph{The zookeeper spread out the monkey\ldots{}}
+is locally implausible, however upon reading the second noun in the
+compound, \emph{medicine}, the local implausibility is eliminated.
 
-\begin{enumerate} 
-
-    \item \textbf{Novel Compound}
-    \begin{enumerate}
-        \item[\textbf{1a}] The zookeeper picked up the monkey medicine that was in the enclosure.
-        \item[\textbf{1b}] The zookeeper spread out the monkey medicine that was in the enclosure.
-    \end{enumerate} \label{staubsentencenovel}
-    \item \textbf{Familiar Compound}
-    \begin{enumerate}
-        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage. \label{familiarplaus}
-        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage. \label{familiarimplaus}
-    \end{enumerate} \label{staubsentencefamiliar}
-\end{enumerate}
+\begin{exe}
+\ex Local Plausible and Local Implausible Sentences \label{staubitems}
+\begin{xlist}
+\ex Novel Compound \label{compound}
+\begin{xlist}
+\ex The zookeeper picked up the monkey medicine that was in the enclosure. \hfill \emph{plausible} \label{novelplaus}
+\ex The zookeeper spread out the monkey medicine that was in the enclosure. \hfill \emph{implausible}\label{novelimplaus}
+\end{xlist}
+\ex Familiar Compound
+\begin{xlist}
+\ex Jenny looked out on the huge mountain lion pacing in its cage. \hfill \emph{plausible}\label{familiarplaus}
+\ex Jenny heard the huge mountain lion pacing in its cage. \hfill \emph{implausible} \label{familiarimplaus}
+\end{xlist}
+\end{xlist}
+\end{exe}
 
 \noindent They found that the size of the plausibility effect was the
 same for both novel and familiar compound nouns. That is to say, while
@@ -1848,6 +1851,35 @@ frequency of the first noun, but rather the frequency of the compound
 noun as a whole. Additionally, there was no interaction effect between
 plausibility and familiarity.
 
+Following Wagenmakers et al.
+(\citeproc{ref-wagenmakers2010bayesianhypothesistesting}{2010}), a
+post-hoc Bayes factor analysis was conducted to compare the interaction
+effect to the null hypothesis (interaction effect = 0). We found a Bayes
+Factor value of 18.15 in favor of the null, which constitutes strong
+support for the null hypothesis.\footnote{More accurately, it indicates
+  that the results are \(1/18.15=0.05\) times more likely under the
+  alternate hypothesis than under the null hypothesis} Specifically, we
+use the Save-Dickey density ratio method, which involves comparing two
+models: one in which the value of interest is fixed (in this case, the
+interaction effect would be fixed at zero) and one in which the value of
+interest is free to vary (in this case, the interaction effect would be
+allowed to vary). The Bayes factor is then obtained by dividing the
+height of the posterior the parameter under the model that allows the
+interaction effect to vary by the height of the prior for the parameter
+(\citeproc{ref-wagenmakers2010bayesianhypothesistesting}{Wagenmakers et
+al., 2010}).\footnote{The code to reproduce the Bayes factor is included
+  at the following link:
+  \url{https://github.com/znhoughton/dissertation_writeup/blob/master/Chapters/Compound\%20Nouns/Analysis\%20Scripts/data_analysis.qmd}}
+In this case, the prior of interest was a prior that specified that the
+interaction effect was zero.\footnote{An example of this approach being
+  implemented in \emph{brms} is included here:
+  \url{https://vuorre.com/posts/2017-03-21-bayes-factors-with-brms/}} We
+computed the Bayes factor for the N1 region and not the N2 region
+because the interaction at the N2 region is not of particular interest
+to our theoretical question. Specifically, whether the effect of
+familiarity is mediated by plausibility at the N2 region is not directly
+relevant to our theoretical questions.
+
 At the N2 region, there was an increase in reaction time in the
 plausible condition and a decrease in reaction time in the familiar
 condition, but no interaction effect. In other words, participants were
@@ -1855,13 +1887,7 @@ slower to choose the correct word in the plausible condition. They were
 also quicker to choose the correct word if the compound noun was
 familiar. However, plausibility did not mediate the effects of
 familiarity. That is to say, the size of the plausibility effect was not
-different for familiar versus novel compound nouns. Following
-Wagenmakers et al.
-(\citeproc{ref-wagenmakers2010bayesianhypothesistesting}{2010}), a
-post-hoc Bayes factor analysis was conducted to compare the interaction
-effect to the null hypothesis (interaction effect = 0). We found a Bayes
-Factor value of 18.15 which constitutes strong support for the null
-hypothesis.
+different for familiar versus novel compound nouns.
 
 \begin{table}
 
@@ -2055,9 +2081,10 @@ locally plausible and implausible sentences.\footnote{Given our
   where it would be impossible for the reading at the N1 region to be
   implausible without the reading of the compound noun also being
   implausible.} We gathered a total of 37 compound nouns for our high
-predictability condition. We subsequently normed the sentences we
-created using the high predictability compounds, as well as the
-sentences from Staub et al.
+predictability condition.
+
+We subsequently normed the sentences we created using the high
+predictability compounds, as well as the sentences from Staub et al.
 (\citeproc{ref-staubTimeCoursePlausibility2007}{2007}) which we
 confirmed were all low predictability compounds relative to our compound
 nouns.
@@ -2174,6 +2201,27 @@ demonstrate that, similar to experiment 1, there was an increase in
 reaction time for the implausible condition, but no effect for
 predictability or the interaction between the two.
 
+As in Experiment 1, we once again conducted a post-hoc Bayes factor
+analysis to compare the interaction effect to the null hypothesis
+(interaction effect = 0). We found a Bayes Factor value of 15.67 which
+constitutes strong support for the null hypothesis. Specifically, we use
+the Save-Dickey density ratio method, which involves comparing two
+models: one in which the value of interest is fixed (in this case, the
+interaction effect would be fixed at zero) and one in which the value of
+interest is free to vary (in this case, the interaction effect would be
+allowed to vary). The Bayes factor is then obtained by dividing the
+height of the posterior the parameter under the model that allows the
+interaction effect to vary by the height of the prior for the parameter
+(\citeproc{ref-wagenmakers2010bayesianhypothesistesting}{Wagenmakers et
+al., 2010}).\footnote{The code to reproduce the Bayes factor is included
+  at the following link:
+  \url{https://github.com/znhoughton/dissertation_writeup/blob/master/Chapters/Compound\%20Nouns/Analysis\%20Scripts/data_analysis.qmd}}
+We computed the Bayes factor for the N1 region and not the N2 region
+because the interaction at the N2 region is not of particular interest
+to our theoretical question. Specifically, whether the effect of
+familiarity is mediated by plausibility at the N2 region is not directly
+relevant to our theoretical questions.
+
 With regards to the N2 region, Table~\ref{tbl-N2Predictability} presents
 the results of the analysis we ran with predictability as a binary
 predictor (high or low), while Table~\ref{tbl-N2LogOdds} presents the
@@ -2182,10 +2230,7 @@ predictor (operationalized as the log odds ratio). Our results, as in
 Experiment 1, demonstrate an increase in reaction time in the plausible
 condition and and a decrease in reaction time in the high-predictability
 condition, but no interaction effect between plausibility and
-predictability. As in Experiment 1, we once again conducted a post-hoc
-Bayes factor analysis to compare the interaction effect to the null
-hypothesis (interaction effect = 0). We found a Bayes Factor value of
-15.67 which constitutes strong support for the null hypothesis.
+predictability.
 
 Figure~\ref{fig-N1Predictability} and Figure~\ref{fig-N2Predictability}
 provide visualizations of the analyses run with predictability as a
@@ -2372,7 +2417,9 @@ In Experiments 1 and 2, we demonstrated that there is a slowdown at the
 N1 region in locally implausible contexts. However, the maze task
 requires participants to make active decisions and this may result in
 differences from a more naturalistic reading task. Thus, in Experiment
-3, we directly replicate Experiment 1 using eye-tracking.
+3, we directly replicate Experiment 1 using eye-tracking. We use the
+same Experimental items and Filler items as in Experiment 1, however we
+also included comprehension questions to check participants' attention.
 
 \subsection{Methods}\label{methods-2}
 
@@ -2385,7 +2432,8 @@ corrected vision.
 
 \subsubsection{Materials}\label{materials}
 
-The materials were identical to Experiment 1.
+The materials were identical to Experiment 1, however they also included
+comprehension questions.
 
 We recorded participants' right pupil movements using the Eyelink 1000
 Plus. Participants were seated 850mm away from the screen, which was
@@ -2573,10 +2621,16 @@ unclear whether this effect is robust or not.
 
 \section{Experiment 4}\label{experiment-4}
 
-In Experiment 4, we replicate the results we found in Experiment 2 using
-eye-tracking.
-
 \subsection{Methods}\label{methods-3}
+
+Experiment 3 demonstrated an effect of plausibility at the N1 region
+that was consistent regardless of the frequency of the compound noun. In
+order to determine whether predictability demonstrates similar effects,
+in Experiment 4 we replicate Experiment 2 using eye-tracking. The
+Experimental and Filler items were identical, but we also included
+comprehension questions to check participants' attention.
+
+\subsection{Methods}\label{methods-4}
 
 \subsubsection{Participants}\label{participants-3}
 
@@ -2587,7 +2641,8 @@ corrected vision.
 
 \subsubsection{Materials}\label{materials-1}
 
-The materials here were identical to those in Experiment 2.
+The materials here were identical to those in Experiment 2, with the
+exception of the added comprehension questions.
 
 \subsubsection{Procedure}\label{procedure-2}
 
@@ -2775,12 +2830,13 @@ high-frequency. Thus, in order to confirm that the results in Experiment
 4 were not due to measurement error, we examined the effect of frequency
 in our filler items on each of the eye-tracking measures.
 
-\begin{enumerate} 
-
-    \item Take your money out of the satchel and pay off the debt.
-    \item Take your money out of the account and pay off the debt.
-    
-\end{enumerate}
+\begin{exe}
+\ex Filler Sentences \label{fillers}
+\begin{xlist}
+\ex{Take your money out of the \textbf{satchel} and pay off the debt. \hfill \emph{low-frequency}}
+\ex{Take your money out of the \textbf{account} and pay off the debt. \hfill \emph{high-frequency}}
+\end{xlist}
+\end{exe}
 
 Our results are presented in Table~\ref{tbl-filleritemsall} and
 visualized in Figure~\ref{fig-filleritemsall}. We find an effect of
@@ -3391,7 +3447,7 @@ increase in recognition times for only the most \emph{frequent} phrases.
 On the other hand, if predictability does drive storage, we may see an
 increase in reaction time for both frequent and predictable phrases.
 
-\section{Methods}\label{methods-4}
+\section{Methods}\label{methods-5}
 
 \subsection{Participants}\label{participants-4}
 
@@ -4443,7 +4499,7 @@ emerge as a function of the training.
 
 \section{Experiment 1}\label{experiment-1-1}
 
-\subsection{Methods}\label{methods-5}
+\subsection{Methods}\label{methods-6}
 
 \subsubsection{Dataset}\label{dataset}
 
@@ -4754,7 +4810,7 @@ constraints along with the estimated weights in humans are as follows
 logistic regression model to combine these constraints into a single
 constraint (overall abstract preference) for each binomial.
 
-\subsection{Methods}\label{methods-6}
+\subsection{Methods}\label{methods-7}
 
 \subsubsection{Language Model
 Predictions}\label{language-model-predictions-1}
@@ -4982,7 +5038,7 @@ opportunity to examine how these preferences arise as a function of the
 training. Thus, in Experiment 3 we examine the evolution of these
 learned abstract ordering preferences as the model learns over time.
 
-\subsection{Methods}\label{methods-7}
+\subsection{Methods}\label{methods-8}
 
 \subsubsection{Language Model
 Predictions}\label{language-model-predictions-2}
@@ -5346,7 +5402,7 @@ al., 2023}). We examine the representations for different binomials in
 sentence contexts as well as the compositional representations of those
 same binomials. We explain these metrics in detail below.
 
-\subsection{Methods}\label{methods-8}
+\subsection{Methods}\label{methods-9}
 
 \subsubsection{Dataset}\label{dataset-1}
 
@@ -5592,7 +5648,7 @@ training we can examine how our results in Experiment 1 emerge
 throughout training. Further, since the model is open access we can also
 examine the different hidden-layers of the model.
 
-\subsection{Methods}\label{methods-9}
+\subsection{Methods}\label{methods-10}
 
 The methods in Experiment 2 were almost identical to those used in
 Experiment 1, with two exceptions: first, rather than examining several
