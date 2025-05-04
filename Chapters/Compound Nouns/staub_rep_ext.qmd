@@ -292,7 +292,7 @@ Evidence for holistic storage is not limited to phonological effects, either. In
 
 Similarly, @odonnellProductivityReuseLanguage2016 tested 4 probabilistic models on their ability to learn the English past tense and derivational morphology. Specifically, they tested a Full-parsing model, which stores minimal-sized units only, a Full-listing model, which stores the entirety of units only, an Exemplar-based model, which stores all units and all sub-units consistent with the data, and finally a Productivity as an Inference model, which, similar to the Exemplar-based Inference model, can store both smaller and larger structures, but probabilistically determines which items to store based on the data. They found that the Inference-based model performed the best overall for both past tenses and derivational morphology. In other words, storing units of varying sizes (as opposed to just minimal or maximal-sized units) seems to be the most conducive to learning the various morphological paradigms in English.
 
-Despite the clear evidence for the holistic storage of some multi-word units, however, it is still largely unclear what determines whether a unit is stored holistically. For example, it is possible that storage is driven by either **phrasal frequency** [@bybee2001] or by the mutual **predictability** of a phrase's component parts [i.e., how predictable the whole phrase is from part of the phrase\; @odonnellProductivityReuseLanguage2016]. For example, as previously stated, there is an abundance of evidence that high-frequency phrases are more susceptible to phonetic reduction than low-frequency phrases [@bybeeEffectUsageDegrees1999; @bybee2003]. Additionally, high-frequency phrases have been shown to lose the recognizability of their component parts relative to low-frequency phrases [@kapatsinskiFrequencyEmergencePrefabs2009]. For example, *up* is harder to recognize in *pick up* than in *run up*. On the other hand, in the learning literature, there is significant evidence that learning is driven by prediction error as opposed to raw co-occurrence statistics. For example, @ramscarChildrenValueInformativity2013 demonstrated that in word learning, children rely on more than simple co-occurrence statistics but also on how *informative* -- that is, how *predictive* -- a cue is of an outcome (relative to other cues). Specifically, they demonstrated that children rely on not only co-occurrence rate, but also background rate (how often a cue is present without an outcome). In other words, assuming doors have a higher co-occurrence rate and lower background rate than all the other competing cues (e.g., brown, house, room) for the word *door*, then children will learn that doors are the best predictor of the word *door* [@ramscarChildrenValueInformativity2013].
+Despite the clear evidence for the holistic storage of some multi-word units, however, it is still largely unclear what determines whether a unit is stored holistically. For example, it is possible that storage is driven by either **phrasal frequency** [@bybee2001] or by the mutual **predictability** of a phrase's component parts [i.e., how predictable the whole phrase is from part of the phrase; @odonnellProductivityReuseLanguage2016]. For example, as previously stated, there is an abundance of evidence that high-frequency phrases are more susceptible to phonetic reduction than low-frequency phrases [@bybeeEffectUsageDegrees1999; @bybee2003]. Additionally, high-frequency phrases have been shown to lose the recognizability of their component parts relative to low-frequency phrases [@kapatsinskiFrequencyEmergencePrefabs2009]. For example, *up* is harder to recognize in *pick up* than in *run up*. On the other hand, in the learning literature, there is significant evidence that learning is driven by prediction error as opposed to raw co-occurrence statistics. For example, @ramscarChildrenValueInformativity2013 demonstrated that in word learning, children rely on more than simple co-occurrence statistics but also on how *informative* -- that is, how *predictive* -- a cue is of an outcome (relative to other cues). Specifically, they demonstrated that children rely on not only co-occurrence rate, but also background rate (how often a cue is present without an outcome). In other words, assuming doors have a higher co-occurrence rate and lower background rate than all the other competing cues (e.g., brown, house, room) for the word *door*, then children will learn that doors are the best predictor of the word *door* [@ramscarChildrenValueInformativity2013].
 
 A similar debate persists in the speech perception literature, where @pierrehumbertExemplarDynamicsWord2001 argued that internal representations reflect the raw frequency distribution of the input. On the other hand, @olejarczukDistributionalLearningErrordriven2018 argued that the learning of phonemes is driven not by co-occurrence statistics (i.e., raw frequency), but rather by surprisal (i.e., prediction error). In other words, learners are actively predicting upcoming phonemes and update their beliefs in proportion to how surprising the upcoming phoneme is. Thus the debate between co-occurrence vs predictability in the role of learning is not unique to the word learning literature.
 
@@ -328,7 +328,7 @@ Participants were presented with sentences online via ibex farm, a web-based exp
 
 #### Stimuli
 
-The experimental sentences were sentences containing compound nouns from [@staubTimeCoursePlausibility2007] which varied upon two dimensions: local plausibility and familiarity. Locally plausible sentences were sentences in which the reading at the first noun was plausible and locally implausible sentences were sentences in which the reading at the first noun in the compound was implausible (see example sentences \ref{staubsentencenovel} and \ref{staubsentencefamiliar}). Local plausibility was a within-item effect and familiarity (the frequency of the compound noun) was a between-item effect. Examples \ref{staubsentencenovel} and \ref{staubsentencefamiliar} above exemplify each condition: the first sentence in each is locally plausible while the second one is locally implausible. For example, in sentence \hyperref[staubsentencefamiliar]{2a}, it is semantically plausible that *Jenny looked out on the huge mountain...* but not semantically plausible that *Jenny heard the huge mountain* (\hyperref[staubsentencefamiliar]{2b}). Altogether, our stimuli consisted of 24 novel items, 24 familiar items [taken from @staubTimeCoursePlausibility2007], and 188 filler sentences in order to avoid participants discerning the experimental design.
+The experimental sentences were sentences containing compound nouns from [@staubTimeCoursePlausibility2007] which varied upon two dimensions: local plausibility and familiarity. Locally plausible sentences were sentences in which the reading at the first noun was plausible and locally implausible sentences were sentences in which the reading at the first noun in the compound was implausible (see example sentences \ref{staubsentencenovel} and \ref{staubsentencefamiliar}). Local plausibility was a within-item effect and familiarity (the frequency of the compound noun) was a between-item effect. Examples \ref{staubsentencenovel} and \ref{staubsentencefamiliar} above exemplify each condition: the first sentence in each is locally plausible while the second one is locally implausible. For example, in sentence \hyperref[staubsentencefamiliar]{2a}, it is semantically plausible that *Jenny looked out on the huge mountain...* but not semantically plausible that *Jenny heard the huge mountain* (\hyperref[staubsentencefamiliar]{2b}). Altogether, our stimuli consisted of 24 novel items, 24 familiar items \[taken from @staubTimeCoursePlausibility2007\], and 188 filler sentences in order to avoid participants discerning the experimental design.
 
 #### Procedure
 
@@ -348,9 +348,11 @@ Sentences were presented in a random order and each word was presented an equal 
 
 #### Analysis
 
-The data was analyzed using Bayesian linear regression models, as implemented in the *brms* package [@burknerBrmsPackageBayesian2017] within the R programming environment @Rpackage. We subsetted the data into two sets based on the region: one set for the first noun in the compound noun and one set for the second noun in the compound. The primary dependent variable was log reaction time for both of these regions [following @boyceMazeMadeEasy2020]. The primary independent variables were plausibility and familiarity [following @staubTimeCoursePlausibility2007]. We modeled reaction time as a function of plausibility and familiarity, including their interaction, with maximal random effects [@barrRandomEffectsStructure2013]. The formula used for the model is presented in equation @eq-modelfamil below, with *Plaus* as plausibility and *Famil* as familiarity. All models were sum-coded $$
+The data was analyzed using Bayesian linear regression models, as implemented in the *brms* package [@burknerBrmsPackageBayesian2017] within the R programming environment @Rpackage.[^staub_rep_ext-3] We subsetted the data into two sets based on the region: one set for the first noun in the compound noun and one set for the second noun in the compound. The primary dependent variable was log reaction time for both of these regions [following @boyceMazeMadeEasy2020]. The primary independent variables were plausibility and familiarity [following @staubTimeCoursePlausibility2007]. We modeled reaction time as a function of plausibility and familiarity, including their interaction, with maximal random effects [@barrRandomEffectsStructure2013]. The formula used for the model is presented in equation @eq-modelfamil below, with *Plaus* as plausibility and *Famil* as familiarity. All models were sum-coded $$
 Reaction Time \sim Plaus*Famil+(Plaus*Famil|Subject)+(Plaus|Item)
 $$ {#eq-modelfamil}
+
+[^staub_rep_ext-3]: For more details about the analyses, our materials are available at the following link: <https://github.com/znhoughton/dissertation_writeup/tree/master/Chapters/Compound%20Nouns>
 
 ### Results
 
@@ -358,7 +360,13 @@ As mentioned in the methods section, for the purpose of the analysis, the data w
 
 For the N1 region, there was an increase in reaction time for the implausible condition relative to the plausible condition. There was no such effect for familiarity. In other words, while participants took longer selecting the correct word in the implausible condition, their reaction times were not affected by the familiarity of the compound noun. This is expected given that the familiarity condition was not the frequency of the first noun, but rather the frequency of the compound noun as a whole. Additionally, there was no interaction effect between plausibility and familiarity.
 
-At the N2 region, there was an increase in reaction time in the plausible condition and a decrease in reaction time in the familiar condition, but no interaction effect. In other words, participants were slower to choose the correct word in the plausible condition. They were also quicker to choose the correct word if the compound noun was familiar. However, plausibility did not mediate the effects of familiarity. That is to say, the size of the plausibility effect was not different for familiar versus novel compound nouns. Following @wagenmakers2010bayesianhypothesistesting, a post-hoc Bayes factor analysis was conducted to compare the interaction effect to the null hypothesis (interaction effect = 0). We found a Bayes Factor value of 18.15 which constitutes strong support for the null hypothesis.
+At the N2 region, there was an increase in reaction time in the plausible condition and a decrease in reaction time in the familiar condition, but no interaction effect. In other words, participants were slower to choose the correct word in the plausible condition. They were also quicker to choose the correct word if the compound noun was familiar. However, plausibility did not mediate the effects of familiarity. That is to say, the size of the plausibility effect was not different for familiar versus novel compound nouns.
+
+Following @wagenmakers2010bayesianhypothesistesting, a post-hoc Bayes factor analysis was conducted to compare the interaction effect to the null hypothesis (interaction effect = 0). We found a Bayes Factor value of 18.15 in favor of the null, which constitutes strong support for the null hypothesis.[^staub_rep_ext-4] Specifically, we use the Save-Dickey density ratio method, which involves comparing two models: one in which the value of interest is fixed (in this case, the interaction effect would be fixed at zero) and one in which the value of interest is free to vary (in this case, the interaction effect would be allowed to vary). The Bayes factor is then obtained by dividing the height of the posterior the parameter under the model that allows the interaction effect to vary by the height of the prior for the parameter [@wagenmakers2010bayesianhypothesistesting].[^staub_rep_ext-5]
+
+[^staub_rep_ext-4]: More accurately, it indicates that the results are $1/18.15=0.05$ times more likely under the alternate hypothesis than under the null hypothesis
+
+[^staub_rep_ext-5]: The code to reproduce the Baye's factor is included
 
 ```{r, echo = F, message = F}
 #| label: tbl-N1Staub
@@ -373,7 +381,7 @@ percent_greater_zero = data.frame(fixef(maze_staub_n1, summary = F)) %>%
   
 
 percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'familiarity1', 'condition1:familiarity1')))
 
 #table 1
 fixefsm1 = as.data.frame(fixef(maze_staub_n1)) %>%
@@ -417,7 +425,7 @@ percent_greater_zero = data.frame(fixef(maze_staub_n2, summary = F)) %>%
   
 
 percent_greater_zero = percent_greater_zero %>%
-  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'frequency1', 'condition1:frequency1')))
+  arrange(match(beta_coefficient, c('Intercept', 'condition1', 'familiarity1', 'condition1:familiarity1')))
 
 #table 1
 fixefsm1 = as.data.frame(fixef(maze_staub_n2)) %>%
@@ -543,11 +551,11 @@ $$ {#eq-oddsratio}
 
 In non-mathematical terms, @eq-oddsratio quantifies how predictable the first noun is of the second noun (i.e., how likely the second noun is to follow after the first noun, relative to every other word that could follow). For example, the odds ratio of *peanut butter* would be the odds ratio of the compound noun -- *peanut butter* -- to the first noun -- *peanut* -- when *butter* does not follow it.
 
-In order to collect the most predictable compound nouns, we searched the Google *n*-grams corpus [@michel2011quantitativeanalysisculture] using the ZS Python package [@smithZSFileFormat2014]. We then collected the compound nouns with the highest predictability values, using the following exclusion criteria: excluding words with a match count below 90,000,[^staub_rep_ext-3] excluding nonsense words, proper nouns, technical words (e.g., *tenth circuit*), and words in which we could not create locally plausible and implausible sentences.[^staub_rep_ext-4] We gathered a total of 37 compound nouns for our high predictability condition. We subsequently normed the sentences we created using the high predictability compounds, as well as the sentences from @staubTimeCoursePlausibility2007 which we confirmed were all low predictability compounds relative to our compound nouns.
+In order to collect the most predictable compound nouns, we searched the Google *n*-grams corpus [@michel2011quantitativeanalysisculture] using the ZS Python package [@smithZSFileFormat2014]. We then collected the compound nouns with the highest predictability values, using the following exclusion criteria: excluding words with a match count below 90,000,[^staub_rep_ext-6] excluding nonsense words, proper nouns, technical words (e.g., *tenth circuit*), and words in which we could not create locally plausible and implausible sentences.[^staub_rep_ext-7] We gathered a total of 37 compound nouns for our high predictability condition. We subsequently normed the sentences we created using the high predictability compounds, as well as the sentences from @staubTimeCoursePlausibility2007 which we confirmed were all low predictability compounds relative to our compound nouns.
 
-[^staub_rep_ext-3]: This was done in order to help filter out nonsense words (e.g., *teawhit head*) as well as eliminate words that had high predictability scores but were just a product of the corpus and unlikely to reflect the input of human learners (e.g., *broomwheat tea* which has a predictability score of 287 in the corpus).
+[^staub_rep_ext-6]: This was done in order to help filter out nonsense words (e.g., *teawhit head*) as well as eliminate words that had high predictability scores but were just a product of the corpus and unlikely to reflect the input of human learners (e.g., *broomwheat tea* which has a predictability score of 287 in the corpus).
 
-[^staub_rep_ext-4]: Given our methodology, we needed to be able to make sentences that were plausible and implausible using the same compound noun. This restriction meant we had to exclude words like *Parmesan cheese* where it would be impossible for the reading at the N1 region to be implausible without the reading of the compound noun also being implausible.
+[^staub_rep_ext-7]: Given our methodology, we needed to be able to make sentences that were plausible and implausible using the same compound noun. This restriction meant we had to exclude words like *Parmesan cheese* where it would be impossible for the reading at the N1 region to be implausible without the reading of the compound noun also being implausible.
 
 We followed the same methodology as @staubTimeCoursePlausibility2007 for our norming procedure: we provided participants with each item in four conditions (see below) and asked participants to rate each sentence on a 7-point Likert scale in terms of how well the last word fit in the sentence. No participant rated more than one version of each sentence. Crucially, for each item we ensured that sentence 3c received a lower rating than the other 3 versions of the sentences.
 
@@ -865,7 +873,7 @@ The results of the N2 region also bear remarkable similarities to our results in
 
 ## Experiment 3
 
-In Experiment 3, we directly replicate Experiment 1 using eye-tracking.
+In Experiments 1 and 2, we demonstrated that there is a slowdown at the N1 region in locally implausible contexts. However, the maze task requires participants to make active decisions and this may result in differences from a more naturalistic reading task. Thus, in Experiment 3, we directly replicate Experiment 1 using eye-tracking.
 
 ### Methods
 
@@ -877,7 +885,7 @@ In Experiment 3, we directly replicate Experiment 1 using eye-tracking.
 
 The materials were identical to Experiment 1.
 
-We recorded participants' eye movements using the Eyelink 1000 Plus. We recorded pupil movements from the right eye. Participants were seated 850mm away from the screen. Our screen resolution was 1920x1080, 531.3mm in width, and 298.8mm in height.
+We recorded participants' right pupil movements using the Eyelink 1000 Plus. Participants were seated 850mm away from the screen, which was 531.3mm in width, 298.8mm in height, and had a resolution of 1920x1080.
 
 Comprehension was checked for non-experimental trials and participants below 80% accuracy were excluded. Out of our 46 participants, 2 were excluded for falling below the accuracy threshold.
 
@@ -894,7 +902,6 @@ For each analysis, our independent variables were plausibility (high or low) and
 Our results at the N1 region are demonstrated in @tbl-fullmodelresultsn1staub and visualized in @fig-fullmodelresultsn1staub.
 
 At the N1 region, we find main-effects of plausibility for first fixation duration, go-past time, and first-pass regression, but not for gaze times. Additionally, we find no effects of familiarity. Finally, for go-past times we find an interaction between plausibility and predictability such that the slowdown of the implausible context was greater for familiar items than novel items.
-
 
 ```{r, echo = F, message = F}
 #| label: tbl-fullmodelresultsn1staub
@@ -1085,12 +1092,9 @@ ggarrange(model_n1_binary_plot_staub, model_n1_binary_gaze_plot_staub, model_n1_
 
 #### N2 Region
 
-
 Our results at the N2 region are demonstrated in @tbl-fullmodelresultsn2staub and visualized in @fig-fullmodelresultsn2staub.
 
 At the N2 region, we find main-effects of familiarity for first fixation duration and gaze times, and marginal effects for go-past times and first-pass regression. We find no main-effect of plausibility, which is expected because the implausible condition is plausible at the N2 region. We also find no interaction effect between plausibility and familiarity.
-
-
 
 ```{r, echo = F, message = F}
 #| label: tbl-fullmodelresultsn2staub
@@ -1279,11 +1283,9 @@ ggarrange(model_n2_binary_plot_staub, model_n2_binary_gaze_plot_staub, model_n2_
 
 ```
 
-
-
 ### Discussion
 
-Experiment 3 demonstrates that readers have longer first-fixation times, longer go-past times, and more first-pass regressions in implausible contexts than in plausible contexts. Further, we find an interaction effect in the opposite direction from predicted for go-past times: the effect of plausibility is greater for familiar items than in novel items. We will expand on this result in the Conclusion section.
+Experiment 3 demonstrates that readers have longer first-fixation times, longer go-past times, and more first-pass regressions in implausible contexts than in plausible contexts. Further, we find an interaction effect in the opposite direction from predicted for go-past times: the effect of plausibility is greater for familiar items than in novel items. This suggests that the slowdown generated by the locally implausible context is even greater for familiar items than novel items. However, since we only find this in one eye-tracking measure, it is unclear whether this effect is robust or not.
 
 ## Experiment 4
 
@@ -1301,7 +1303,7 @@ The materials here were identical to those in Experiment 2.
 
 #### Procedure
 
-We recorded participants' eye movements using the Eyelink 1000 Plus. We recorded pupil movements from the right eye. Participants were seated 850mm away from the screen. Our screen resolution was 1920x1080, 531.3mm in width, and 298.8mm in height.
+We recorded participants' right pupil movements using the Eyelink 1000 Plus. Participants were seated 850mm away from the screen. Our screen resolution was 1920x1080, 531.3mm in width, and 298.8mm in height.
 
 Comprehension was checked for non-experimental trials and participants below 80% accuracy were excluded. Out of our 56 participants, 0 were excluded for falling below the accuracy threshold.
 
@@ -1312,7 +1314,6 @@ Prior to our analyses, sentences with blinks were excluded and fixations less th
 For each analysis, our independent variables were plausibility (high or low) and (log) predictability (high or low) and their interaction. We also included random slopes for condition and predictability by subject and plausibility by compound noun as well as intercepts for subject and compound noun. For each of our models, we used sum-coding, where the intercept represents the grand mean and the fixed-effect coefficient estimates represent the distance from the grand mean.
 
 ### Results
-
 
 #### N1 Region
 
@@ -1510,7 +1511,6 @@ ggarrange(model_n1_binary_plot, model_n1_binary_gaze_plot, model_n1_go_past_plot
 
 #### N2 Region
 
-
 Our results at the N2 region are demonstrated in @tbl-fullmodelresultsn2 and visualized in @fig-fullmodelresultsn2.
 
 At the N2 region, we find a main-effect of predictability for only the first fixation duration measure. We find no effect of plausibility, as expected because the N2 region eliminates the implausibility effect. We also find no interaction between plausibility and predictability in any of the measures.
@@ -1702,7 +1702,6 @@ ggarrange(model_n2_binary_plot, model_n2_binary_gaze_plot, model_n2_go_past_plot
 
 ```
 
-
 #### Filler Items
 
 In addition to our experimental stimuli, we also included sentences that varied with respect to the frequency of the word. For example, in the below sentences, *satchel* is low-frequency and *account* is high-frequency. Thus, in order to confirm that the results in Experiment 4 were not due to measurement error, we examined the effect of frequency in our filler items on each of the eye-tracking measures.
@@ -1715,8 +1714,6 @@ In addition to our experimental stimuli, we also included sentences that varied 
 \end{enumerate}
 
 Our results are presented in @tbl-filleritemsall and visualized in @fig-filleritemsall. We find an effect of frequency in each of the four eye-tracking measures we looked at.
-
-
 
 ```{r, echo = F, message = F}
 #| label: tbl-filleritemsall
@@ -1836,8 +1833,6 @@ fillers_exp4 %>%
   column_spec(1, bold = T, width = '12em')
 ```
 
-
-
 ```{r, echo = F, fig.align = 'center', warning = F, message = F}
 #| label: fig-filleritemsall
 #| fig-cap: "Visualization of the effects of frequency on each eye-tracking measure for filler items."
@@ -1902,10 +1897,9 @@ ggarrange(model_first_fixation_filler_plot, model_gaze_filler_plot, model_go_pas
 
 ```
 
-
 ### Discussion
 
-In Experiment 4, we find an effect of plausibility only in first-pass regressions. Interestingly, we do find an effect of plausibility in first-fixation times for low-predictability items, but not for high-predictability items. While this follows our theoretical prediction that high-predictability items may be able to overcome the local implausibility, the results are difficult to reconcile with the results we see for first-pass regressions. For first-pass regressions, we observe the opposite pattern: there is an effect of plausibility on first-pass regressions for high-predictability items but not low-predictability items.
+In Experiment 4, we find an effect of plausibility only in first-pass regressions. Interestingly, we do find an effect of plausibility in first-fixation times for low-predictability items, but not for high-predictability items. While this follows our theoretical prediction that high-predictability items may be able to overcome the local implausibility, the results are difficult to reconcile with the results we see for first-pass regressions. For first-pass regressions, we observe the opposite pattern: there is an effect of plausibility on first-pass regressions for high-predictability items but not low-predictability items. Thus overall it seems unlikely that participants are accessing the holistic representation at the first noun.
 
 We also find no effect of plausibility for gaze duration or go-past times, which was unexpected. Further, upon inspecting our filler items we were able to confirm that this was not a consequence of measurement error.
 
@@ -1921,12 +1915,10 @@ Overall the results of experiments 1 and 2 suggest that the frequency or predict
 
 Experiments 3 and 4 provide mixed-evidence. On one hand, there seems to be a general effect of implausibility regardless of frequency or predictability, however in some reading measures such as first-fixation times in Experiment 4, predictability seemed to alleviate the slowdown in the implausible condition. On the other hand, for other measures, the slowdown generated by the implausible contexts was actually exacerbated for high-frequency or high-predictability items (e.g., first-pass regression times in both Experiment 3 and Experiment 4).
 
-There are a few possible explanations for the results we found. One possibility is simply that our high-predictability compound nouns aren't stored holistically. It is important to note that our compound nouns were the most predictable compound nouns in the entire Google *n*-grams corpus, thus it seems unlikely that they weren't predictable enough to be stored, though it may be that English compound nouns have relatively low predictability relative to other multi-word phrases. 
+There are a few possible explanations for the results we found. One possibility is simply that our high-predictability compound nouns aren't stored holistically. It is important to note that our compound nouns were the most predictable compound nouns in the entire Google *n*-grams corpus, thus it seems unlikely that they weren't predictable enough to be stored, though it may be that English compound nouns have relatively low predictability relative to other multi-word phrases. The slowdown in the locally implausible context is not surprising if the compound nouns are not stored holistically because they would be processed incrementally. Thus readers would access the first noun in the compound noun initially, generating a slowdown in the locally implausible condition.
 
-Another possibility is that the high-predictability compound nouns are stored holistically, but the processing consequences of them being stored holistically are such that there is no facilitatory effect in the processing of the first noun in the compound noun. This would certainly beg the question, however, of what exactly the processing consequences of holistic storage are. Perhaps the primary advantages to holistic storage are in the domain of production, rather than processing.
-
-<!-- It is also possible that there may be competing forces. On the one hand, high-predictability items may help overcome the local implausibility (as evidenced by the alleviation in first-fixation times found in Experiment 4). On the other hand, there's also evidence from the literature that people are generally more acceptable of low-frequency words in novel contexts than high-frequency words [@harmonPuttingOldTools2017]. It is possible that encountering a low-frequ It is possible that these competing forces explain the mixed-results in the eye-tracking experiments. NOTE: This actually can't be the case, because the frequency was not a measure of the first word -->
+Another possibility is that the high-predictability compound nouns are stored holistically, but the processing consequences of them being stored holistically are such that there is no facilitatory effect in the processing of the first noun in the compound noun. That is, perhaps despite being stored holistically, readers don't commit to accessing the holistic representation of the compound noun until they've heard enough acoustics to eliminate possible competitors. For example, after hearing *peanut*, there are still a number of possible words other than *butter* that could occur. Even though *butter* has a high probability of occurring after *peanut*, it would be costly to the reader to commit to *butter* and then have to reinterpret the sentence upon hearing a different word. Thus, the reader may avoid committing to *peanut butter* until they are confident that it is what the speaker intended to say.
 
 Finally, with respect to the increase in reaction time at the N2 region in the plausible condition that we found in Experiments 1 and 2, we do not see this effect in Experiments 3 and 4, suggesting that this effect may be a task-specific effect. This result suggests that in the maze task, participants may have a bias to analyze the first noun as the head noun and then have to reinterpret the sentence once it is clear that the noun is not the head noun. Further, since we don't see the same effect in the implausible condition, participants may not fully commit to an interpretation that is implausible.
 
-In summary, the present study contributes to the current theories of sentence processing by demonstrating that during sentence processing, readers do not seem to access the holistic representation at the first noun (because then they would be able to overcome the implausibility). Instead, it is possible that if compound nouns are stored holistically, perhaps readers don't access the holistic representation until they have heard sufficient evidence for that representation. That is, even though *peanut* is predictive of *butter*, there are still many other words that can occur after *peanut*. Thus, readers may not access the holistic representation until they hear enough of the compound noun to rule out other competing possibilities. 
+In summary, the present study contributes to the current theories of sentence processing by demonstrating that during sentence processing, readers do not seem to access the holistic representation at the first noun (because then they would be able to overcome the implausibility). Instead, it is possible that if compound nouns are stored holistically, perhaps readers don't access the holistic representation until they have heard sufficient evidence for that representation. That is, even though *peanut* is predictive of *butter*, there are still many other words that can occur after *peanut*. Thus, readers may not access the holistic representation until they hear enough of the compound noun to rule out other competing possibilities.

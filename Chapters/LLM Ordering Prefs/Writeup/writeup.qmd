@@ -212,7 +212,9 @@ $$
 
 #### Analysis
 
-The data was analyzed using Bayesian linear regression models, implemented in *brms* [@burknerBrmsPackageBayesian2017] with weak, uninformative priors. For each model, the dependent variable was the log odds of the alphabetical form to the nonalphabetical form. The fixed-effects were abstract ordering preference (represented as *AbsPref* below), observed preference (*ObservedPref*), overall frequency (*Freq*), an interaction between overall frequency and abstract ordering preference (*Freq:AbsPref*), and an interaction between overall frequency and observed preference (*Freq:ObservedPref*). The model equation is presented below:
+The data was analyzed using Bayesian linear regression models, implemented in *brms* [@burknerBrmsPackageBayesian2017] with weak, uninformative priors.[^writeup-3] For each model, the dependent variable was the log odds of the alphabetical form to the nonalphabetical form. The fixed-effects were abstract ordering preference (represented as *AbsPref* below), observed preference (*ObservedPref*), overall frequency (*Freq*), an interaction between overall frequency and abstract ordering preference (*Freq:AbsPref*), and an interaction between overall frequency and observed preference (*Freq:ObservedPref*). The model equation is presented below:
+
+[^writeup-3]: For complete details regarding the LM predictions and our analyses, refer to the following link: <https://github.com/znhoughton/dissertation_writeup/tree/master/Chapters/LLM%20Ordering%20Prefs/Scripts>
 
 $$
 \begin{aligned}
@@ -232,7 +234,7 @@ Our full model results are presented in the appendix (@tbl-model_results_full) a
 
 Our results are similar across all the large language models we tested. Specifically, we find no effect of abstract ordering preferences and no interaction effect between abstract ordering preference and overall frequency. We do find an effect of observed preference suggesting that the models are mostly reproducing the ordering preferences found in their training. We also find an interaction effect between observed preference and overall frequency, suggesting that the effect of observed frequency is stronger for high-frequency items.
 
-![Results for each beta coefficient estimate from each model. Models are arranged from smallest to largest from left to right. The x-axis contains each coefficient and the y-axis contains the predicted beta coefficient of the respective model. Error bars indicate 95\\% credible intervals.](/Chapters/LLM%20Ordering%20Prefs/Figures/full_plot.pdf){#fig-results width=100%}
+![Results for each beta coefficient estimate from each model. Models are arranged from smallest to largest from left to right. The x-axis contains each coefficient and the y-axis contains the predicted beta coefficient of the respective model. Error bars indicate 95\\% credible intervals.](/Chapters/LLM%20Ordering%20Prefs/Figures/full_plot.pdf){#fig-results width="100%"}
 
 ### Discussion
 
@@ -424,9 +426,9 @@ fixefsm2 %>%
 
 ```
 
-While these results suggest that the large language models' ordering preferences are sensitive abstract ordering preferences and not bigram probabilities, it's unclear whether their behavior is similar to humans on the level of the individual constraints. Thus, in the third analysis we examined which specific constraints the model is sensitive to, and to what extent.[^writeup-3] For this analysis, following @houghtonTaskdependentConsequencesDisfluency2024, we also present the percentage of posterior samples greater than zero. The results of this analysis can be found below in @tbl-exp1m2.
+While these results suggest that the large language models' ordering preferences are sensitive abstract ordering preferences and not bigram probabilities, it's unclear whether their behavior is similar to humans on the level of the individual constraints. Thus, in the third analysis we examined which specific constraints the model is sensitive to, and to what extent.[^writeup-4] For this analysis, following @houghtonTaskdependentConsequencesDisfluency2024, we also present the percentage of posterior samples greater than zero. The results of this analysis can be found below in @tbl-exp1m2.
 
-[^writeup-3]: It's also important to consider how many of our binomials the constraint even applied to (i.e., how many binomials were the constraints non-zero). For the Culture constraint, 62 of our 131 binomials had a non-zero value. For the Power constraint, 54 were non-zero, for the Frequency constraint, all 131 binomials were non-zero, and for the Len constraint, 85 were.
+[^writeup-4]: It's also important to consider how many of our binomials the constraint even applied to (i.e., how many binomials were the constraints non-zero). For the Culture constraint, 62 of our 131 binomials had a non-zero value. For the Power constraint, 54 were non-zero, for the Frequency constraint, all 131 binomials were non-zero, and for the Len constraint, 85 were.
 
 ```{r, echo = F, message = F}
 #| label: tbl-exp1m2
