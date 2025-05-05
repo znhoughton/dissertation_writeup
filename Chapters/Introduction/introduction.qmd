@@ -1,5 +1,7 @@
 \pagenumbering{arabic}
 
+\doublespace
+
 # Introduction
 
 How much of language is memorized and how much is improvised? Every time we speak, we are faced with the choice between familiar expressions, like *I don't know*, and novel constructions, like *to me it is uncertain*. In other words, we constantly navigate a trade-off between stored, item-specific knowledge – our stored knowledge of particular words or phrases – and generative knowledge, which allows us to combine those stored representations in a systematic manner.
