@@ -11,13 +11,16 @@ book:
       affiliations:
         - name: "University of California, Davis"
           department: "Department of Linguistics"
+
   chapters:
+    #- Chapters/acknowledgements.qmd
+    #- Chapters/abstract.qmd
     - index.qmd
     - Chapters/Introduction/introduction.qmd
     - Chapters/Compound Nouns/staub_rep_ext.qmd
     - Chapters/Recognizability/Write-up/quarto-writeup.qmd
-    - Chapters/LLM Ordering Prefs/Writeup/writeup.qmd
-    - Chapters/LLM Storage/Writeup/writeup.qmd
+    - Chapters/LLM Ordering Prefs/Writeup/writeup-llm-ordering-prefs.qmd
+    - Chapters/LLM Storage/Writeup/writeup-llm-storage.qmd
     - Chapters/frequency-dependent preference extremity/frequency-dependent preference extremity.qmd
     - Chapters/conclusion.qmd
     - Chapters/references.qmd
@@ -27,7 +30,6 @@ book:
     - Chapters/appendix_llm_stimuli.qmd
   
   output-file: houghton_dissertation
-  #image: dissertation_image.png
   
 degree: "Linguistics"
 dissertation_name: "Dissertation Name"
@@ -46,19 +48,15 @@ format:
   pdf:
     template-partials:
       - before-body.tex
-    latex-engine: lualatex 
+      #- toc.tex
+    latex-engine: xelatex 
     documentclass: scrreprt   # LaTeX document class for professional formatting
-
     number-depth: 2
     # Caption Formatting
     fig-cap-location: top      # Figure captions above
     tbl-cap-location: top      # Table captions above
     fig-pos: 'htbp'        # Let LaTeX decide where to place the figures
-    #fig-width: 6            # Set a reasonable default width
-    #fig-height: 6           # Or set a safe height for your figure
     fig-align: center       # Centering figures
-    #out.width: '\\linewidth'  # Use LaTeX defaults
-    #out.height: ''           # This explicitly avoids setting height
     keep-tex: true             # Optional: for debugging TeX
     # Font Settings
     fontsize: 12pt
@@ -69,8 +67,8 @@ format:
     link-citations: true       # Enable hyperlinked citations
     colorlinks: false          # Disable colored hyperlinks
     toc: true
-    toc-depth: 3
-    toc-title: "Table of contents"
+    toc-depth: 2
+    toc-title: "Table of Contents"
     lot: true                  # Enable List of Tables
     lof: true                  # Enable List of Figures
 

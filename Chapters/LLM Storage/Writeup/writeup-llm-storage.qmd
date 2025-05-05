@@ -1,0 +1,466 @@
+```{r include=F}
+library(tidyverse)
+library(brms)
+library(ggpubr)
+library(knitr)
+library(kableExtra)
+
+
+gpt2_m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_gpt2')
+
+
+gpt2_plot = conditional_effects(gpt2_m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+
+gpt2xl_m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_gpt')
+
+gpt2xl_plot = conditional_effects(gpt2xl_m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+
+olmo1b_m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_olmo1b')
+
+olmo1b_plot = conditional_effects(olmo1b_m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+
+olmo7b_m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4.1')
+
+
+olmo7b_plot = conditional_effects(olmo7b_m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+
+
+llama2_7b_m4 = brm(log_odds_cosine ~ CenteredLogOverallFreq * RelFreq,
+         data = cosine_data_m4,
+         family = gaussian(),
+         warmup = 2000,
+         iter = 4000,
+         cores = 4,
+         chains = 4,
+         #init = 0.1,
+         file = '../Data/model4_llama')
+
+
+llama2_plot = conditional_effects(llama2_7b_m4, plot = F, effects = "CenteredLogOverallFreq:RelFreq", int_conditions=list(RelFreq = c(-0.25, 0, 0.25)))
+```
+
+<!--# What if we frame this as: Large Language Models make novel predictions in humans. Maybe we can write a larger opinion piece on the role of LLMs in linguistics? Can talk about the history of computational models, such as the development of the Rescorla-Wagner learning theory model, etc -->
+
+# Holistic Representations of Binomials in Large Language Models
+
+## Introduction
+
+In the last few years large language models have surged in popularity and have remained in the center of both the media coverage and academic research. Their surge in popularity has sparked many debates about the extent to which they constitute an effective model of human language [e.g., @benderDangersStochasticParrots2021; @piantadosiMeaningReferenceLarge2022; @piantadosiChapterModernLanguage]. These debates have stemmed from clear differences in terms of both the training that the models receive as well as the performance of these models on language processing tasks. For example, common criticisms include their insanely large training size (sometimes being trained on upwards of 15 billion tokens), the potentially unrealistic nature of their tokenization (e.g., Chat GPT tokenizes kite as \[*k*, *ite*\][^writeup-llm-storage-1]), and their poor performance on tasks that are trivial to humans (e.g., counting the number of *r*'s in *strawberry*[^writeup-llm-storage-2]).
+
+[^writeup-llm-storage-1]: <https://tiktokenizer.vercel.app/>
+
+[^writeup-llm-storage-2]: <https://community.openai.com/t/incorrect-count-of-r-characters-in-the-word-strawberry/829618>
+
+Many of these debates are centered around the extend to which large language models are actually learning something abstract from the data and to what extent they are simply regurgitating their training data. However, despite a large body of research, the results have been quite mixed [@haleyThisBERTNow2020; @liAreNeuralNetworks2021; @lasriSubjectVerbAgreement2022; @liAssessingCapacityTransformer2023; @mccoyHowMuchLanguage2023; @misraLanguageModelsLearn2024; @yaoBothDirectIndirect2025]. For example, @haleyThisBERTNow2020 demonstrated that many BERT models are not able to reliably determine the correct plural form for novel words. Similarly, @liAreNeuralNetworks2021 demonstrated that BERT tends to rely on memorization from its training data when producing the correct tense of novel words.
+
+In contrast, recent research has demonstrated BERT's ability to generalize well to novel subject-verb pairs [@lasriSubjectVerbAgreement2022] and to use abstract knowledge to predict object-past participle agreements in French [@liAssessingCapacityTransformer2023]. Further, @mccoyHowMuchLanguage2023 demonstrated that while GPT-2 copies extensively, it also produces both novel words as well as novel syntactic structures.
+
+Additionally, in an attempt to address criticism about the unrealistic size of the training data for large language models, an interesting line of research has demonstrated that even smaller language models trained on an amount of data comparable to humans seem to be able to learn abstract linguistic knowledge from the data [@misraLanguageModelsLearn2024; @yaoBothDirectIndirect2025]. For example, @misraLanguageModelsLearn2024 examined whether a language model trained on a similar amount of data as humans could learn article-adjective-numeral-noun expressions (AANNs, e.g., *a beautiful five days*). They found that even after removing AANNs from the training data, language models are still able to learn which AANNs are appropriate and which ones are not (e.g., \**a blue five days*). Additionally, @yaoBothDirectIndirect2025 examined whether a similar language model can learn the length and animacy preferences for the dative alternation (give X Y vs give Y to X). They found that a language model trained on a comparable amount of data as humans is able to learn these preferences. These results together demonstrate the ability for language models to learn general knowledge about the language.
+
+Given the evidence that large language models show evidence of both learning abstract knowledge as well as copying extensively from their training data, it's unclear in what contexts they are leveraging their stored knowledge as opposed to leveraging abstract knowledge of the language.
+
+### Stored Representations in Humans
+
+There's a great deal of evidence that humans store holistically many multi-morphemic words and multi-word phrases [@bybeeEffectUsageDegrees1999; @bybee2003; @stembergerAreInflectedForms2004; @stembergerFrequencyLexicalStorage1986]. For example, high-frequency phrases containing *don't* (e.g., *I don't know*) are more likely to be phonetically reduced than lower frequency words containing *don't* [@bybeeEffectUsageDegrees1999]. This suggests that higher-frequency phrases are represented holistically because the phonetic reduction at the phrase-level cannot simply be attributed to phonetic reduction at the individual word-level.
+
+Additionally, there is also evidence from the psycholinguistics literature that high-frequency multi-word phrases are stored holistically [@siyanova-chanturiaSeeingPhraseTime2011; @morganAbstractKnowledgeDirect2016; @morganFrequencydependentRegularizationIterated2016a; @morgan2015; @morgan2024; @odonnellProductivityReuseLanguage2016]. For example, @siyanova-chanturiaSeeingPhraseTime2011 demonstrated that binomials (e.g., *bread and butter*) are read faster in their frequent ordering (*bread and butter*) than in their infrequent ordering (*butter and bread*). This suggests that reading times for multi-word phrases can't be reduced to the reading times of the individual words. However, it is possible that these faster reading times are driven by knowledge of generative preferences, such as a preference for short words before long words. Thus to investigate this, @morganAbstractKnowledgeDirect2016 examined whether human reading times for binomials are driven by generative preferences (e.g., a preference for more culturally central words first) or by experience with the binomial. Specifically, they examined whether human ordering preferences were driven simply by the relative frequency of the binomial. For example, *bread and butter* is vastly preferred over *butter and bread*. Is this driven by the fact that *bread and butter* is more frequent than *butter and bread* or driven by more abstract constraints, such as a preference for short words first? Interestingly, they found that high-frequency binomial ordering preferences are driven primarily by experience (i.e., the more frequent ordering is preferred) while low-frequency binomial ordering preferences are driven primarily by generative preferences (e.g., a preference for short words before long words).
+
+Given that humans rely on generative preferences for some binomials and item-specific preferences for other binomials, binomials present a good test case for examining this same trade off in large language models. Specifically, since humans holistically store high-frequency binomials holistically and compose low-frequency binomials using generative knowledge, if large language models are learning similarly they may similarly represent high-frequency binomials systematically differently from low-frequency binomials.
+
+### Present Study
+
+Since humans rely more on abstract knowledge for lower frequency items and rely more on their experience for high-frequency binomials [@morgan2024], a natural consequence of this is that they have learned separate representations for high-frequency binomials (i.e., holistic storage). If large language models are learning similarly to humans, they may also learn separate representations for high-frequency binomials but not for lower-frequency binomials.
+
+The present study addresses this question by examining the semantic representations of binomials varying in relative frequency (the proportion of occurrences in one ordering to the other ordering) and overall frequency (the overall frequency of the binomial, regardless of ordering). We examine the embeddings for both ordering of binomials in a sentence context, as well as examine the embeddings for a compositional form of the binomial (which we will elaborate on in the methods section). We hypothesize that the representations of the more frequent form (higher relative frequency form) for binomials with a high overall frequency may diverge more from the compositional representation than the less frequent ordering (lower relative frequency form) does for the same binomial. That is, for high-frequency binomials, the representation for the more frequent ordering may be more different from the compositional representation than the less-frequent ordering is. However, for lower-frequency binomials, large language models may not learn different representations for the different orderings of the same form, regardless of the relative frequency.
+
+In Experiment 1, we examine the representations of different binomials across different large language models and in Experiment 2 we examine the timecourse of these representations across each hidden layer in OLMo's 1B model [@groeneveldOLMoAcceleratingScience2024].
+
+## Experiment 1
+
+In Experiment 1 we examine the representations of binomials for GPT-2, GPT-2 XL [@radfordLanguageModelsAre2019], OLMo-1B, OLMo-7B [@groeneveldOLMoAcceleratingScience2024], and Llama2-7B [@touvronLlama2Open2023]. We examine the representations for different binomials in sentence contexts as well as the compositional representations of those same binomials. We explain these metrics in detail below.
+
+### Methods
+
+#### Dataset
+
+Our dataset consists of 784 sentences containing binomials. The sentences have been annotated for both relative frequency and overall frequency. Relative frequency is operationalized as the proportion of occurrences in alphabetical order (a neutral reference order) to occurrences in nonalphabetical order. Overall frequency is operationalized as the count of *A and B* plus the count of *B and A*. Counts for both measures were obtained using the Google *n-*grams corpus [@linSyntacticAnnotationsGoogle2012].
+
+#### Semantic Embeddings
+
+In order to examine the semantic compositionality of binomials, we examined the semantic embeddings of five different large language models: GPT-2, GPT-2 XL [@radfordLanguageModelsAre2019], Llama-2 7B [@touvronLlama2Open2023], OLMo 1B and OLMo 7B [@groeneveldOLMoAcceleratingScience2024].
+
+For each LLM we examined the semantic embeddings of the binomials in a sentence context. We accomplished this by passing the sentence through each large language model and extracting the second-to-last hidden layer for each of the words in the binomial. We did this once for the alphabetical ordering of the binomial (A and B) and once for the non-alphabetical ordering of the binomial (B and A). Since LLMs generate an embedding for each word, we computed the mean of these embeddings to represent the semantic embedding of the entire binomial in a sentence context (hereafter referred to as holistic embeddings). Next, we obtained the embedding for each word in the binomial individually, outside of a sentence context. We then computed the mean of these embeddings to represent the semantic embedding of the compositional form of the binomial (hereafter referred to as the compositional embeddings).
+
+We then measured the cosine similarity between the holistic embeddings and the compositional embeddings for the alphabetical and nonalphabetical ordering of each binomial. This is presented mathematically in @eq-cosalpha and @eq-cosnonalpha, where $cos_\alpha$ is the cosine similarity between the holistic embeddings of the alphabetical order of the binomial and the compositional embeddings, $cos_{\neg\alpha}$ is the cosine similarity between the embeddings of the nonalphabetical order of the binomial and the compositional embeddings, $h_\alpha$ and $h_{\neg\alpha}$ are the holistic embeddings of the binomial in alphabetical and nonalphabetical ordering respectively (in a sentence context), and $c$ is the compositional embeddings. Since $c$ represents the mean of the embeddings for each word in the binomial out of context, order does not matter. Cosine similarity ranges from -1 to 1 where 1 indicates two extremely similar vectors and -1 indicates two extremely dissimilar vectors.
+
+$$
+\cos \alpha = \frac{h_\alpha \cdot c}{\left\lVert h_\alpha \right\rVert \left\lVert c \right\rVert}
+$$ {#eq-cosalpha}
+
+$$
+\cos \neg\alpha = \frac{h_{\neg\alpha} \cdot c}{\left\lVert h_{\neg\alpha}\right\rVert \left\lVert c \right\rVert}
+$$ {#eq-cosnonalpha}
+
+For each binomial, we then calculated $LogCosSim$ which is the logged quotient of $cos_\alpha$ and $cos_{\neg\alpha}$ (@eq-cossim). A larger positive value indicates a greater degree of similarity between the holistic embeddings of the alphabetical order and the compositional embeddings (i.e., the similarity between the holistic embeddings of the alphabetical ordering and the compositional embeddings is greater than the similarity between the holistic embeddings of the nonalphabetical ordering and the compositional embeddings) and a larger negative value represents the opposite.
+
+$$
+LogCosSim = log(\frac{cos_\alpha}{cos_{\neg\alpha}})
+$$ {#eq-cossim}
+
+#### Analysis
+
+We used a Bayesian mixed-effects model to examine how the semantic similarity between the holistic embeddings and the compositional embeddings trade off as a function of relative and overall frequency.[^writeup-llm-storage-3] Specifically, we modeled $LogCosSim$ as a function of overall frequency, which was centered and logged, $RelFreq$ which ranged from -0.5 to 0.5 (with 0.5 representing a binomial that appears only in the alphabetical form, and -0.5 representing a binomial that appears only in the nonalphabetical form), and their interaction. Our model is presented below in @eq-m4. We used weak, uninformative priors.
+
+[^writeup-llm-storage-3]: For more details regarding our analysis, refer to the following link: <https://github.com/znhoughton/dissertation_writeup/tree/master/Chapters/LLM%20Storage>
+
+$$
+LogCosSim \sim OverallFreq*RelFreq
+$$ {#eq-m4}
+
+### Results
+
+Our results for each model are presented in @tbl-modelsall and visualized in @fig-modelsall. Following [@houghtonTaskdependentConsequencesDisfluency2024] we also report the percentage of posterior samples greater than zero. Since we are using Bayesian mixed-effects models, we are not forced into a binary of significant or non-significant. By reporting the percentage of posterior samples greater than zero, we present a more nuanced picture of our results.
+
+```{r, echo = F, message = F}
+#| label: tbl-modelsall
+#| tbl-cap: "Bayesian linear mixed-effects model results of each model"
+
+percent_greater_zero = data.frame(fixef(gpt2_m4, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+gpt2_m4_table = as.data.frame(fixef(gpt2_m4)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) 
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'CenteredLogOverallFreq', 'RelFreq', 'CenteredLogOverallFreq:RelFreq')))
+
+
+gpt2_m4_table = gpt2_m4_table %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(model = "GPT-2")
+
+rownames(gpt2_m4_table) = c('Intercept', 'OverallFreq', 'RelFreq', 'OverallFreq:RelFreq')
+
+
+
+percent_greater_zero = data.frame(fixef(gpt2xl_m4, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+gpt2xl_m4_table = as.data.frame(fixef(gpt2xl_m4)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) 
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'CenteredLogOverallFreq', 'RelFreq', 'CenteredLogOverallFreq:RelFreq')))
+
+
+gpt2xl_m4_table = gpt2xl_m4_table %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(model = "GPT-2 XL")
+
+rownames(gpt2xl_m4_table) = c('Intercept', 'OverallFreq', 'RelFreq', 'OverallFreq:RelFreq')
+
+
+percent_greater_zero = data.frame(fixef(olmo1b_m4, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+olmo1b_m4_table = as.data.frame(fixef(olmo1b_m4)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) 
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'CenteredLogOverallFreq', 'RelFreq', 'CenteredLogOverallFreq:RelFreq')))
+
+
+olmo1b_m4_table = olmo1b_m4_table %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(model = "OLMo-1B")
+
+rownames(olmo1b_m4_table) = c('Intercept', 'OverallFreq', 'RelFreq', 'OverallFreq:RelFreq')
+
+
+percent_greater_zero = data.frame(fixef(olmo7b_m4, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+olmo7b_m4_table = as.data.frame(fixef(olmo7b_m4)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) 
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'CenteredLogOverallFreq', 'RelFreq', 'CenteredLogOverallFreq:RelFreq')))
+
+
+olmo7b_m4_table = olmo7b_m4_table %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(model = "OLMo-7B")
+
+rownames(olmo7b_m4_table) = c('Intercept', 'OverallFreq', 'RelFreq', 'OverallFreq:RelFreq')
+
+
+percent_greater_zero = data.frame(fixef(llama2_7b_m4, summary = F)) %>%
+  pivot_longer(cols = everything(), names_to = 'beta_coefficient', values_to = 'estimate') %>%
+  group_by(beta_coefficient) %>%
+  summarize((sum(estimate > 0) / length(estimate)) * 100)
+  
+
+llama2_7b_m4_table = as.data.frame(fixef(llama2_7b_m4)) %>%
+  mutate_if(is.numeric,
+            formatC,
+            format = 'f',
+            digits = 3) 
+
+percent_greater_zero = percent_greater_zero %>%
+  arrange(match(beta_coefficient, c('Intercept', 'CenteredLogOverallFreq', 'RelFreq', 'CenteredLogOverallFreq:RelFreq')))
+
+
+llama2_7b_m4_table = llama2_7b_m4_table %>%
+  mutate(percent_greater_zero = percent_greater_zero$`(sum(estimate > 0)/length(estimate)) * 100`) %>%
+  rename('% Samples > 0' = `percent_greater_zero`) %>%
+  mutate(model = "Llama2-7B")
+
+rownames(llama2_7b_m4_table) = c('Intercept', 'OverallFreq', 'RelFreq', 'OverallFreq:RelFreq')
+
+
+models_all_table = bind_rows(gpt2_m4_table, gpt2xl_m4_table, olmo1b_m4_table, olmo7b_m4_table, llama2_7b_m4_table) %>%
+  mutate(term = rep(c("Intercept", "OverallFreq", "RelFreq", "OverallFreq:RelFreq"), times = 5))
+
+models_all_table = models_all_table %>%
+  mutate(across(c(Estimate, Est.Error, Q2.5, Q97.5, `% Samples > 0`), as.numeric))
+
+
+groupings=rle(models_all_table$model)
+
+models_all_table %>%
+  select(term, everything(), -model) %>%
+  rename(` ` = term) %>%
+  kable(digits = 2, row.names = FALSE, booktabs = TRUE, format = "latex", escape = TRUE) %>%
+  kable_styling(latex_options = c("HOLD_position", "striped"), font_size = 12, full_width = FALSE) %>%
+  group_rows(index = setNames(groupings$lengths, groupings$values), indent = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = T, width = '12em')
+```
+
+```{r, echo = F, fig.align = 'center', warning = F, message = F}
+#| label: fig-modelsall
+#| fig-cap: "Visualization of the effects of overall frequency and relative frequency on the cosine similarity between embeddings."
+#| fig-width: 7
+#| fig-height: 7
+
+
+gpt2 = gpt2_plot[[1]] %>%
+  ggplot(aes(x = CenteredLogOverallFreq, y = estimate__)) +
+  geom_smooth(aes(color = factor(RelFreq)), method = 'lm', formula = y ~ x, se = FALSE, show.legend = FALSE) +
+  geom_ribbon(aes(ymin = lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab('Log Cosine Similarity') +
+  xlab('Overall Frequency') +
+  scale_fill_discrete(name = "RelFreq") +
+  ggtitle('GPT-2') +
+  theme_bw()
+
+
+
+gpt2xl = gpt2xl_plot[[1]] %>%
+  ggplot(aes(x = CenteredLogOverallFreq, y = estimate__)) +
+  geom_smooth(aes(color = factor(RelFreq)), method = 'lm', formula = y ~ x, se = FALSE, show.legend = FALSE) +
+  geom_ribbon(aes(ymin = lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab('Log Cosine Similarity') +
+  xlab('Overall Frequency') +
+  scale_fill_discrete(name = "RelFreq") +
+  ggtitle('GPT-2 XL') +
+  theme_bw()
+
+olmo1b = olmo1b_plot[[1]] %>%
+  ggplot(aes(x = CenteredLogOverallFreq, y = estimate__)) +
+  geom_smooth(aes(color = factor(RelFreq)), method = 'lm', formula = y ~ x, se = FALSE, show.legend = FALSE) +
+  geom_ribbon(aes(ymin = lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab('Log Cosine Similarity') +
+  xlab('Overall Frequency') +
+  scale_fill_discrete(name = "RelFreq") +
+  ggtitle('OLMo-1B') +
+  theme_bw()
+
+
+olmo7b = olmo7b_plot[[1]] %>%
+  ggplot(aes(x = CenteredLogOverallFreq, y = estimate__)) +
+  geom_smooth(aes(color = factor(RelFreq)), method = 'lm', formula = y ~ x, se = FALSE, show.legend = FALSE) +
+  geom_ribbon(aes(ymin = lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab('Log Cosine Similarity') +
+  xlab('Overall Frequency') +
+  scale_fill_discrete(name = "RelFreq") +
+  ggtitle('OLMo-7B') +
+  theme_bw()
+
+
+
+llama2 = llama2_plot[[1]] %>%
+  ggplot(aes(x = CenteredLogOverallFreq, y = estimate__)) +
+  geom_smooth(aes(color = factor(RelFreq)), method = 'lm', formula = y ~ x, se = FALSE, show.legend = FALSE) +
+  geom_ribbon(aes(ymin = lower__, ymax = upper__, fill = factor(RelFreq)), alpha = 0.5) +
+  ylab('Log Cosine Similarity') +
+  xlab('Overall Frequency') +
+  scale_fill_discrete(name = "RelFreq") +
+  ggtitle('Llama2-7B') +
+  theme_bw()
+
+ggarrange(gpt2, gpt2xl, olmo1b, olmo7b, llama2, nrow = 3, ncol = 2, common.legend=T, legend = 'top')
+```
+
+Overall we find a negative effect of relative frequency for GPT-2, OLMo-1B, OLMo-7B, and Llama-2 7B. These results suggest that in general for those models, the embeddings for the more frequent ordering of the binomial (i.e., higher relative frequency) are less similar to the compositional embeddings than the embeddings for the ordering of the binomial that is less frequent are. Additionally, for these models there is a negative interaction effect. This suggests that for high-frequency binomials there is a stronger effect of relative frequency than for low-frequency binomials. Specifically, the difference between the embeddings for the frequent ordering of the binomials and the compositional embeddings is even greater in high-frequency binomials than low-frequency ones.
+
+We also find mixed results for overall frequency, with GPT-2 XL showing a strong effect of overall frequency such that the embeddings for high-frequency binomials (ignoring relative frequency) are more similar to the compositional embeddings than the embeddings for low-frequency binomials are.
+
+Finally, the interaction effect between relative frequency and overall frequency is also in the opposite direction for GPT-2 XL compared to the others. Specifically, for GPT-2 XL, as overall frequency increases, the embeddings for the more frequent ordering of the binomials are *more* similar to the compositional embeddings than the embeddings for the less frequent ordering are.
+
+### Discussion
+
+Our results suggest that for GPT-2, OLMo-1B, OLMo-7B, and Llama2-7B, the representations of the more frequent form of the binomial diverges more from the representation of the compositional form as a function of overall frequency. That is, for low-frequency binomials, there is not much of a difference between the embeddings of the more frequent form and the compositional embeddings, however as the frequency of the binomial increases, the embeddings of the more frequent form diverge from the compositional embeddings.
+
+Interestingly, this is not the case for GPT-2 XL, where the opposite pattern is observed: as overall frequency increases, the representations of the more frequent ordering of the binomial become even more similar to the compositional representations. This suggests that not all large language models are learning the same preferences and further that these preferences may not be completely necessary to generate human-like text.
+
+In summary, our results suggest that for high-frequency binomials in most large language models, the semantic representation for the frequent ordering of the binomial diverges more from the compositional representation. This suggests that some large language models tend to learn different representations for high-frequency binomials, similar to what has been argued that humans do [@morganAbstractKnowledgeDirect2016]. However, it's unclear on what timescale this emerges and at what layers in the models this result holds for. For example, does this difference emerge early in training or does it take a large amount of training for these different representations to emerge? Further, since different layers have been proposed to correspond to different functions [e.g., earlier layers may represent more phonological knowledge while later layers may represent more semantic knowledge; @tenney2019bertrediscoversclassical], it is possible that these results may be vary across different layers. In Experiment 2 we examine both of these questions.
+
+## Experiment 2
+
+Experiment 2 is an exploratory analysis examining how representations for binomials emerge throughout training across different hidden layers. Specifically, since OLMo [@groeneveldOLMoAcceleratingScience2024] released the model's checkpoints at various stages in the training we can examine how our results in Experiment 1 emerge throughout training. Further, since the model is open access we can also examine the different hidden-layers of the model.
+
+### Methods
+
+The methods in Experiment 2 were almost identical to those used in Experiment 1, with two exceptions: first, rather than examining several different large language models, we instead examined a single large language model: OLMo 1B. OLMo 1B has released checkpoints at different stages in learning. As such, we can examine the representations of binomials at different stages of learning. Second, we also examined the representations at each hidden layer in the model in order to examine how the representation changes across layers.
+
+For the present study, we examine the embeddings for the sentences in Experiment 1 at each hidden layer at multiple different steps in the training. In addition to examining the model after being trained, we also examine the embeddings after being trained for 20000 (84B tokens), 40000 (168B tokens), 60000 (252B tokens), 80000 (336B tokens), and 100000 (419B tokens) steps.
+
+### Results
+
+A visualization of the embeddings at different layers and different checkpoints is included in @fig-resultsalllayers.
+
+::: landscape
+```{r echo = F, fig.align = 'center', warning = FALSE, message = FALSE}
+#| fig-cap: A visualization of the cosine similarity between the holistic embeddings and the compositional embeddings for each hidden layer of each model checkpoint.
+#| label: fig-resultsalllayers
+#| fig-width: 10
+#| fig-height: 7
+
+
+aggregate_data = read_csv('../Data/aggregate_data.csv')
+aggregate_data = aggregate_data %>%
+  filter(checkpoint %in% c('20000', '40000', '60000', '80000', '100000', 'main'))
+
+aggregate_data$checkpoint = factor(aggregate_data$checkpoint, levels = c('20000', '40000', '60000', '80000', '100000', 'main'))
+
+
+aggregate_data = aggregate_data %>%
+  mutate(RelFreq = ifelse(RelFreq < 0, "nonalpha", "alpha"))
+
+aggregate_data_plot = ggplot(aggregate_data, aes(
+     x = CenteredLogOverallFreq,
+     y = log_odds_cosine,
+     color = RelFreq
+   )) +
+     geom_point(alpha = 0.2) +
+     geom_smooth(method = 'lm', formula = y ~ x, se = TRUE, linewidth = 1) +
+     ylab('Log Odds Cosine') +
+     xlab('Centered Log Overall Frequency') +
+     facet_grid(checkpoint ~ layer) +
+     theme_bw() +
+     scale_color_manual(
+       values = c("nonalpha" = "turquoise3", "alpha" = "deeppink2"),  # Ensure matching labels
+       name = "RelFreq"
+     ) +
+     scale_x_continuous(breaks = c(-5, 5)) +  # Only show -5 and 5 as x-axis labels
+     coord_cartesian(ylim = c(-0.5, 0.5)) +
+     theme(
+       axis.title = element_text(size = 15),
+       axis.text = element_text(size = 7),
+       legend.title = element_text(size = 15),
+       legend.text = element_text(size = 15),
+       strip.text = element_text(size = 12)
+     )
+
+aggregate_data_plot
+
+
+```
+:::
+
+There are two notable trends. First, the earlier layers tend to display the opposite pattern from later layers, with the embeddings of the more frequent ordering being more similar to the compositional embeddings. Second, the holistic representation of the frequent ordering diverges from the compositional representation at about the 80000th step (336B tokens). We will discuss the implications of both of these in the discussion section.
+
+### Discussion
+
+Our results demonstrate that the embeddings in the early layers are relatively stable, with the model rapidly learning a holistic representation of the more frequent ordering that is more similar to the compositional representation than the less-frequent ordering is. On the other hand, the differences in the later layers seem to emerge over time.
+
+These results are consistent with the general idea that later layers encode more semantic information, since the pattern of the more frequent embeddings diverging is seen in the later layers, while the earlier layers show the opposite pattern. Indeed, since the binomials in both orderings are similar phonologically (they contain the same sounds, just in a different ordering), it may not be surprising that the divergence occurs in later layers.
+
+Additionally, while it may seem interesting that the embeddings seem to converge in the last layer, it is not that surprising. The last layer in transformer models tends to become specialized for the task (in this case, next-word prediction). This specialization can become so extreme as to become difficult to interpret representations at that level. For example, @ethayarajh2019howcontextualare found that any two random words will on average have almost perfect cosine similarity in the final layer of GPT-2. Thus, it is likely that the last layer of OLMo may be similarly specialized, and the lack of a difference in cosine similarity may be an artifact of task-specificity of the final layer.
+
+Finally, the fact that the pattern emerges rather slowly (taking several hundred billion tokens of training) suggests that the model must experience the binomial a great number of times in order to learn a separate representation for each ordering. This suggests that the model isn't simply learning a separate representation because the binomial occurs in different semantic contexts (because if that were the case we would see the pattern emerge earlier on), but because it occurs frequently. This is in line with usage-based theories that have argued that holistic representations in humans emerge as a function of usage [e.g., @bybee2003].
+
+## Conclusion
+
+The present study demonstrates that the semantic embeddings for the more frequent ordering of a given binomial become less similar to the compositional embeddings as a function of the overall frequency of the binomial. That is, the embeddings of the more frequent ordering of a high-frequency binomial (e.g., *bread and butter*) are less similar to the compositional embeddings than the embeddings of the less frequent ordering (e.g., *butter and bread*) are. Another way to frame these results is that the same form (i.e., the same words) can give rise to quantitatively (but systematically) different representations in large language models as a function of the overall frequency of the binomial.
+
+It may not seem particularly surprising that the more frequent form diverges in semantic representation from the compositional form. After all, by definition a large language model has more experience with the more frequent form, which means the embeddings are being updated more often for the more frequent ordering. This in turn creates more opportunities for those embeddings to diverge from the compositional embeddings. However, what is interesting is how this effect emerges over time: early on in the training, the embeddings for the more frequent form are more similar to the compositional form across both earlier and later layers. Further, as training continues this stays the case for early layers, but undergoes a reversal in later layers.
+
+One possible explanation for our results is that the more frequent form may be occurring in particularly different contexts from the compositional and less frequent forms (e.g., perhaps they are more idiomatic, such as *black and white*[^writeup-llm-storage-4]). However, if this was the case then we would expect to see the embeddings for the frequent form to diverge from the embeddings of the compositional form quite early in training. Instead, however, we actually see the opposite early in the training: the embeddings for the more frequent form are *more* similar to those of the compositional form and it takes time for these embeddings to diverge.
+
+[^writeup-llm-storage-4]: Although all of our sentences were sentences that encouraged a compositional reading of our binomials, and very few of our binomials had a particularly idiomatic meaning to begin with.
+
+Another possibility is that early on in training for high-frequency binomials, the large language model's experience with the individual words may largely overlap with the large language model's experience with the frequent form of the binomial (e.g., the model's experience with the binomial *bread and butter* are also contributing to the large language model's experience with each of the individual words). Thus, initially these embeddings may be similar until the large language model experiences the binomial enough times to learn different representations. Specifically, as the model experiences more sentence contexts with the binomial, the representation for the more frequent ordering has more opportunities to diverge from the representation of the individual words than the representation of the infrequent ordering does (because the model is, by definition, encountering the more frequent ordering of the binomial more). This process explains why the same form can give rise to different representations.
+
+Finally, our results can also be considered predictions for how humans may learn representations. Future work would do well to examine whether it is also the case that the semantic representations for the more frequent ordering of high-frequency binomials diverge more from the compositional representations in humans. Our results also make predictions about the timescale of learning: for young children, the pattern of results may actually be the opposite from adults, since at earlier checkpoints in our model the embeddings for the more frequent ordering of high-frequency binomials were more similar to the compositional embeddings.
