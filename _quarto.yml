@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: _book
 
 book:
   title: "Multi-Word Representations in Minds and Models"
@@ -11,6 +12,7 @@ book:
       affiliations:
         - name: "University of California, Davis"
           department: "Department of Linguistics"
+  
 
   chapters:
     #- Chapters/acknowledgements.qmd
@@ -33,7 +35,7 @@ book:
   
 degree: "Linguistics"
 dissertation_name: "Dissertation Name"
-author_name: "Zachary Nicholas Houghton"
+author_name: "ZACHARY NICHOLAS HOUGHTON"
 field_of_study: "Linguistics"
 committee_member_1: "Dr. Emily Morgan, Chair"
 committee_member_2: "Dr. Masoud Jasbi"
@@ -50,7 +52,7 @@ format:
       - before-body.tex
       #- toc.tex
     latex-engine: xelatex 
-    documentclass: scrreprt   # LaTeX document class for professional formatting
+    documentclass: scrreport   # LaTeX document class for professional formatting
     number-depth: 2
     # Caption Formatting
     fig-cap-location: top      # Figure captions above
@@ -58,21 +60,20 @@ format:
     fig-pos: 'htbp'        # Let LaTeX decide where to place the figures
     fig-align: center       # Centering figures
     keep-tex: true             # Optional: for debugging TeX
+    latex-output: houghton_dissertation.tex
     # Font Settings
     fontsize: 12pt
     mainfont: "Crimson"        # Primary text font
     CJKmainfont: "Noto Serif KR"  # Font for Korean text
-
-    # Citations & References
     link-citations: true       # Enable hyperlinked citations
     colorlinks: false          # Disable colored hyperlinks
     toc: true
     toc-depth: 2
-    toc-title: "Table of Contents"
+    #toc-title: "Table of Contents"
     lot: true                  # Enable List of Tables
     lof: true                  # Enable List of Figures
 
-    # Page Layout
+    # Page Layout #Not supposed to use geometry for koma apparently
     geometry:
       - left=1in
       - right=1in
@@ -82,9 +83,16 @@ format:
     include-in-header: 
       - include-in-header.tex
 
-echo: false
-warning: false
-message: false
+  docx:
+    number-sections: true
+    number-depth: 2
+    toc-title: Table of Contents
+    toc: true
+    toc-depth: 2
+    reference-doc: reference.docx
+    filters: 
+      - chapter-prefix.lua
+      - chapter_rename_with_pagebreaks.lua
         
 bibliography: references.bib          
 csl: apa.csl

@@ -20,22 +20,27 @@ Specifically, I have been fortunate to have a strong support system in the form 
 
 This work would also have not been completed without the influence of my parents. Specifically, I want to thank my mom for teaching me that the ability to find the answer is far more important than knowing the answer, and my dad, for teaching me the discipline and practical skills to achieve my goals.
 
-For both my undergraduate and graduate studies, I made the difficult decision to pursue my education on the opposite side of the country from my hometown in Connecticut. Despite the physical distance, I have always been able to count on my friends—not only during the easier times, but, more importantly, through the more challenging ones. Addy, Charles, Paul, Spencer, Wyatt, and 보미: thank you for being such a strong and constant support network.
+For both my undergraduate and graduate studies, I made the difficult decision to pursue my education on the opposite side of the country from my hometown in Connecticut. Despite the physical distance, I have always been able to count on the people closest to me — not only during the easier times, but, more importantly, through the more challenging ones. Addy, Charles, Paul, Ricky, Spencer, Wyatt, Zane, and 보미: thank you for being such a strong and constant support network.
 
 Finally, to all the people I met during these five years at UC Davis: you welcomed me and gave me a home. You supported me, believed in me, and pushed me to be the best version of myself. I'm exceptionally proud to be an Aggie.
 
 The number of people who have been indispensable in me getting here is undoubtedly larger than is feasible to include here. To those that I have inevitably left out, I apologize.
 
-\newpage
-
 \doublespacing
 
 \setlength{\parindent}{4em}
 
+
 # Abstract {#sec-abstract .unnumbered}
+
 
 One of the remarkable feats of language learning is the ability to generate never-before-heard sentences. This remarkable feat derives from the ability to retrieve linguistic constructions from memory and combine them using generative knowledge of the language. In other words, humans are able to generate novel sentences by trading off between stored knowledge and generative knowledge. In the past, these two properties were thought to be mutually exclusive: if we store *cat* and have learned the plural formation in English, then we can generate the word *cats* without having to store it and thus *cats* would not be stored. On the other hand, if we haven't learned the plural formation in English, then *cats* must be stored holistically and accessed from memory. While this seems plausible, a lot of recent work has demonstrated that many high-frequency words and phrases may be stored holistically, despite the fact that they can also be generated compositionally using knowledge of the grammar.
 
-The evidence that high-frequency phrases may be stored holistically leads to many new questions. If storage isn't driven soley by compositionality, then what is it driven by? Is it driven by the frequency of the phrase? Do other usage-based factors, such as predictability, also drive storage? Additionally, if an item that can be generated compositionally is stored holistically then in what circumstances do we retrieve the item from memory as opposed to generating it through rules of the grammar? Further, do holistically stored items retain their internal structure? That is, if a phrase is stored holistically, does it retain the representation of the individual words within the phrase?
+The evidence that high-frequency phrases may be stored holistically leads to many new questions. If storage isn't driven solely by compositionality, then what is it driven by? Is it driven by the frequency of the phrase? Do other usage-based factors, such as predictability, also drive storage? Additionally, if an item that can be generated compositionally is stored holistically then in what circumstances do we retrieve the item from memory as opposed to generating it through rules of the grammar? Further, do holistically stored items retain their internal structure? That is, if a phrase is stored holistically, does it retain the representation of the individual words within the phrase?
 
 This dissertation focuses on what factors lead to humans storing a multi-word phrase when they could simply generate it compositionally. We show that not only frequent phrases are stored, but also predictable phrases. However, positing that multi-word phrases are stored holistically creates new challenges for theories of processing, which now must explain how multi-word phrases are represented and accessed. Thus, we also explore how holistically stored phrases are represented and processed. Further, we demonstrate that large language models also trade off between stored and generative knowledge in ways that are both similar and different from humans. Finally, we show that by positing that multi-word phrases are stored holistically, we can explain some aspects of language change.
+
+\singlespacing
+
+
+

@@ -523,12 +523,12 @@ Our results directly replicate @staubTimeCoursePlausibility2007 using the Maze t
     \begin{enumerate}
         \item[\textbf{1a}] The zookeeper picked up the monkey medicine that was in the enclosure.
         \item[\textbf{1b}] The zookeeper spread out the monkey medicine that was in the enclosure.
-    \end{enumerate} \label{staubsentencenovel}
+    \end{enumerate}
     \item \textbf{Familiar Compound}
     \begin{enumerate}
-        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage. \label{familiarplaus}
-        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage. \label{familiarimplaus}
-    \end{enumerate} \label{figanext}
+        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage.
+        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage.
+    \end{enumerate}
 \end{enumerate}
 
 \noindent It is possible that if *mountain lion* was stored holistically, then upon reading *Jenny heard the huge mountain...*, the reader might have less difficulty with the local implausibility (relative to a low-frequency compound noun) because they would predict *lion*, which would eliminate the implausibility (*heard the mountain lion* is not implausible). However, we do not see this. Instead, the effect of plausibility is similar for both familiar and novel items. One possible explanation for these results is that the familiar phrases are not necessarily stored. Instead storage might be driven by predictability. If this is the case then it would explain why we do not see this effect in @staubTimeCoursePlausibility2007 or in Experiment 1, especially since all of the items used in @staubTimeCoursePlausibility2007 are low predictability compound nouns.

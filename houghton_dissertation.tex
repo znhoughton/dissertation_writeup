@@ -7,7 +7,7 @@
 \documentclass[
   12pt,
   letterpaper,
-]{scrreprt}
+]{scrreport}
 \usepackage{xcolor}
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
 \usepackage{amsmath,amssymb}
@@ -157,8 +157,8 @@
 \setkomafont{pagenumber}{\normalfont\normalcolor\footnotesize}
 \usepackage{tocbibind}  % Include TOC, List of Figures, and List of Tables in the TOC
 \usepackage{fontspec}    % Ensure font support
-\usepackage{placeins}
-\usepackage{float}
+% \usepackage{placeins}
+% \usepackage{float}
 \usepackage{setspace}
 \usepackage{indentfirst}
 \usepackage{chngcntr}
@@ -167,7 +167,7 @@
 \usepackage{gb4e} \noautomath
 \usepackage{amsmath}
 \usepackage{pdflscape}
-\usepackage{gb4e}
+\usepackage{lipsum}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -265,7 +265,7 @@ Large Language Models}
    \bigskip
    By \\
    \bigskip
-   {Zachary Nicholas Houghton}
+   {true}
 \\   
    %2020 EDIT: Removed double-spacing btwn name and DISSERTATION   
    %\bigskip
@@ -330,7 +330,7 @@ Large Language Models}
 \setcounter{page}{\value{savedpage}} % Reset the counter
 \clearpage
 
-\renewcommand*\contentsname{Table of Contents}
+\renewcommand*\contentsname{Table of contents}
 {
 \setcounter{tocdepth}{1}
 \tableofcontents
@@ -424,8 +424,6 @@ The number of people who have been indispensable in me getting here is
 undoubtedly larger than is feasible to include here. To those that I
 have inevitably left out, I apologize.
 
-\newpage
-
 \doublespacing
 
 \setlength{\parindent}{4em}
@@ -454,7 +452,7 @@ holistically, despite the fact that they can also be generated
 compositionally using knowledge of the grammar.
 
 The evidence that high-frequency phrases may be stored holistically
-leads to many new questions. If storage isn't driven soley by
+leads to many new questions. If storage isn't driven solely by
 compositionality, then what is it driven by? Is it driven by the
 frequency of the phrase? Do other usage-based factors, such as
 predictability, also drive storage? Additionally, if an item that can be
@@ -478,13 +476,15 @@ similar and different from humans. Finally, we show that by positing
 that multi-word phrases are stored holistically, we can explain some
 aspects of language change.
 
+\singlespacing
+
 \bookmarksetup{startatroot}
 
 \chapter{Introduction}\label{introduction}
 
 \pagenumbering{arabic}
 
-\doublespace
+\doublespacing
 
 How much of language is memorized and how much is improvised? Every time
 we speak, we are faced with the choice between familiar expressions,
@@ -945,7 +945,7 @@ V+\emph{up} construction (e.g., \emph{pick up}). Participants were
 tasked with pressing a button when they heard \emph{up}. They found that
 in high frequency V+\emph{up} constructions it is harder to recognize
 \emph{up} than in medium frequency phrases, even after accounting for
-phonetic reduction (Figure~\ref{fig-kapatsinskiplot}). In other words,
+phonetic reduction (Figure~\ref{fig-kapatsinskiplot2}). In other words,
 participants grow faster to recognize up as the frequency of the phrase
 increases, until reaching the highest frequency phrases, where their
 reaction time grows slower. This increase in recognition time suggests
@@ -956,7 +956,7 @@ holistically stored items lose some amount of their internal structure.
 
 \begin{figure}[htbp]
 
-\caption{\label{fig-kapatsinskiplot}A plot of the results reproduced
+\caption{\label{fig-kapatsinskiplot2}A plot of the results reproduced
 from Kapatsinski \& Radicke
 (\citeproc{ref-kapatsinskiFrequencyEmergencePrefabs2009}{2009}).}
 
@@ -969,14 +969,14 @@ from Kapatsinski \& Radicke
 \end{figure}%
 
 A visualization of what this may look like is demonstrated in
-Figure~\ref{fig-nointernalstructure}. The left tree represents the
+Figure~\ref{fig-nointernalstructure2}. The left tree represents the
 phrase \emph{pick up} stored holistically but with intact internal
 structure and the right tree represents the phrase \emph{pick up} stored
 holistically but without internal structure.
 
 \begin{figure}[htbp]
 
-\caption{\label{fig-nointernalstructure}A visualization of a
+\caption{\label{fig-nointernalstructure2}A visualization of a
 holistically stored phrase with internal structure (left) and without
 internal structure (right).}
 
@@ -1051,17 +1051,16 @@ participants read sentences that were either locally plausible or
 locally implausible:
 
 \begin{enumerate} 
-
     \item \textbf{Novel Compound}
     \begin{enumerate}
         \item[\textbf{1a}] The zookeeper picked up the monkey medicine that was in the enclosure.
         \item[\textbf{1b}] The zookeeper spread out the monkey medicine that was in the enclosure.
-    \end{enumerate} \label{staubsentencenovel}
+    \end{enumerate}
     \item \textbf{Familiar Compound}
     \begin{enumerate}
-        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage. \label{familiarplaus}
-        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage. \label{familiarimplaus}
-    \end{enumerate} \label{staubsentencefamiliar}
+        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage.
+        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage.
+    \end{enumerate}
 \end{enumerate}
 
 Sentence 1a is locally plausible because the sentence is plausible at
@@ -1163,7 +1162,7 @@ network.}
 
 \centering{
 
-\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{Chapters/Introduction/Figures/feed-forward neural network visualization.pdf}
+\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{Chapters/Introduction/Figures/feed-forward neural network visualization.pdf}
 
 }
 
@@ -1176,10 +1175,11 @@ the model learn which words are related to each other. This attention
 mechanism has been the main source of the transformer model's success
 over its predecessors. For example, previous models such as Long-Short
 Term Memory (LSTM) models or Recurrent Neural Network (RNN) models
-struggled with long-term dependencies {[}Al-Selwi et al.
-(\citeproc{ref-al-selwiLSTMInefficiencyLongterm2023}{2023}); Bengio et
-al. (\citeproc{ref-bengioProblemLearningLongterm1993}{1993}){]}. The
-self-attention mechanism was proposed as a solution to this limitation.
+struggled with long-term dependencies
+(\citeproc{ref-al-selwiLSTMInefficiencyLongterm2023}{Al-Selwi et al.,
+2023}; \citeproc{ref-bengioProblemLearningLongterm1993}{Bengio et al.,
+1993}). The self-attention mechanism was proposed as a solution to this
+limitation.
 
 The self-attention mechanism is a way to quantify which words are most
 related to each other. Specifically, the self-attention mechanism
@@ -1217,7 +1217,7 @@ attention weights, darker colors denote smaller attention weights.}
 
 \end{figure}%
 
-\begin{figure}[htbp]
+\begin{figure}[t]
 
 \caption{\label{fig-transformermodel}The transformer model architecture,
 reproduced from Vaswani et al.
@@ -1225,7 +1225,7 @@ reproduced from Vaswani et al.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{Chapters/Introduction/Figures/transformer-architecture.pdf}
+\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{Chapters/Introduction/Figures/transformer-architecture.pdf}
 
 }
 
@@ -1988,12 +1988,12 @@ reproduced below for convenience:
     \begin{enumerate}
         \item[\textbf{1a}] The zookeeper picked up the monkey medicine that was in the enclosure.
         \item[\textbf{1b}] The zookeeper spread out the monkey medicine that was in the enclosure.
-    \end{enumerate} \label{staubsentencenovel}
+    \end{enumerate}
     \item \textbf{Familiar Compound}
     \begin{enumerate}
-        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage. \label{familiarplaus}
-        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage. \label{familiarimplaus}
-    \end{enumerate} \label{figanext}
+        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage.
+        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage.
+    \end{enumerate}
 \end{enumerate}
 
 \noindent It is possible that if \emph{mountain lion} was stored
@@ -3635,7 +3635,7 @@ million) plot of our items.}
 
 \centering{
 
-\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{Chapters/Recognizability/Write-up/quarto-writeup_files/figure-pdf/fig-stimplot-1.pdf}
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{Chapters/Recognizability/Write-up/quarto-writeup_files/figure-pdf/fig-stimplot-1.pdf}
 
 }
 
@@ -4140,7 +4140,7 @@ effect of log(predictability) on recognition time.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{Chapters/Recognizability/Write-up/quarto-writeup_files/figure-pdf/fig-gammodelinterplot-1.pdf}}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{Chapters/Recognizability/Write-up/quarto-writeup_files/figure-pdf/fig-gammodelinterplot-1.pdf}
 
 }
 
@@ -7622,12 +7622,12 @@ frequency of the binomial.}
 Checkpoint}\label{sec-individual-constraints-at-each-checkpoint}
 
 \begin{longtable}[]{@{}llllll@{}}
-
-\caption{\label{tbl-exp2m2}Model results examining the effect of each
-individual constraint on LogOdds(AandB).}
-
-\tabularnewline
-
+\caption{Model results examining the effect of each individual
+constraint on LogOdds(AandB).}\tabularnewline
+\toprule\noalign{}
+Parameter & num\_tokens & Estimate & Est.Error & Q2.5 & Q97.5 \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 Parameter & num\_tokens & Estimate & Est.Error & Q2.5 & Q97.5 \\
 \midrule\noalign{}
@@ -7669,7 +7669,6 @@ Culture & 1677B & 0.861 & 0.273 & 0.326 & 1.394 \\
 Power & 1677B & 0.562 & 0.275 & 0.031 & 1.108 \\
 Freq & 1677B & 0.052 & 0.091 & -0.125 & 0.230 \\
 Len & 1677B & -0.431 & 0.142 & -0.708 & -0.156 \\
-
 \end{longtable}
 
 \chapter{Full List of Stimuli}\label{sec-full-list-of-stimuli}
@@ -7690,12 +7689,38 @@ Len & 1677B & -0.431 & 0.142 & -0.708 & -0.156 \\
   >{\raggedleft\arraybackslash}p{(\linewidth - 24\tabcolsep) * \real{0.0571}}
   >{\raggedleft\arraybackslash}p{(\linewidth - 24\tabcolsep) * \real{0.1238}}
   >{\raggedleft\arraybackslash}p{(\linewidth - 24\tabcolsep) * \real{0.0762}}@{}}
-
-\caption{\label{tbl-stimuli}Full list of binomials as well as their
-constraints.}
-
-\tabularnewline
-
+\caption{Full list of binomials as well as their
+constraints.}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Word1
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Word2
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Form
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Percept
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Culture
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Power
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Intense
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Icon
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Freq
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Len
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Lapse
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Final Stress
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+AbsPref
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Word1
@@ -7935,7 +7960,6 @@ parchment & windmill & 0 & 0 & 0 & 0 & 0 & 0 & 0.99 & 0 & -1 & -1 &
 0.49 \\
 candlestick & meadow & 0 & 1 & 0 & 0 & 0 & 0 & -1.46 & -1 & 1 & 1 &
 0.54 \\
-
 \end{longtable}
 
 \normalsize

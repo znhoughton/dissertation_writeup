@@ -238,7 +238,7 @@ For the purposes of the present study, we gathered a variety of phrases that var
 
 [^quarto-writeup-3]: @levyProcessingExtraposedStructures2012 extrapolated that the average college-aged speaker has heard about 350 million words in their lifetime. Thus we excluded items that had a frequency smaller than 10 per 350 million.
 
-```{r, echo = F, out.width = '80%', fig.align = 'center', warning = F, message = F}
+```{r, echo = F, out.width = '90%', fig.align = 'center', warning = F, message = F}
 #| label: fig-stimplot
 #| fig-cap: "log-predictability by log-frequency (per million) plot of our items."
 
@@ -658,7 +658,7 @@ brms_predic_quadratic_plot
 plot(sm(getViz(mod_gam1), 1)) + l_fitRaster() + l_fitContour() + l_points(shape = 19, size = 1.5, alpha = 0.1) + xlab('Predictability (log)') + ylab('Frequency (log)') + ggtitle(NULL) + scale_fill_viridis_c(breaks = c(0.0, 0.1, 0.2), name = 's(x)', labels = c('0.0', '0.1', '0.2'))
 ```
 
-```{r, echo = F, fig.width=12, fig.height = 4, fig.align = 'center', warning = F, message = F}
+```{r, echo = F, fig.width=12, fig.height = 5, fig.align = 'center', warning = F, message = F}
 #| label: fig-gam2dplot2
 #| fig-cap: "Plot of the interaction effect between predictability and frequency of our GAM model containing the interaction between frequency and predictability for phrasal vs nonphrasal verbs. Brighter colors denote longer reaction times. The left graph is the predicted effect for phrasal verbs (e.g., pick up), the right graph is the predicted effect for non-phrasal verbs (e.g., walk up)."
 
@@ -682,6 +682,7 @@ gridPrint(nonphrasal_plot, phrasal_plot, ncol=2)
 ```{r echo = F, message = F, warning = F}
 #| label: fig-gammodelinterplot
 #| fig-cap: "Plot of our GAM model's predicted effect of log(predictability) on recognition time."
+#| out-width: 80%
 
 
 newdata = tibble(log_predic = seq(from = -8,
@@ -755,3 +756,4 @@ Further, many high-frequency (e.g., *set up*) and high-predictability (e.g., *co
 On the other hand, the internal structure may have been lost over time. For example, @harmonPuttingOldTools2017 demonstrated that as learners repeatedly experience a form with a specific meaning, they become more likely to use that form to express novel meanings in production (resulting in semantic extension). It is possible that this accessibility effect similarly drives a loss of internal structure: As a phrase becomes more semantically extended, the internal structure may be lost over time. That is, as a phrase such as *pick up* becomes extended to express novel meanings such as *continue* ("Let's pick up from where we last left off"), the relationship between the phrase and its internal pieces (e.g., the relationship between *pick up* and the individual words *pick* and *up*) becomes less transparent, and the learner may slowly unlearn this relationship as it becomes less useful.
 
 In summary, our results suggest that both frequency and predictability may drive the holistic storage of phrasal verbs, and these holistically stored items may compete with their component parts during lexical access. However, future work is still needed to confirm whether the slowdown for the highest frequency and highest predictability items is indeed due to a stored holistic representation or if it's due to shallower attention mechanisms.
+

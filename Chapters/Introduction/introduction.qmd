@@ -1,6 +1,6 @@
 \pagenumbering{arabic}
 
-\doublespace
+\doublespacing
 
 # Introduction
 
@@ -60,19 +60,19 @@ Finally, learners are highly sensitive to predictability when segmenting the spe
 
 ## Representations of Stored Items {#sec-representations-of-stored-items}
 
-If multi-morphemic words and multi-word phrases are stored holistically, then it's also important to examine how these items are represented. Specifically, do stored representations maintain internal structure with respect to their component parts? For example, @kapatsinskiFrequencyEmergencePrefabs2009 argued that stored constructions may lose some amount of their internal structure. They presented participants with sentences containing *up* either inside of a word (e.g., *cup*) or inside of a V+*up* construction (e.g., *pick up*). Participants were tasked with pressing a button when they heard *up*. They found that in high frequency V+*up* constructions it is harder to recognize *up* than in medium frequency phrases, even after accounting for phonetic reduction (@fig-kapatsinskiplot). In other words, participants grow faster to recognize up as the frequency of the phrase increases, until reaching the highest frequency phrases, where their reaction time grows slower. This increase in recognition time suggests 1) that high frequency V+*up* phrases are stored holistically (since participants should be faster to recognize words in high-frequency contexts if they are forming them compositionally) and 2) holistically stored items lose some amount of their internal structure.
+If multi-morphemic words and multi-word phrases are stored holistically, then it's also important to examine how these items are represented. Specifically, do stored representations maintain internal structure with respect to their component parts? For example, @kapatsinskiFrequencyEmergencePrefabs2009 argued that stored constructions may lose some amount of their internal structure. They presented participants with sentences containing *up* either inside of a word (e.g., *cup*) or inside of a V+*up* construction (e.g., *pick up*). Participants were tasked with pressing a button when they heard *up*. They found that in high frequency V+*up* constructions it is harder to recognize *up* than in medium frequency phrases, even after accounting for phonetic reduction (@fig-kapatsinskiplot2). In other words, participants grow faster to recognize up as the frequency of the phrase increases, until reaching the highest frequency phrases, where their reaction time grows slower. This increase in recognition time suggests 1) that high frequency V+*up* phrases are stored holistically (since participants should be faster to recognize words in high-frequency contexts if they are forming them compositionally) and 2) holistically stored items lose some amount of their internal structure.
 
 ```{r echo = F, fig.align = 'center', warning = F, message = F, out.width = '100%'}
-#| label: fig-kapatsinskiplot
+#| label: fig-kapatsinskiplot2
 #| fig-cap: "A plot of the results reproduced from @kapatsinskiFrequencyEmergencePrefabs2009."
 #| fig-align: center
 knitr::include_graphics("Figures/kapatsinskiradicke_graph.pdf")
 ```
 
-A visualization of what this may look like is demonstrated in @fig-nointernalstructure. The left tree represents the phrase *pick up* stored holistically but with intact internal structure and the right tree represents the phrase *pick up* stored holistically but without internal structure.
+A visualization of what this may look like is demonstrated in @fig-nointernalstructure2. The left tree represents the phrase *pick up* stored holistically but with intact internal structure and the right tree represents the phrase *pick up* stored holistically but without internal structure.
 
 ```{r echo = F, fig.align = 'center', warning = F, message = F, out.width = '50%'}
-#| label: fig-nointernalstructure
+#| label: fig-nointernalstructure2
 #| fig-cap: "A visualization of a holistically stored phrase with internal structure (left) and without internal structure (right)."
 #| fig-align: center
 knitr::include_graphics("Figures/storage_syntax_tree.pdf")
@@ -91,17 +91,16 @@ Speech is inherently temporally linear: unlike reading, when you hear a sentence
 However, this seems not to be the case. For example, @staubTimeCoursePlausibility2007 examined the effects of plausibility on the reading times of high frequency and low frequency compound nouns (Noun and Noun compounds). Specifically, participants read sentences that were either locally plausible or locally implausible:
 
 \begin{enumerate} 
-
     \item \textbf{Novel Compound}
     \begin{enumerate}
         \item[\textbf{1a}] The zookeeper picked up the monkey medicine that was in the enclosure.
         \item[\textbf{1b}] The zookeeper spread out the monkey medicine that was in the enclosure.
-    \end{enumerate} \label{staubsentencenovel}
+    \end{enumerate}
     \item \textbf{Familiar Compound}
     \begin{enumerate}
-        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage. \label{familiarplaus}
-        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage. \label{familiarimplaus}
-    \end{enumerate} \label{staubsentencefamiliar}
+        \item[\textbf{2a}] Jenny looked out on the huge mountain lion pacing in its cage.
+        \item[\textbf{2b}] Jenny heard the huge mountain lion pacing in its cage.
+    \end{enumerate}
 \end{enumerate}
 
 Sentence 1a is locally plausible because the sentence is plausible at the first noun. That is, *picked up the monkey* is plausible. On the other hand, 1b is locally implausible because the interpretation at the first noun is implausible; *spread out the monkey* is not plausible. Sentences 2a and 2b are analogous but with a high frequency compound noun (where frequency is the number of times the compound noun occurred, not the number of times the individual words did).
@@ -124,7 +123,7 @@ The term large language model typically refers to a transformer model [@vaswaniA
 
 [^introduction-2]: Technically, the token-level of large language models is not analogous to words. For example, GPT-2's tokenizer tokenizes *kite* into two tokens: *k*, and *ite*. As such, GPT-2 actually predicts (i.e., assigns the greatest probability to) *k* as the upcoming token in the example context.
 
-```{r echo = F, fig.align = 'center', warning = F, message = F, out.width = '70%'}
+```{r echo = F, fig.align = 'center', warning = F, message = F, out.width = '60%'}
 #| label: fig-neuralnet
 #| fig-cap: "A visualization of a feed-forward neural network."
 
@@ -132,7 +131,7 @@ The term large language model typically refers to a transformer model [@vaswaniA
 knitr::include_graphics("Figures/feed-forward neural network visualization.pdf")
 ```
 
-In addition to a feed-forward neural network, the transformer architecture also implements a self-attention mechanism (see @fig-transformermodel). The self-attention mechanism helps the model learn which words are related to each other. This attention mechanism has been the main source of the transformer model's success over its predecessors. For example, previous models such as Long-Short Term Memory (LSTM) models or Recurrent Neural Network (RNN) models struggled with long-term dependencies \[@al-selwiLSTMInefficiencyLongterm2023; @bengioProblemLearningLongterm1993\]. The self-attention mechanism was proposed as a solution to this limitation.
+In addition to a feed-forward neural network, the transformer architecture also implements a self-attention mechanism (see @fig-transformermodel). The self-attention mechanism helps the model learn which words are related to each other. This attention mechanism has been the main source of the transformer model's success over its predecessors. For example, previous models such as Long-Short Term Memory (LSTM) models or Recurrent Neural Network (RNN) models struggled with long-term dependencies [@al-selwiLSTMInefficiencyLongterm2023; @bengioProblemLearningLongterm1993]. The self-attention mechanism was proposed as a solution to this limitation.
 
 The self-attention mechanism is a way to quantify which words are most related to each other. Specifically, the self-attention mechanism computes the strength of the relationship of each pair of words in the sentences [@vaswaniAttentionAllYou2017]. Thus in the sentence, *the students are very bright*, the self-attention mechanism would assign a high value to the pair {*students, are}* because the word *students* is very relevant for predicting *are* (as opposed to *is*).[^introduction-3] This example is visualized in @fig-attentionplot using BERT. For a more in-depth explanation of attention heads, we direct readers to the original paper, @vaswaniAttentionAllYou2017.
 
@@ -146,12 +145,12 @@ The self-attention mechanism is a way to quantify which words are most related t
 knitr::include_graphics("Figures/attention_plot.pdf")
 ```
 
-<!--# "The self-attention mechanism is a way to quantify which words are most related to each other." Would it be more accurate to say that the self-attention mechanism is a way to quantify which words are most relevant for predicting the next word in the sentence? -->
 
-```{r echo = F, fig.align = 'center', warning = F, message = F, out.width = '100%'}
+```{r echo = F, warning = F, message = F, out.width = '60%'}
 #| label: fig-transformermodel
 #| fig-cap: "The transformer model architecture, reproduced from @vaswaniAttentionAllYou2017."
 #| fig-align: center
+#| fig-pos: t
 knitr::include_graphics("Figures/transformer-architecture.pdf")
 ```
 
