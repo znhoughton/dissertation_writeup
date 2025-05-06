@@ -1,4 +1,4 @@
-```{r, echo = F}
+```{r, include = F, echo = F}
 library(tidyverse)
 library(brms)
 library(here)
@@ -20,7 +20,6 @@ fixefs_m3 = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), "/fixefs_m
 # Individual Constraints at Each Checkpoint {#sec-individual-constraints-at-each-checkpoint .appendix}
 
 ```{r, echo = F, message = F}
-#| label: tbl-exp2m2
 #| tbl-cap: "Model results examining the effect of each individual constraint on LogOdds(AandB)."
 
 #table 1

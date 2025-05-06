@@ -1,4 +1,4 @@
-```{r, echo = F}
+```{r, include = F, echo = F}
 library(tidyverse)
 library(brms)
 library(here)
@@ -20,9 +20,7 @@ fixefs_m3 = read_csv(paste0(here("Chapters/LLM Ordering Prefs/Data"), "/fixefs_m
 
 \tiny
 
-
 ```{r echo = F, message = F}
-#| label: tbl-stimuli
 #| tbl-cap: "Full list of binomials as well as their constraints."
 
 stimuli_list = corpus %>%
@@ -39,8 +37,6 @@ stimuli_list = rename(stimuli_list, 'Final Stress' = `*BStress`)
 knitr::kable(stimuli_list, booktabs = T)
 ```
 
-
 \normalsize
-
 
 \clearpage
