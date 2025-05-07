@@ -53,7 +53,7 @@ format:
       #- toc.tex
     latex-engine: xelatex 
     documentclass: scrreport   # LaTeX document class for professional formatting
-    number-depth: 2
+    number-depth: 3
     # Caption Formatting
     fig-cap-location: top      # Figure captions above
     tbl-cap-location: top      # Table captions above
@@ -68,7 +68,7 @@ format:
     link-citations: true       # Enable hyperlinked citations
     colorlinks: false          # Disable colored hyperlinks
     toc: true
-    toc-depth: 2
+    toc-depth: 3
     #toc-title: "Table of Contents"
     lot: true                  # Enable List of Tables
     lof: true                  # Enable List of Figures
@@ -85,10 +85,10 @@ format:
 
   docx:
     number-sections: true
-    number-depth: 2
+    number-depth: 3
     toc-title: Table of Contents
     toc: true
-    toc-depth: 2
+    toc-depth: 3
     reference-doc: reference.docx
     filters: 
       - chapter-prefix.lua
