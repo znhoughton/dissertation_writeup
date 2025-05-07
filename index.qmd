@@ -1,26 +1,24 @@
 # Acknowledgements {#sec-acknowledgements .unnumbered}
 
-First and foremost, I would not be here if it weren’t for my advisor, Dr. Emily Morgan. Emily has been a never-ending source of knowledge and a constant source of reassurance. Emily was charged with the non-trivial task of helping to translate my incoherent stream of thoughts into a coherent set of ideas. She pushed me hard, believed in me, and never let me fall behind. I'm extraordinarily fortunate to have had her as my advisor.
+First and foremost, I would not be here if it weren’t for my advisor, Dr. Emily Morgan. Emily has been a never-ending source of knowledge and a constant source of reassurance. Emily was charged with the non-trivial task of helping to translate my incoherent stream of thoughts into a coherent set of ideas. She pushed me hard, believed in me, and never let me fall behind. She is directly responsible for both my present and future achievements as a linguist. I'm extraordinarily fortunate to have had her as my advisor.
 
-I’d also like to thank many of the other professors here who have been crucial to my development as a linguist. Specifically, I’d like to thank Dr. Fernanda Ferreira whose knowledge of the field is so expansive that she can, without delay, provide a reference for any psycholinguistic phenomenon one can think of. I'd also like Dr. Kenji Sagae for his help over the years regarding all things natural language processing. Additionally, I'd like to thank Dr. Santiago Barreda who has provided a great deal of advice and help with statistical analyses. Finally, I'd like to thank Dr. Masoud Jasbi who has taught me the importance of various linguistics theories, even those I don't agree with.
+I’d also like to thank many of the other professors here who have been crucial to my development as a linguist. Specifically, I’d like to thank Dr. Fernanda Ferreira whose knowledge of the field is so expansive that she can, without delay, provide a reference for any psycholinguistic phenomenon one can think of. I'd also like Dr. Kenji Sagae for his help over the years regarding all things natural language processing. Additionally, I'd like to thank Dr. Santiago Barreda who has provided a great deal of advice and help with statistical analyses. Finally, I'd like to thank Dr. Masoud Jasbi who has taught me the importance of various linguistics theories, even those I don't necessarily agree with.
 
 Many of the ideas presented here have benefited in some form or another from feedback from many brilliant graduate students. I would especially like to thank Dingyi (Penny) Pan and Casey Felton for their feedback on much of the work included here.
 
-I’d also like to thank Casey, Felix, and Nora for being a strong support system during my time here. Our Sunday shenanigans were a welcomed escape from the tireless work of completing a PhD.
+I’d also like to thank Casey, Felix, and Nora for being a strong support system during my time here. Our Sunday game days were a welcome escape from the tireless work of completing a PhD.
 
-My journey in linguistics started at the University of Oregon, and I want to thank all of the professors that supported the beginning of my journey. I particularly want to acknowledge Dr. Vsevolod Kapatsinski. Volya has donated countless hours of his time to me even after his role as my undergraduate thesis advisor was long over. He continues to be an endless source of knowledge and inspiration and much of my knowledge and interest in language learning comes from him. Perhaps more importantly, however, he is a constant reminder that linguistics is *fun*! Had it not been for our meetings over the years that devolved into ridiculous linguistic tangents, I would have burnt out long ago.
+My journey in linguistics started at the University of Oregon, and I want to thank all of the professors that supported the beginning of my journey. I particularly want to acknowledge Dr. Vsevolod Kapatsinski. Volya has donated countless hours of his time to me even after his role as my undergraduate thesis advisor was long over. He continues to be an endless source of knowledge and inspiration. A great deal of my knowledge and interest in language learning comes from him. Perhaps more importantly, however, he is a constant reminder that linguistics is *fun*! Had it not been for our meetings over the years that devolved into the most ridiculous linguistic tangents, I would have burnt out long ago.
 
 I would also like to thank 김선생님 who encouraged me to apply for graduate school in the first place and believed in me often times more than I believed in myself.
 
 In addition, I want to thank Dr. Melissa Baese-Berk, Dr. Misaki Kato, and Dr. Zara Harmon. A great deal of my success as a graduate student came from their mentorship.
 
-Along with the technical and academic guidance, it also would have been impossible to complete this PhD without the unending support I received from so many people in my personal life.
+Along with the technical and academic guidance, it also would have been impossible to complete this PhD without the unending support I received from so many people in my personal life. Specifically, I have been fortunate to have a strong support system in the form of of my two sisters, Kayla and Lily. We’ve been through so much together. I don’t know where I would be, not just academically, but more generally in life, had you two not been by my side.
 
-Specifically, I have been fortunate to have a strong support system in the form of of my two sisters, Kayla and Lily. We’ve been through so much together. I don’t know where I would be, not just academically, but more generally in life, had you two not been by my side.
+This work would also have not been completed without the influence of my parents. Specifically, I want to thank my mom for teaching me that the ability to find the answer is far more important than knowing the answer, and my dad, for teaching me the discipline and practical skills to persevere through any challenge. Completing a PhD is not an easy task, and I would not have been successful had it not been for the tools that you two equipped me with.
 
-This work would also have not been completed without the influence of my parents. Specifically, I want to thank my mom for teaching me that the ability to find the answer is far more important than knowing the answer, and my dad, for teaching me the discipline and practical skills to achieve my goals.
-
-For both my undergraduate and graduate studies, I made the difficult decision to pursue my education on the opposite side of the country from my hometown in Connecticut. Despite the physical distance, I have always been able to count on the people closest to me — not only during the easier times, but, more importantly, through the more challenging ones. Addy, Charles, Paul, Ricky, Spencer, Wyatt, Zane, and 보미: thank you for being such a strong and constant support network.
+For both my undergraduate and graduate studies, I made the difficult decision to pursue my education on the opposite side of the country from my hometown in Connecticut. Despite the physical distance, I have always been able to count on the people closest to me. Each of these people have supported me not only during the easy times, but, more importantly, through the more challenging ones. Addy, Charles, Paul, Ricky, Spencer, Wyatt, Zane, and 보미: thank you for being such a strong and constant support network. I'm extraordinarily lucky to have you all in my life.
 
 Finally, to all the people I met during these five years at UC Davis: you welcomed me and gave me a home. You supported me, believed in me, and pushed me to be the best version of myself. I'm exceptionally proud to be an Aggie.
 
@@ -30,9 +28,7 @@ The number of people who have been indispensable in me getting here is undoubted
 
 \setlength{\parindent}{4em}
 
-
 # Abstract {#sec-abstract .unnumbered}
-
 
 One of the remarkable feats of language learning is the ability to generate never-before-heard sentences. This remarkable feat derives from the ability to retrieve linguistic constructions from memory and combine them using generative knowledge of the language. In other words, humans are able to generate novel sentences by trading off between stored knowledge and generative knowledge. In the past, these two properties were thought to be mutually exclusive: if we store *cat* and have learned the plural formation in English, then we can generate the word *cats* without having to store it and thus *cats* would not be stored. On the other hand, if we haven't learned the plural formation in English, then *cats* must be stored holistically and accessed from memory. While this seems plausible, a lot of recent work has demonstrated that many high-frequency words and phrases may be stored holistically, despite the fact that they can also be generated compositionally using knowledge of the grammar.
 
@@ -41,6 +37,3 @@ The evidence that high-frequency phrases may be stored holistically leads to man
 This dissertation focuses on what factors lead to humans storing a multi-word phrase when they could simply generate it compositionally. We show that not only frequent phrases are stored, but also predictable phrases. However, positing that multi-word phrases are stored holistically creates new challenges for theories of processing, which now must explain how multi-word phrases are represented and accessed. Thus, we also explore how holistically stored phrases are represented and processed. Further, we demonstrate that large language models also trade off between stored and generative knowledge in ways that are both similar and different from humans. Finally, we show that by positing that multi-word phrases are stored holistically, we can explain some aspects of language change.
 
 \singlespacing
-
-
-
