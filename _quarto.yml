@@ -90,9 +90,9 @@ format:
     toc: true
     toc-depth: 3
     reference-doc: reference.docx
-    filters: 
-      - chapter-prefix.lua
-      - chapter_rename_with_pagebreaks.lua
+    #filters: 
+      #- chapter-prefix.lua
+      #- chapter_rename_with_pagebreaks.lua
         
 bibliography: references.bib          
 csl: apa.csl
