@@ -361,13 +361,15 @@ fixefsm1 %>%
 
 gen_pref_data = data_main_model 
 
-
+gen_pref_data = gen_pref_data %>%
+  mutate(probs = exp(log_odds) / (1 + exp(log_odds)))
 
 main_model_plot = ggplot(data = gen_pref_data, aes(x=GenPref, y = log_odds)) +
   geom_point(alpha=0.5, color = 'darkblue') +
   geom_smooth(method = 'lm', formula = y ~ x, se = TRUE, linewidth = 1) +
-  ylab('LogOdds(AandB)') +
-  xlab('Abstract Ordering Preference') +
+  ylab('LogOdds of AandB') +
+  xlab('Abstract Ordering Preferences') +
+  #xlim(c(0,1)) +
   #facet_wrap(~constraint) +
   theme_bw() +
   theme(
