@@ -1707,7 +1707,7 @@ ggarrange(model_n2_binary_plot, model_n2_binary_gaze_plot, model_n2_go_past_plot
 
 #### Filler Items
 
-In addition to our experimental stimuli, our study also included sentences that contained a frequency manipulation at the word level. For example, in the below sentences, *satchel* is low-frequency and *account* is high-frequency. Thus, in order to confirm that the results in Experiment 4 were not due to measurement error, we examined the effect of frequency in our filler items on each of the eye-tracking measures.
+In addition to our experimental stimuli, our study also included sentences that contained a frequency manipulation at the word level [these sentences were taken from @juhasz2006binocularcoordinationeyes]. For example, in the below sentences, *satchel* is low-frequency and *account* is high-frequency. Thus, in order to confirm that the results in Experiment 4 were not due to measurement error, we examined the effect of frequency in our filler items on each of the eye-tracking measures.
 
 \begin{exe}
 \ex Filler Sentences \label{fillers}

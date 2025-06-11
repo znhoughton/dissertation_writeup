@@ -368,7 +368,9 @@ various linguistics theories, even those I don't necessarily agree with.
 Many of the ideas presented here have benefited in some form or another
 from feedback from many brilliant graduate students. I would especially
 like to thank Dingyi (Penny) Pan and Casey Felton for their feedback on
-much of the work included here.
+much of the work included here. In addition, I'd like to thank
+Dr.~Patrick Dwyer who for the better part of 3 years was forced to
+listen to rant after rant about the work presented in this dissertation.
 
 I'd also like to thank Casey, Felix, and Nora for being a strong support
 system during my time here. Our Sunday game days were a welcome escape
@@ -603,7 +605,8 @@ Following this, usage-based theories have posited the possibility of
 multi-word phrases being stored holistically
 (\citeproc{ref-bybee2003}{Bybee, 2003}; e.g.,
 \citeproc{ref-bybee2001}{Bybee \& Hopper, 2001};
-\citeproc{ref-kapatsinski2018}{Kapatsinski, 2018};
+\citeproc{ref-goldbergConstructionGrammar2010}{A. Goldberg \& Suttle,
+2010}; \citeproc{ref-kapatsinski2018}{Kapatsinski, 2018};
 \citeproc{ref-morgan2015}{Morgan \& Levy, 2015},
 \citeproc{ref-morganAbstractKnowledgeDirect2016}{2016a},
 \citeproc{ref-morgan2024}{2024};
@@ -730,9 +733,16 @@ certain phrases mirrors the patterns at the monomorphemic word-level
 suggests that they may be stored holistically as well.
 
 The psycholinguistics literature has also provided an abundance of
-evidence for multi-word holistic storage Stemberger \& MacWhinney
-(\citeproc{ref-stembergerFrequencyLexicalStorage1986}{1986}). For
-example, by examining corpus data Stemberger \& MacWhinney
+evidence for multi-word holistic storage
+(\citeproc{ref-kapatsinskiFrequencyEmergencePrefabs2009}{Kapatsinski \&
+Radicke, 2009}; \citeproc{ref-morganAbstractKnowledgeDirect2016}{Morgan
+\& Levy, 2016a};
+\citeproc{ref-siyanova-chanturiaSeeingPhraseTime2011}{Siyanova-Chanturia
+et al., 2011};
+\citeproc{ref-stembergerFrequencyLexicalStorage1986}{Stemberger \&
+MacWhinney, 1986},
+\citeproc{ref-stembergerAreInflectedForms2004}{2004}). For example, by
+examining corpus data Stemberger \& MacWhinney
 (\citeproc{ref-stembergerFrequencyLexicalStorage1986}{1986})
 demonstrated that errors occur less in high-frequency words than
 low-frequency words. They argued that one of the consequences of high
@@ -932,9 +942,8 @@ the speech stream into words
 (\citeproc{ref-saffranStatisticalLearning8MonthOld1996}{1996})
 demonstrated that children leverage transitional probabilities to
 segment the speech stream into individual words. These results, taken in
-conjunction with the other results, demonstrate the importance of
-predictability in learning and suggest that predictability may also
-drive what phrases are stored holistically.
+conjunction with the other results, suggest that predictability may also
+play a role in what phrases are stored holistically.
 
 \section{Representations of Stored
 Items}\label{sec-representations-of-stored-items}
@@ -1243,12 +1252,37 @@ reproduced from Vaswani et al.
 \subsection{Lessons from Transformer
 Models}\label{lessons-from-transformer-models}
 
-Transformer models have achieved state-of-the-art performance on many
-benchmarks and are undoubtedly able to produce fluent, human-like text.
-However, it remains unclear to what extent they do this in a human-like
-manner. Specifically, it's unclear how much these models are simply
-memorizing their training data as opposed to learning something more
-abstract about the language.
+Neural networks have long been examined by linguists and cognitive
+scientists as a potential model of how humans may learn language (e.g.,
+\citeproc{ref-rumelhart1986learningtensesenglish}{Rumelhart \&
+McClelland, 1986}). For example, Rumelhart \& McClelland
+(\citeproc{ref-rumelhart1986learningtensesenglish}{1986}) demonstrated
+that connectionist models (also referred to as parallel distributed
+processing models) are able to predict the learning curve seen in
+children. Specifically, they used a feedforward neural network with a
+single hidden layer and a sigmoid activation function. They found that
+this model is able to not only predict the correct past tense form for
+English verbs, but also follows a u-shaped learning curve that children
+also follow. That is, the model initially learns the correct past-tense
+forms, then overregularizes them (e.g., producing \emph{goed} instead of
+\emph{went}), before learning which verbs the past-tense rule applies
+to.\footnote{It is important to note, especially given the topic of this
+  dissertation, that traditional feedforward networks without hidden
+  layers implicitly reject the dichotomy between storage and
+  abstraction. However, with the inclusion of hidden layers, models
+  actually are able to learn abstract representations. For example, in
+  image recognition models hidden layers come to learn more general
+  features such as corners or edges
+  (\citeproc{ref-zeiler2014visualizing}{Zeiler \& Fergus, 2014}).}
+
+In recent years, advancements in neural networks have led to the
+development of what are now known as transformer models. These models
+have achieved state-of-the-art performance on many benchmarks and are
+undoubtedly able to produce fluent, human-like text. However, it remains
+unclear to what extent they do this in a human-like manner.
+Specifically, it's unclear how much these models are simply memorizing
+their training data as opposed to learning something more abstract about
+the language.
 
 For example, there have been doubts about whether they're capable of
 learning anything abstract, such as meaning (e.g.,
@@ -1494,8 +1528,8 @@ frequency (\citeproc{ref-arnonMoreWordsFrequency2010}{Arnon \& Snider,
 2010}; \citeproc{ref-baayenAmorphousModelMorphological2011}{R. H. Baayen
 et al., 2011}; \citeproc{ref-bybee2003}{Bybee, 2003};
 \citeproc{ref-bybee2001}{Bybee \& Hopper, 2001};
-\citeproc{ref-goldbergConstructionsNewTheoretical2003}{Goldberg, 2003};
-\citeproc{ref-morgan2015}{Morgan \& Levy, 2015},
+\citeproc{ref-goldbergConstructionsNewTheoretical2003}{A. E. Goldberg,
+2003}; \citeproc{ref-morgan2015}{Morgan \& Levy, 2015},
 \citeproc{ref-morganAbstractKnowledgeDirect2016}{2016a},
 \citeproc{ref-morgan2024}{2024};
 \citeproc{ref-odonnellProductivityReuseLanguage2016}{O'Donnell, 2016};
@@ -2853,12 +2887,14 @@ region.}
 \subsubsection{Filler Items}\label{filler-items}
 
 In addition to our experimental stimuli, our study also included
-sentences that contained a frequency manipulation at the word level. For
-example, in the below sentences, \emph{satchel} is low-frequency and
-\emph{account} is high-frequency. Thus, in order to confirm that the
-results in Experiment 4 were not due to measurement error, we examined
-the effect of frequency in our filler items on each of the eye-tracking
-measures.
+sentences that contained a frequency manipulation at the word level
+(these sentences were taken from
+\citeproc{ref-juhasz2006binocularcoordinationeyes}{Juhasz et al.,
+2006}). For example, in the below sentences, \emph{satchel} is
+low-frequency and \emph{account} is high-frequency. Thus, in order to
+confirm that the results in Experiment 4 were not due to measurement
+error, we examined the effect of frequency in our filler items on each
+of the eye-tracking measures.
 
 \begin{exe}
 \ex Filler Sentences \label{fillers}
@@ -3188,15 +3224,16 @@ extent larger-than-word constructions can be stored and accessed
 holistically is one that psycholinguists have been interested in for
 quite some time (\citeproc{ref-bybee2003}{Bybee, 2003}; e.g.,
 \citeproc{ref-bybee2001}{Bybee \& Hopper, 2001};
-\citeproc{ref-goldbergConstructionsNewTheoretical2003}{Goldberg, 2003};
-\citeproc{ref-nooteboomStorageComputationLanguage2002}{Nooteboom et al.,
-2002}; \citeproc{ref-stembergerFrequencyLexicalStorage1986}{Stemberger
-\& MacWhinney, 1986},
+\citeproc{ref-goldbergConstructionsNewTheoretical2003}{A. E. Goldberg,
+2003}; \citeproc{ref-nooteboomStorageComputationLanguage2002}{Nooteboom
+et al., 2002};
+\citeproc{ref-stembergerFrequencyLexicalStorage1986}{Stemberger \&
+MacWhinney, 1986},
 \citeproc{ref-stembergerAreInflectedForms2004}{2004}).
 
 Throughout the years different theories have argued for different
 degrees of holistic storage, with two theories in particular dominating
-the field. On one hand, Chomskyan theories (e.g.,
+the field. On one hand, Generativist theories (e.g.,
 \citeproc{ref-chomsky1965}{Chomsky, 1965};
 \citeproc{ref-pinker2002}{Pinker \& Ullman, 2002}) have proposed that
 only necessary items (e.g., items that can't be formed compositionally)
@@ -3209,13 +3246,13 @@ theories (e.g., \citeproc{ref-bybee2003}{Bybee, 2003}) have proposed
 that many items that could in principle be formed compositionally can be
 stored under certain usage-based conditions, such as frequency of use.
 
-Traditional Chomskyan theories (e.g.,
+Traditional Generativist theories (e.g.,
 \citeproc{ref-chomsky1965}{Chomsky, 1965};
 \citeproc{ref-pinker2002}{Pinker \& Ullman, 2002}) have argued that
 processing multi-word phrases is completely compositional: each piece is
 accessed individually and then combined to form the larger meaning. Some
 exceptions are reserved for idioms and other outliers, which can't be
-formed compositionally. More specifically, Chomskyan views of storage
+formed compositionally. More specifically, Generativist views of storage
 argue that whether an item is stored is determined purely by the degree
 of compositionality. According to these theories, if a multi-word
 expression can be composed from its parts then there is no need to
@@ -3228,13 +3265,13 @@ because there's very little relationship between the meaning of the
 individual words and the meaning of the expression (i.e., it's
 non-compositional).
 
-Chomskyan theories of storage gained popularity partly because storage
-was thought to be a valuable resource that was taken up only by units
-that necessitated storage. This was perhaps influenced by the limited
-storage space of sophisticated computers at the time. In recent times,
-however, we've learned that the brain may have dramatically more space
-for storage than we had previously realized, with an upper bound of
-10\textsuperscript{8432} bits
+Generativist theories of storage gained popularity partly because
+storage was thought to be a valuable resource that was taken up only by
+units that necessitated storage. This was perhaps influenced by the
+limited storage space of sophisticated computers at the time. In recent
+times, however, we've learned that the brain may have dramatically more
+space for storage than we had previously realized, with an upper bound
+of 10\textsuperscript{8432} bits
 (\citeproc{ref-wangDiscoveringCapacityHuman2003}{Wang et al., 2003}).
 This is magnitudes larger than any current estimate of how much storage
 language requires.\footnote{Indeed, Mollica \& Piantadosi
@@ -3954,7 +3991,7 @@ study simply does not have the power to detect an interaction effect.
 
 \caption{\label{tbl-gamModelTab}Model results for the generalized
 Additive Mixed Model cotanining only the interaction between frequency
-and predictability.}
+and predictability (Equation~\ref{eq-gamminteraction}).}
 
 \centering{
 
@@ -3981,7 +4018,8 @@ and predictability.}
 
 \caption{\label{tbl-gamModelPhrasalNonPhrasalTab}Model results for the
 Generalized Additive Mixed Model cotaining the interaction between
-frequency and predictability for phrasal vs nonphrasal verbs.}
+frequency and predictability for phrasal vs nonphrasal verbs
+(Equation~\ref{eq-gamphrasal}).}
 
 \centering{
 
@@ -4010,7 +4048,7 @@ frequency and predictability for phrasal vs nonphrasal verbs.}
 
 \caption{\label{tbl-gamModelInterTab}Model results for the Generalized
 Additive Mixed Model cotaining Frequency, Predictability, and the
-interaction between them.}
+interaction between them (\textbf{?@eq-gammfull}).}
 
 \centering{
 
@@ -4039,7 +4077,8 @@ interaction between them.}
 
 \caption{\label{tbl-brmsQuadraticNoInter}Model results for the Bayesian
 quadratic regression model containing fixed-effects for frequency,
-predictability, and their quadratics.}
+predictability, and their quadratics
+(Equation~\ref{eq-BayesianFullModelSyntax}).}
 
 \centering{
 
@@ -4067,7 +4106,8 @@ predictability, and their quadratics.}
 \begin{table}
 
 \caption{\label{tbl-brmsFreq}Results for the Bayesian quadratic
-regression model containing only frequency and frequency\(^2\).}
+regression model containing only frequency and frequency\(^2\)
+(Equation~\ref{eq-brmsFreq}).}
 
 \centering{
 
@@ -4092,8 +4132,8 @@ regression model containing only frequency and frequency\(^2\).}
 \begin{table}
 
 \caption{\label{tbl-brmsPredic}Results for the Bayesian quadratic
-regression model containing only predidctability and
-predictability\(^2\).}
+regression model containing only predictability and
+predictability\(^2\)(Equation~\ref{eq-brmsPredic}).}
 
 \centering{
 
@@ -4118,10 +4158,13 @@ predictability\(^2\).}
 \begin{figure}[htbp]
 
 \caption{\label{fig-gam2dplot1}Plot of the interaction effect between
-predictability and frequency of our GAM model containing only the
-interaction between frequency and predictability. The brightness of the
-coloration denotes the strength of the effect at the point in the graph.
-Brighter colors denote longer reaction times.}
+predictability and frequency of the GAM model containing only the
+interaction between frequency and predictability
+(Equation~\ref{eq-gamminteraction}). In the legend, te(predic,freq)
+refers to the predicted effect of the interaction effect. Thus, the
+brightness of the coloration denotes the strength of the interaction
+effect at the point in the graph. Brighter colors denote longer reaction
+times.}
 
 \centering{
 
@@ -4134,11 +4177,12 @@ Brighter colors denote longer reaction times.}
 \begin{figure}[htbp]
 
 \caption{\label{fig-gam2dplot2}Plot of the interaction effect between
-predictability and frequency of our GAM model containing the interaction
-between frequency and predictability for phrasal vs nonphrasal verbs.
-Brighter colors denote longer reaction times. The left graph is the
-predicted effect for phrasal verbs (e.g., pick up), the right graph is
-the predicted effect for non-phrasal verbs (e.g., walk up).}
+predictability and frequency of the GAM model containing the interaction
+between frequency and predictability for phrasal vs nonphrasal verbs
+(Equation~\ref{eq-gamphrasal}). Brighter colors denote longer reaction
+times. The left graph is the predicted effect for phrasal verbs (e.g.,
+pick up), the right graph is the predicted effect for non-phrasal verbs
+(e.g., walk up).}
 
 \centering{
 
@@ -4150,8 +4194,9 @@ the predicted effect for non-phrasal verbs (e.g., walk up).}
 
 \begin{figure}[htbp]
 
-\caption{\label{fig-gammodelinterplot}Plot of our GAM model's predicted
-effect of log(predictability) on recognition time.}
+\caption{\label{fig-gammodelinterplot}Plot of the predicted effect of
+log(predictability) on recongition time for the GAM model specified in
+\textbf{?@eq-gammfull}.}
 
 \centering{
 
@@ -4178,10 +4223,11 @@ predictability (bottom). Frequencies are per million.}
 \begin{figure}[htbp]
 
 \caption{\label{fig-posteriorplotFullQuadratic}Plot of the posterior
-distribution for the beta value of each fixed-effect in our Bayesian
-quadratic regression model. The y-axis contains the different
-fixed-effects and the x-axis contains the posterior distribution of beta
-values for the corresponding fixed-effect.}
+distribution for the beta value of each fixed-effect in the full
+Bayesian quadratic regression model
+(Equation~\ref{eq-BayesianFullModelSyntax}). The y-axis contains the
+different fixed-effects and the x-axis contains the posterior
+distribution of beta values for the corresponding fixed-effect.}
 
 \centering{
 
@@ -4518,18 +4564,19 @@ language model trained on a comparable amount of data as humans can
 learn article-adjective-numeral-noun expressions (a beautiful five
 days). Specifically, without having a great deal of experience with
 them, humans learn that \emph{a beautiful five days} is perfectly
-grammatical, but \emph{a blue five days} is not. Misra \& Mahowald
+grammatical, but \emph{a five beautiful days} is not. Misra \& Mahowald
 (\citeproc{ref-misraLanguageModelsLearn2024}{2024}) demonstrated that
 language models learn this even if they have no AANNs in their training
 data. They further demonstrated that they do this by generalizing across
 similar constructions, such as \emph{a few days}. Further, Yao et al.
 (\citeproc{ref-yaoBothDirectIndirect2025}{2025}) examined whether
 language models trained on a comparable amount to humans can learn the
-length and animacy preferences that drive dative alternations in humans.
-They found that language models can learn these preferences, even
-without much experience with the dative alternation. These results
-suggest that language models can learn generalizations without a great
-amount of data.
+length and animacy preferences that drive dative alternations (e.g.,
+\emph{give the ball to the girl} vs \emph{give the girl the ball}) in
+humans. They found that language models can learn these preferences,
+even after systematically removing the length and animacy bias from
+training data. These results suggest that language models can learn
+generalizations without a great amount of data.
 
 Additionally, there's evidence that inducing abstractions facilitates
 performance in large language models. For example, Zheng et al.
@@ -4882,11 +4929,18 @@ list of binomials that did not occur. We eliminated binomials which
 occurred more than zero times in either possible ordering. Thus, OLMo
 has had no experience with either ordering of any of our binomials. We
 also calculated their unigram and bigram frequencies for each binomial.
+Finally, we coded each of these binomials for the phonological,
+semantic, and metrical constraints from Morgan \& Levy
+(\citeproc{ref-morgan2015}{2015}) which are defined in
+Section~\ref{sec-abstract-ordering-preferences-corpus}. Each of the
+binomials was coded by myself along with my advisor. Disagreements were
+resolved through discussion, and agreement was reached for each item.
+
 Our full list of items comprises 131 binomials and is reproduced in the
 appendix section (Section Appendix~\ref{sec-full-list-of-stimuli}).
 
 \subsubsection{Abstract Ordering Preferences
-Corpus}\label{abstract-ordering-preferences-corpus}
+Corpus}\label{sec-abstract-ordering-preferences-corpus}
 
 In order to examine whether large language models are learning
 preferences similar to humans, we calculated the abstract ordering
@@ -5011,7 +5065,7 @@ LogOdds(AandB) \sim AbsPref
 }\end{equation}
 
 \begin{equation}\phantomsection\label{eq-m2}{
-LogOdds(AandB) ~ AbsPref \cdot BigramProbs
+LogOdds(AandB) \sim AbsPref \cdot BigramProbs
 }\end{equation}
 
 \begin{equation}\phantomsection\label{eq-m3}{
@@ -5078,10 +5132,10 @@ AbsPref and Bigram Probabilities on LogOdds(AandB).}
 \toprule
 \textbf{ } & \textbf{Estimate} & \textbf{Est.Error} & \textbf{Q2.5} & \textbf{Q97.5} & \textbf{\% Samples > 0}\\
 \midrule
-\textbf{\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{-1.22} & \cellcolor{gray!6}{0.93} & \cellcolor{gray!6}{-3.30} & \cellcolor{gray!6}{0.29} & \cellcolor{gray!6}{6.80}\\
-\textbf{AbsPref} & 2.44 & 1.85 & -0.40 & 6.63 & 94.32\\
-\textbf{\cellcolor{gray!6}{BigramProbs}} & \cellcolor{gray!6}{0.50} & \cellcolor{gray!6}{0.75} & \cellcolor{gray!6}{-0.92} & \cellcolor{gray!6}{2.00} & \cellcolor{gray!6}{55.72}\\
-\textbf{AbsPref:BigramProbs} & 0.17 & 1.16 & -2.13 & 2.60 & 75.15\\
+\textbf{\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{-1.26} & \cellcolor{gray!6}{0.64} & \cellcolor{gray!6}{-2.59} & \cellcolor{gray!6}{-0.11} & \cellcolor{gray!6}{1.46}\\
+\textbf{AbsPref} & 2.45 & 1.28 & 0.20 & 5.11 & 98.51\\
+\textbf{\cellcolor{gray!6}{BigramProbs}} & \cellcolor{gray!6}{0.41} & \cellcolor{gray!6}{0.49} & \cellcolor{gray!6}{-0.56} & \cellcolor{gray!6}{1.41} & \cellcolor{gray!6}{57.35}\\
+\textbf{AbsPref:BigramProbs} & 0.16 & 0.96 & -1.77 & 2.11 & 80.72\\
 \bottomrule
 \end{tabular}
 \endgroup{}
@@ -5176,7 +5230,7 @@ length constraint is determined by the number of syllables. While
 syllables are salient cues in the audio that humans receive during
 learning, it's less clear how salient of a cue they are for large
 language models which receive sub-word tokens (which vary in their size,
-from being individual orthographic symbols to being entire words.
+from being individual orthographic symbols to being entire words).
 
 However, it's unclear how large language models learn these preferences
 in the first place. Thus, in Experiment 3 we examine these constraints
@@ -5350,10 +5404,10 @@ human ordering preferences. For example, the model shows a preference
 for longer words placed before shorter words, which is the opposite of
 what humans prefer.
 
-Further, show that while the effect of abstract ordering preference on a
-whole takes a great deal of time (over 1677B tokens to be convincing),
-the model seems to learn human-like preferences at the level of some
-individual constraints quite early on.
+Further, while the effect of abstract ordering preference on a whole
+takes a great deal of time (over 1677B tokens to be convincing), the
+model seems to learn human-like preferences for some of the individual
+constraints quite early on.
 
 Overall, our results suggest that large language models are not simply
 copying their input, but are learning interesting, human-like phenomena
@@ -5392,7 +5446,7 @@ nature of their tokenization (e.g., Chat GPT tokenizes kite as
 and their poor performance on tasks that are trivial to humans (e.g.,
 counting the number of \emph{r}'s in \emph{strawberry}\footnote{\url{https://community.openai.com/t/incorrect-count-of-r-characters-in-the-word-strawberry/829618}}).
 
-Many of these debates are centered around the extend to which large
+Many of these debates are centered around the extent to which large
 language models are actually learning something abstract from the data
 and to what extent they are simply regurgitating their training data.
 However, despite a large body of research, the results have been quite
@@ -5432,16 +5486,18 @@ example, Misra \& Mahowald
 language model trained on a similar amount of data as humans could learn
 article-adjective-numeral-noun expressions (AANNs, e.g., \emph{a
 beautiful five days}). They found that even after removing AANNs from
-the training data, language models are still able to learn which AANNs
-are appropriate and which ones are not (e.g., *\emph{a blue five days}).
-Additionally, Yao et al.
+the training data, language models are still able to learn AANNs (e.g.,
+learning that \emph{a five beautiful days} is ungrammatical, but \emph{a
+beautiful five days} is grammatical, despite not having experienced
+either). Additionally, Yao et al.
 (\citeproc{ref-yaoBothDirectIndirect2025}{2025}) examined whether a
 similar language model can learn the length and animacy preferences for
 the dative alternation (give X Y vs give Y to X). They found that a
 language model trained on a comparable amount of data as humans is able
-to learn these preferences. These results together demonstrate the
-ability for language models to learn general knowledge about the
-language.
+to learn these preferences, even after systematically removing the
+length and animacy bias from training data. These results together
+demonstrate the ability for language models to learn general knowledge
+about the language.
 
 Given the evidence that large language models show evidence of both
 learning abstract knowledge as well as copying extensively from their
@@ -5536,7 +5592,7 @@ for the more frequent ordering may be more different from the
 compositional representation than the less-frequent ordering is.
 However, for lower-frequency binomials, large language models may not
 learn different representations for the different orderings of the same
-form, regardless of the relative frequency.
+binomial, regardless of the relative frequency.
 
 In Experiment 1, we examine the representations of different binomials
 across different large language models and in Experiment 2 we examine
@@ -5560,15 +5616,22 @@ same binomials. We explain these metrics in detail below.
 
 \subsubsection{Dataset}\label{dataset-1}
 
-Our dataset consists of 784 sentences containing binomials. The
-sentences have been annotated for both relative frequency and overall
-frequency. Relative frequency is operationalized as the proportion of
-occurrences in alphabetical order (a neutral reference order) to
-occurrences in nonalphabetical order. Overall frequency is
-operationalized as the count of \emph{A and B} plus the count of \emph{B
-and A}. Counts for both measures were obtained using the Google
-\emph{n-}grams corpus
-(\citeproc{ref-linSyntacticAnnotationsGoogle2012}{Lin et al., 2012}).
+Our dataset consists of sentences containing binomials in either
+alphabetical (A and B) or nonalphabetical (B and A) ordering. There were
+784 unique binomials, and each sentence contained the binomial in either
+alphabetical ordering or nonalphabetical ordering. The same sentence was
+used for each binomial such that the only difference between the
+sentences with the binomial in alphabetical ordering and the sentences
+with the binomial in nonalphabetical ordering was the binomial. The
+sentences were annotated for both relative frequency and overall
+frequency. Further, each sentence forced a compositional reading (as
+opposed to an idiomatic reading). Relative frequency is operationalized
+as the proportion of occurrences in alphabetical order (a neutral
+reference order) to occurrences in nonalphabetical order. Overall
+frequency is operationalized as the count of \emph{A and B} plus the
+count of \emph{B and A}. Counts for both measures were obtained using
+the Google \emph{n-}grams corpus {[}Lin et al.
+(\citeproc{ref-linSyntacticAnnotationsGoogle2012}{2012}){]}.
 
 \subsubsection{Semantic Embeddings}\label{semantic-embeddings}
 
@@ -5642,8 +5705,9 @@ embeddings trade off as a function of relative and overall
 frequency.\footnote{For more details regarding our analysis, refer to
   the following link:
   \url{https://github.com/znhoughton/dissertation_writeup/tree/master/Chapters/LLM\%20Storage}}
-Specifically, we modeled \(LogCosSim\) as a function of overall
-frequency, which was centered and logged, \(RelFreq\) which ranged from
+Specifically, we modeled \(LogCosSim\), which was centered such that its
+mean was zero and standard deviation was 1, as a function of overall
+frequency, which was logged and centered, \(RelFreq\) which ranged from
 -0.5 to 0.5 (with 0.5 representing a binomial that appears only in the
 alphabetical form, and -0.5 representing a binomial that appears only in
 the nonalphabetical form), and their interaction. Our model is presented
@@ -5679,34 +5743,34 @@ results of each model}
 \midrule
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{GPT-2}}\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{72.44}\\
-\textbf{\hspace{1em}OverallFreq} & 0.00 & 0.00 & 0.00 & 0.00 & 14.22\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.04} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{-0.05} & \cellcolor{gray!6}{-0.02} & \cellcolor{gray!6}{0.00}\\
-\textbf{\hspace{1em}OverallFreq:RelFreq} & 0.00 & 0.00 & -0.01 & 0.00 & 0.04\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{0.04} & \cellcolor{gray!6}{-0.06} & \cellcolor{gray!6}{0.08} & \cellcolor{gray!6}{61.12}\\
+\textbf{\hspace{1em}OverallFreq} & -0.01 & 0.01 & -0.04 & 0.01 & 14.15\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.69} & \cellcolor{gray!6}{0.13} & \cellcolor{gray!6}{-0.93} & \cellcolor{gray!6}{-0.44} & \cellcolor{gray!6}{0.00}\\
+\textbf{\hspace{1em}OverallFreq:RelFreq} & -0.10 & 0.03 & -0.16 & -0.04 & 0.00\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{GPT-2 XL}}\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{14.77}\\
-\textbf{\hspace{1em}OverallFreq} & 0.00 & 0.00 & 0.00 & 0.00 & 99.67\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{-0.01} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{68.45}\\
-\textbf{\hspace{1em}OverallFreq:RelFreq} & 0.00 & 0.00 & 0.00 & 0.01 & 97.82\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{-0.02} & \cellcolor{gray!6}{0.04} & \cellcolor{gray!6}{-0.10} & \cellcolor{gray!6}{0.05} & \cellcolor{gray!6}{29.45}\\
+\textbf{\hspace{1em}OverallFreq} & 0.03 & 0.01 & 0.01 & 0.06 & 99.67\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{0.06} & \cellcolor{gray!6}{0.13} & \cellcolor{gray!6}{-0.19} & \cellcolor{gray!6}{0.31} & \cellcolor{gray!6}{68.51}\\
+\textbf{\hspace{1em}OverallFreq:RelFreq} & 0.06 & 0.03 & 0.00 & 0.12 & 97.75\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{OLMo-1B}}\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{-0.01} & \cellcolor{gray!6}{0.02} & \cellcolor{gray!6}{56.38}\\
-\textbf{\hspace{1em}OverallFreq} & 0.00 & 0.00 & -0.01 & 0.00 & 33.00\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.15} & \cellcolor{gray!6}{0.03} & \cellcolor{gray!6}{-0.21} & \cellcolor{gray!6}{-0.10} & \cellcolor{gray!6}{0.00}\\
-\textbf{\hspace{1em}OverallFreq:RelFreq} & -0.02 & 0.01 & -0.03 & 0.00 & 0.43\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{-0.01} & \cellcolor{gray!6}{0.04} & \cellcolor{gray!6}{-0.08} & \cellcolor{gray!6}{0.06} & \cellcolor{gray!6}{39.92}\\
+\textbf{\hspace{1em}OverallFreq} & 0.00 & 0.01 & -0.02 & 0.03 & 61.90\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.57} & \cellcolor{gray!6}{0.13} & \cellcolor{gray!6}{-0.81} & \cellcolor{gray!6}{-0.32} & \cellcolor{gray!6}{0.00}\\
+\textbf{\hspace{1em}OverallFreq:RelFreq} & -0.04 & 0.03 & -0.09 & 0.02 & 10.21\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{OLMo-7B}}\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{-0.01} & \cellcolor{gray!6}{0.02} & \cellcolor{gray!6}{55.77}\\
-\textbf{\hspace{1em}OverallFreq} & 0.00 & 0.00 & -0.01 & 0.00 & 32.45\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.15} & \cellcolor{gray!6}{0.03} & \cellcolor{gray!6}{-0.21} & \cellcolor{gray!6}{-0.09} & \cellcolor{gray!6}{0.00}\\
-\textbf{\hspace{1em}OverallFreq:RelFreq} & -0.02 & 0.01 & -0.03 & 0.00 & 0.58\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{-0.01} & \cellcolor{gray!6}{0.04} & \cellcolor{gray!6}{-0.09} & \cellcolor{gray!6}{0.06} & \cellcolor{gray!6}{39.30}\\
+\textbf{\hspace{1em}OverallFreq} & 0.00 & 0.01 & -0.02 & 0.03 & 62.40\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.57} & \cellcolor{gray!6}{0.13} & \cellcolor{gray!6}{-0.82} & \cellcolor{gray!6}{-0.32} & \cellcolor{gray!6}{0.00}\\
+\textbf{\hspace{1em}OverallFreq:RelFreq} & -0.04 & 0.03 & -0.09 & 0.02 & 10.99\\
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Llama2-7B}}\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{-0.01} & \cellcolor{gray!6}{0.00} & \cellcolor{gray!6}{9.25}\\
-\textbf{\hspace{1em}OverallFreq} & 0.00 & 0.00 & 0.00 & 0.00 & 3.40\\
-\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.01} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{-0.03} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{8.06}\\
-\textbf{\hspace{1em}OverallFreq:RelFreq} & 0.00 & 0.00 & -0.01 & 0.00 & 3.17\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{Intercept}} & \cellcolor{gray!6}{0.01} & \cellcolor{gray!6}{0.04} & \cellcolor{gray!6}{-0.06} & \cellcolor{gray!6}{0.09} & \cellcolor{gray!6}{63.04}\\
+\textbf{\hspace{1em}OverallFreq} & -0.02 & 0.01 & -0.05 & 0.00 & 3.88\\
+\textbf{\hspace{1em}\cellcolor{gray!6}{RelFreq}} & \cellcolor{gray!6}{-0.18} & \cellcolor{gray!6}{0.13} & \cellcolor{gray!6}{-0.43} & \cellcolor{gray!6}{0.07} & \cellcolor{gray!6}{8.04}\\
+\textbf{\hspace{1em}OverallFreq:RelFreq} & -0.05 & 0.03 & -0.11 & 0.00 & 3.57\\
 \bottomrule
 \end{tabular}
 \endgroup{}
@@ -5787,7 +5851,7 @@ training for these different representations to emerge? Further, since
 different layers have been proposed to correspond to different functions
 {[}e.g., earlier layers may represent more phonological knowledge while
 later layers may represent more semantic knowledge; Tenney et al.
-(\citeproc{ref-tenney2019bertrediscoversclassical}{n.d.}){]}, it is
+(\citeproc{ref-tenney2019bertrediscoversclassical}{2019}){]}, it is
 possible that these results may be vary across different layers. In
 Experiment 2 we examine both of these questions.
 
@@ -5831,7 +5895,15 @@ checkpoints is included in Figure~\ref{fig-resultsalllayers}.
 
 \caption{\label{fig-resultsalllayers}A visualization of the cosine
 similarity between the holistic embeddings and the compositional
-embeddings for each hidden layer of each model checkpoint.}
+embeddings for each hidden layer of each model checkpoint. Overall
+frequency of the binomial is on the x-axis and log odds cosine is on the
+y-axis. A larger value of log odds cosine indicates that the embeddings
+for the alphabetical ordering are more similar to the compositional
+embeddings than the embeddings for the nonalphabetical ordering are. The
+color indicates whether the alphabetical ordering is more frequent (red)
+or whether the nonalphabetical ordering is more frequent (blue). The
+layer number is indicated along the top of the graph and the checkpoint
+number is indicated on the right side of the graph.}
 
 \centering{
 
@@ -5844,11 +5916,44 @@ embeddings for each hidden layer of each model checkpoint.}
 \end{landscape}
 
 There are two notable trends. First, the earlier layers tend to display
-the opposite pattern from later layers, with the embeddings of the more
-frequent ordering being more similar to the compositional embeddings.
+the opposite pattern than the later layers, with the embeddings of the
+more frequent ordering being more similar to the compositional
+embeddings. Specifically, for earlier layers (e.g., layer 0), as overall
+frequency increases, the log odds cosine value (which indicates the
+similarity between the embeddings for the alphabetical ordering and the
+compositional embeddings in relation to the embeddings for the
+nonalphabetical ordering and the compositional embeddings) grows larger
+for the binomials that occur more frequently in the alphabetical
+ordering (red) than those that occur more in the nonalphabetical
+ordering more frequently (blue). In other words, the embeddings for the
+more frequent ordering of the binomial become more similar to the
+compositional embeddings as the overall frequency of the binomial
+increases. For later layers, this effect either reverses or seems to
+disappear depending on how much the model has been trained (indicated by
+the slopes of the lines becoming less steep, or reversing in direction).
+
 Second, the holistic representation of the frequent ordering diverges
 from the compositional representation at about the 80000th step (336B
-tokens). We will discuss the implications of both of these in the
+tokens). Specifically, in earlier checkpoints, the slope of the blue
+line does not change much across the different layers. However, for
+later checkpoints, the slope of the blue line is positive for later
+layers (layers 11 through 15), indicating that the embeddings of the
+less frequent ordering are becoming more similar to the compositional
+embeddings as a function of overall frequency. Further the slope of the
+red line becomes more negative for some of the later hidden layers. This
+indicates that the embeddings of the more frequent ordering of the
+binomial are actually growing more \emph{dissimilar} from the
+compositional embeddings than the embeddings of the less frequent
+ordering are. This is because the y-axis indicates the similarity
+between the embeddings of the alphabetical ordering and the
+compositional embeddings (relative to the relationship between the
+embeddings of the nonalphabetical ordering and the compositional
+embeddings). As such, a positive slope for the nonalphabetical ordering
+(blue) indicates that when the binomial is frequent, the embeddings of
+the less frequent ordering are more similar to the compositional
+embeddings than the embeddings of the more frequent ordering are.
+
+We will discuss the implications of both of these results in the
 discussion section.
 
 \subsection{Discussion}\label{discussion-9}
@@ -5874,7 +5979,7 @@ transformer models tends to become specialized for the task (in this
 case, next-word prediction). This specialization can become so extreme
 as to become difficult to interpret representations at that level. For
 example, Ethayarajh
-(\citeproc{ref-ethayarajh2019howcontextualare}{n.d.}) found that any two
+(\citeproc{ref-ethayarajh2019howcontextualare}{2019}) found that any two
 random words will on average have almost perfect cosine similarity in
 the final layer of GPT-2. Thus, it is likely that the last layer of OLMo
 may be similarly specialized, and the lack of a difference in cosine
@@ -6664,34 +6769,34 @@ individual words that are then combined using knowledge of the grammar.
 However, positing multi-word holistic storage will lead to a new, rich
 set of predictions and questions.
 
-In this section, we bring our results into context with some of the
-bigger picture questions we asked in the beginning. We then highlight
-the contributions to language learning, language processing, and examine
+In this section, I bring the results into context with some of the
+bigger picture questions I asked in the beginning. I then highlight the
+contributions to language learning, language processing, and examine
 some of the interesting questions that come out of this work.
 
 \section{Revisiting our questions}\label{revisiting-our-questions}
 
-At the beginning of this dissertation, I posited three questions: 1)
-what factors determine whether a phrase is stored holistically or
-generated compositionally? 2) What are the processing consequences for
-holistic storage? And 3) How are holistically stored phrases
-represented? In this section, I return to each of the questions and
-explore what we've learned. I will then explore future questions and
-what their answers may tell us.
+At the beginning of this dissertation, I posed three questions: 1) what
+factors determine whether a phrase is stored holistically or generated
+compositionally? 2) What are the processing consequences for holistic
+storage? And 3) How are holistically stored phrases represented? In this
+section, I return to each of the questions and explore what we've
+learned. I will then explore future questions and what their answers may
+tell us.
 
-With respect to our first question, in this dissertation I have
+With respect to the first question, in this dissertation I have
 presented evidence that both frequency and predictability drive storage.
 I have shown, for example, that \emph{up} is harder for participants to
 recognize in high-frequency or high-predictability phrases than in
 medium-frequency or medium-predictability phrases. I have also shown
-that models of learning (large language models) predict that learners
-rely on item-specific knowledge for binomials that they have experienced
-before (Chapter 4), especially those that are high-frequency. On the
-other hand, they also rely on abstract preferences for binomials that
-they have not experienced before (similar to humans). Further, I have
-demonstrated that they also predict that the representations of
-high-frequency binomials diverge more from their compositional
-representations than low-frequency binomials (Chapter 5).
+that models of learning (e.g., large language models) predict that
+learners rely on item-specific (i.e., stored) knowledge for binomials
+that they have experienced before (Chapter 4), especially those that are
+high-frequency. On the other hand, they also rely on abstract
+preferences for binomials that they have not experienced before (similar
+to humans). Further, I have demonstrated that they also predict that the
+representations of high-frequency binomials diverge more from their
+compositional representations than low-frequency binomials (Chapter 5).
 
 With respect to our second question, in addition to frequency and
 predictability effects on storage, I have also demonstrated that
@@ -6711,15 +6816,16 @@ holistically stored phrases lose at least some of their internal
 structure. For example, in Chapter 3 I showed that \emph{up} becomes
 easier to recognize as frequency and/or predictability increases, until
 reaching the most frequent and/or most predictable items, where
-recognition of \emph{up} becomes more difficult. I argued that this is
-evidence that they lost some amount of their internal structure. I
-further argued that this suggests that the representation of the phrase
-competes with the representations of the individual words, causing a
-slowdown in recognition time for the individual words that comprise the
-phrase. In addition to demonstrating the representations of holistically
-stored items, these results also demonstrate the importance of expanding
-current areas of the literature, such as the word-recognition
-literature, to include the topic of multi-word holistic storage.
+recognition of \emph{up} becomes more difficult. I suggested that this
+may be evidence that they lost some amount of their internal structure.
+I further argued that this suggests that the representation of the
+phrase competes with the representations of the individual words,
+causing a slowdown in recognition time for the individual words that
+comprise the phrase. In addition to demonstrating the representations of
+holistically stored items, these results also demonstrate the importance
+of expanding current areas of the literature, such as the
+word-recognition literature, to include the topic of multi-word holistic
+storage.
 
 Finally, in this dissertation I have argued that holistic storage arises
 naturally as a function of our learning mechanisms. Multi-word storage
@@ -6731,10 +6837,10 @@ processing.
 
 \section{Language Learning}\label{language-learning}
 
-Holistic storage, as I stated before, arises naturally out of learning
-mechanisms. For example, babies are faced with the task of segmenting
-the speech stream into individual words and phrases and evidence
-suggests they leverage the statistics of the language, such as
+Holistic storage, as I stated previously, arises naturally out of our
+learning mechanisms. For example, babies are faced with the task of
+segmenting the speech stream into individual words and phrases and
+evidence suggests they leverage the statistics of the language, such as
 transitional probabilities, to accomplish this
 (\citeproc{ref-saffranStatisticalLearning8MonthOld1996}{Saffran et al.,
 1996}). This naturally results in high-predictability phrases being
@@ -6797,17 +6903,19 @@ that are composed each time, because they may fuse together losing part
 of their internal structure.
 
 Another way to frame this is that the learner, when encountering a
-binomial, must learn what preferences are unique to the binomial and
-what are more general patterns of binomial orderings. For example,
-\emph{bread and butter} is preferred over \emph{butter and bread},
-however if the representation fuses together, then even though
+binomial, must infer what aspects of the meaning are unique to the
+specific binomial and what are more general patterns of binomials. For
+example, \emph{bread and butter} is preferred over \emph{butter and
+bread}, however if the representation fuses together, then even though
 \emph{bread and butter} is overwhelmingly more frequent than
 \emph{butter and bread}, it may not contribute as much to the abstract
 preference of short-before-long than lower-frequency items do. That is,
-the learner may attribute that feature to the specific item, as opposed
-to learning it as an abstract preference of all binomials. We look
-forward to testing this prediction using language models Yao et al.
-(\citeproc{ref-yaoBothDirectIndirect2025}{2025}) in future work.
+the learner may assign a greater weight to a constraint that is present
+in many different lower-frequency binomials than a constraint that
+occurs in one binomial that is frequent. We look forward to testing this
+prediction using language models (e.g., by using methods such as those
+in \citeproc{ref-misraLanguageModelsLearn2024}{Misra \& Mahowald, 2024})
+in future work.
 
 In addition to language learning, however, the present dissertation also
 has implications for language processing as well.
@@ -6870,6 +6978,16 @@ other lexical items (\citeproc{ref-mcclelland1984}{McClelland et al.,
 1984b}), then positing the holistic storage of phrases suggest that they
 may compete, not only with other phrases, but with word-level
 representations as well.
+
+In summary, the present dissertation has demonstrated both the
+complexity and the theoretical merits of holistic multi-word storage.
+The proposal that many multi-word phrases (and complex, multi-morphemic
+words) are stored holistically in memory as a function of their usage is
+now well established and likely here to stay. As a result, theories of
+language learning and processing are increasingly challenged to account
+for the empirical results demonstrated throughout this dissertation. It
+is my hope that such challenges will drive the development of richer,
+more comprehensive theories of language learning and processing.
 
 \bookmarksetup{startatroot}
 
@@ -7026,9 +7144,9 @@ Cooper, W. E., \& Ross, J. R. (1975). World order. \emph{Papers from the
 Parasession on Functionalism}, \emph{11}, 63111.
 
 \bibitem[\citeproctext]{ref-ethayarajh2019howcontextualare}
-Ethayarajh, K. (n.d.). \emph{How contextual are contextualized word
+Ethayarajh, K. (2019). How contextual are contextualized word
 representations? Comparing the geometry of BERT, ELMo, and GPT-2
-embeddings}. \url{https://doi.org/10.48550/arXiv.1909.00512}
+embeddings. \emph{arXiv Preprint arXiv:1909.00512}.
 
 \bibitem[\citeproctext]{ref-feltyMisperceptionsSpokenWords}
 Felty, R. A., Buchwald, A., Gruenenfelder, T. M., \& Pisoni, D. B.
@@ -7082,6 +7200,11 @@ is greater than sum of parts: Recognizing scene text words}. 398402.
 Goldberg, A. E. (2003). Constructions: A new theoretical approach to
 language. \emph{Trends in Cognitive Sciences}, \emph{7}(5), 219--224.
 \url{https://doi.org/10.1016/S1364-6613(03)00080-9}
+
+\bibitem[\citeproctext]{ref-goldbergConstructionGrammar2010}
+Goldberg, A., \& Suttle, L. (2010). Construction grammar. \emph{Wiley
+Interdisciplinary Reviews: Cognitive Science}, \emph{1}(4), 468--477.
+\url{https://doi.org/10.1002/wcs.22}
 
 \bibitem[\citeproctext]{ref-goldinger1989priminglexicalneighbors}
 Goldinger, S. D., Luce, P. A., \& Pisoni, D. B. (1989). Priming lexical
@@ -7166,6 +7289,13 @@ Johnston, J. C., \& McClelland, J. L. (1980). Experimental tests of a
 hierarchical model of word identification. \emph{Journal of Verbal
 Learning and Verbal Behavior}, \emph{19}(5), 503--524.
 \url{https://doi.org/10.1016/S0022-5371(80)90573-3}
+
+\bibitem[\citeproctext]{ref-juhasz2006binocularcoordinationeyes}
+Juhasz, B. J., Liversedge, S. P., White, S. J., \& Rayner, K. (2006).
+Binocular Coordination of the Eyes during Reading: Word Frequency and
+Case Alternation Affect Fixation Duration but not Fixation Disparity.
+\emph{Quarterly Journal of Experimental Psychology}, \emph{59}(9),
+1614--1625. \url{https://doi.org/10.1080/17470210500497722}
 
 \bibitem[\citeproctext]{ref-kapatsinski2018}
 Kapatsinski, V. (2018). \emph{Changing minds changing tools: From
@@ -7472,6 +7602,12 @@ disappear a rabbit, but a lifeguard can equally well backstroke or swim
 children to shore. \emph{Cognitive Linguistics}, \emph{26}(3), 467--503.
 \url{https://doi.org/10.1515/cog-2015-0004}
 
+\bibitem[\citeproctext]{ref-rumelhart1986learningtensesenglish}
+Rumelhart, D. E., \& McClelland, J. L. (1986). On learning the past
+tenses of english verbs. \emph{Psycholinguistics: Critical Concepts in
+Psychology}, \emph{4}, 216271.
+\url{https://books.google.com/books?hl=en&lr=&id=n1cd70T4WxIC&oi=fnd&pg=PA221&dq=rumelhart+and+mcclelland+1986&ots=1_jE4qNRQr&sig=_XcVec9KMXJspJllbk9NJ9IYGug}
+
 \bibitem[\citeproctext]{ref-saffranStatisticalLearning8MonthOld1996}
 Saffran, J. R., Aslin, R. N., \& Newport, E. L. (1996). Statistical
 Learning by 8-Month-Old Infants. \emph{Science}, \emph{274}(5294),
@@ -7563,8 +7699,8 @@ generalizable same-different visual relations. \emph{arXiv Preprint
 arXiv:2310.09612}.
 
 \bibitem[\citeproctext]{ref-tenney2019bertrediscoversclassical}
-Tenney, I., Das, D., \& Pavlick, E. (n.d.). \emph{BERT rediscovers the
-classical NLP pipeline}. \url{https://doi.org/10.48550/arXiv.1905.05950}
+Tenney, I., Das, D., \& Pavlick, E. (2019). BERT rediscovers the
+classical NLP pipeline. \emph{arXiv Preprint arXiv:1905.05950}.
 
 \bibitem[\citeproctext]{ref-theakstonRoleEntrenchmentChildren2004}
 Theakston, A. L. (2004). The role of entrenchment in children{'}s and
@@ -7647,6 +7783,12 @@ Parafoveal processing of chinese four-character idioms and phrases in
 reading: Evidence for multi-constituent unit hypothesis. \emph{Journal
 of Memory and Language}, \emph{136}, 104508.
 \url{https://doi.org/10.1016/j.jml.2024.104508}
+
+\bibitem[\citeproctext]{ref-zeiler2014visualizing}
+Zeiler, M. D., \& Fergus, R. (2014). Visualizing and understanding
+convolutional networks. \emph{Computer Vision--ECCV 2014: 13th European
+Conference, Zurich, Switzerland, September 6-12, 2014, Proceedings, Part
+i 13}, 818--833.
 
 \bibitem[\citeproctext]{ref-zhengTakeStepBack2024}
 Zheng, H. S., Mishra, S., Chen, X., Cheng, H.-T., Chi, E. H., Le, Q. V.,

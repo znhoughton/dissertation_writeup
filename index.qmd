@@ -4,7 +4,7 @@ First and foremost, I would not be here if it weren’t for my advisor, Dr. Emil
 
 I’d also like to thank many of the other professors here who have been crucial to my development as a linguist. Specifically, I’d like to thank Dr. Fernanda Ferreira whose knowledge of the field is so expansive that she can, without delay, provide a reference for any psycholinguistic phenomenon one can think of. I'd also like Dr. Kenji Sagae for his help over the years regarding all things natural language processing. Additionally, I'd like to thank Dr. Santiago Barreda who has provided a great deal of advice and help with statistical analyses. Finally, I'd like to thank Dr. Masoud Jasbi who has taught me the importance of various linguistics theories, even those I don't necessarily agree with.
 
-Many of the ideas presented here have benefited in some form or another from feedback from many brilliant graduate students. I would especially like to thank Dingyi (Penny) Pan and Casey Felton for their feedback on much of the work included here.
+Many of the ideas presented here have benefited in some form or another from feedback from many brilliant graduate students. I would especially like to thank Dingyi (Penny) Pan and Casey Felton for their feedback on much of the work included here. In addition, I'd like to thank Dr. Patrick Dwyer who for the better part of 3 years was forced to listen to rant after rant about the work presented in this dissertation.
 
 I’d also like to thank Casey, Felix, and Nora for being a strong support system during my time here. Our Sunday game days were a welcome escape from the tireless work of completing a PhD.
 
