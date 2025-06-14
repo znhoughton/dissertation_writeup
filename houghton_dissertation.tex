@@ -297,15 +297,15 @@ Large Language Models}
    \bigskip
    \bigskip
    \makebox[3in]{\hrulefill} \\
-   Dr.~Emily Morgan, Chair \\
+   Emily Morgan, Chair \\
    \bigskip
    \bigskip
    \makebox[3in]{\hrulefill} \\
-   Dr.~Masoud Jasbi \\
+   Masoud Jasbi \\
    \bigskip
    \bigskip
    \makebox[3in]{\hrulefill} \\
-   Dr.~Fernanda Ferreira \\
+   Fernanda Ferreira \\
    \bigskip
    Committee in Charge \\
    \bigskip
@@ -459,10 +459,10 @@ compositionally using knowledge of the grammar.
 
 The evidence that high-frequency phrases may be stored holistically
 leads to many new questions. If storage isn't driven solely by
-compositionality, then what is it driven by? Is it driven by the
-frequency of the phrase? Do other usage-based factors, such as
-predictability, also drive storage? Additionally, if an item that can be
-generated compositionally is stored holistically then in what
+productivity, then what is it driven by? Is it driven by the frequency
+of the phrase? Do other usage-based factors, such as predictability,
+also drive storage? Additionally, if an item that can be generated as a
+combination of its parts is stored holistically then in what
 circumstances do we retrieve the item from memory as opposed to
 generating it through rules of the grammar? Further, do holistically
 stored items retain their internal structure? That is, if a phrase is
@@ -470,17 +470,17 @@ stored holistically, does it retain the representation of the individual
 words within the phrase?
 
 This dissertation focuses on what factors lead to humans storing a
-multi-word phrase when they could simply generate it compositionally. We
-show that not only frequent phrases are stored, but also predictable
-phrases. However, positing that multi-word phrases are stored
-holistically creates new challenges for theories of processing, which
-now must explain how multi-word phrases are represented and accessed.
-Thus, we also explore how holistically stored phrases are represented
-and processed. Further, we demonstrate that large language models also
-trade off between stored and generative knowledge in ways that are both
-similar and different from humans. Finally, we show that by positing
-that multi-word phrases are stored holistically, we can explain some
-aspects of language change.
+multi-word phrase when they could simply generate it by combining each
+of its parts individually. We show that not only frequent phrases are
+stored, but also predictable phrases. However, positing that multi-word
+phrases are stored holistically creates new challenges for theories of
+processing, which now must explain how multi-word phrases are
+represented and accessed. Thus, we also explore how holistically stored
+phrases are represented and processed. Further, we demonstrate that
+large language models also trade off between stored and generative
+knowledge in ways that are both similar and different from humans.
+Finally, we show that by positing that multi-word phrases are stored
+holistically, we can explain some aspects of language change.
 
 \singlespacing
 
@@ -688,11 +688,11 @@ within-category variation.
 The phonetics literature demonstrated that representations of words can
 not be reduced to context-independent phoneme-level representations and
 this lead to many of the same questions being asked about higher levels
-of representations {[}e.g., words or phrases; Bybee
-(\citeproc{ref-bybee2003}{2003}){]}. That is, if simple words are being
-represented holistically with rich phonetic detail, then perhaps it is
-possible that multi-morphemic words or even phrases may similarly be
-represented holistically.
+of representations (e.g., words or phrases;
+\citeproc{ref-bybee2003}{Bybee, 2003}). That is, if simple words are
+being represented holistically with rich phonetic detail, then perhaps
+it is possible that multi-morphemic words or even phrases may similarly
+be represented holistically.
 
 \section{Evidence of Storage in Words and
 Phrases}\label{sec-evidence-of-storage-in-words-and-phrases}
@@ -1422,11 +1422,11 @@ In addition to large language models, more recently there has been an
 interesting line of research examining language models trained on a more
 human amount of data. For example, Misra \& Mahowald
 (\citeproc{ref-misraLanguageModelsLearn2024}{2024}) demonstrated that a
-language model trained on the BabyLM-strict corpus {[}a corpus
-containing a comparable amount of data as humans receive; Warstadt et
-al. (\citeproc{ref-warstadtFindingsBabyLMChallenge2023}{2023}){]} can
-learn article-adjective-numeral-noun constructions (AANNs). AANNs are
-constructions such as \emph{a beautiful five days}. They occur
+language model trained on the BabyLM-strict corpus (a corpus containing
+a comparable amount of data as humans receive;
+\citeproc{ref-warstadtFindingsBabyLMChallenge2023}{Warstadt et al.,
+2023}) can learn article-adjective-numeral-noun constructions (AANNs).
+AANNs are constructions such as \emph{a beautiful five days}. They occur
 relatively infrequently in English but humans still learn develop
 preferences for these. For example, while \emph{a beautiful five days}
 is perfectly grammatical, \emph{a blue five pencils} is not. They found
@@ -1498,8 +1498,8 @@ of all of these? One possibility is that learners store very little
 outside of words and idioms. For example, traditional theories have
 argued that learners don't store any more than they need to: they store
 only what they can't form compositionally using a set of rules, and
-generate everything else (e.g., \citeproc{ref-chomsky1965}{Chomsky,
-1965}). According to these theories, inflected words, such as
+generate everything else (e.g., \citeproc{ref-pinker1991rules}{Pinker,
+1991}). According to these theories, inflected words, such as
 \emph{walked} would be generated by accessing the stored root,
 \emph{walk}, and then applying a past tense rule that generates
 \emph{walked} from the root. Similarly, a phrase like \emph{I don't
@@ -1627,23 +1627,24 @@ stores all units and all sub-units consistent with the data, and finally
 a Productivity as an Inference model, which, similar to the
 Exemplar-based Inference model, can store both smaller and larger
 structures, but probabilistically determines which items to store based
-on the data. They found that the Inference-based model performed the
-best overall for both past tenses and derivational morphology. In other
-words, storing units of varying sizes (as opposed to just minimal or
-maximal-sized units) seems to be the most conducive approach to learning
-the various morphological paradigms in English.
+on the data. They tested each of these models on a held-out test set.
+They found that the Inference-based model performed the best overall for
+both past tenses and derivational morphology. In other words, storing
+units of varying sizes (as opposed to just minimal or maximal-sized
+units) seems to be the most conducive approach to learning the various
+morphological paradigms in English.
 
 Despite the clear evidence for the holistic storage of some multi-word
 units, however, it is still largely unclear what determines whether a
 unit is stored holistically. For example, it is possible that storage is
 driven by either \textbf{phrasal frequency}
 (\citeproc{ref-bybee2001}{Bybee \& Hopper, 2001}) or by the mutual
-\textbf{predictability} of a phrase's component parts {[}i.e., how
-predictable the whole phrase is from part of the phrase; O'Donnell
-(\citeproc{ref-odonnellProductivityReuseLanguage2016}{2016}){]}. For
-example, as previously stated, there is an abundance of evidence that
-high-frequency phrases are more susceptible to phonetic reduction than
-low-frequency phrases (\citeproc{ref-bybee2003}{Bybee, 2003};
+\textbf{predictability} of a phrase's component parts (i.e., how
+predictable the whole phrase is from part of the phrase;
+\citeproc{ref-odonnellProductivityReuseLanguage2016}{O'Donnell, 2016}).
+For example, as previously stated, there is an abundance of evidence
+that high-frequency phrases are more susceptible to phonetic reduction
+than low-frequency phrases (\citeproc{ref-bybee2003}{Bybee, 2003};
 \citeproc{ref-bybeeEffectUsageDegrees1999}{Bybee \& Scheibman, 1999}).
 Additionally, high-frequency phrases have been shown to lose the
 recognizability of their component parts relative to low-frequency
@@ -1696,8 +1697,9 @@ On the other hand, Staub et al.
 (\citeproc{ref-staubTimeCoursePlausibility2007}{2007}) investigated the
 effects of plausibility on the reading times of familiar and novel
 compound nouns, which were compound nouns with high and low phrasal
-frequency respectively. Participants read sentences which contained a
-novel compound noun or a familiar compound noun (See Example
+frequency respectively (where phrasal frequency is the total number of
+times the compound noun occurred). Participants read sentences which
+contained a novel compound noun or a familiar compound noun (See Example
 \ref{staubitems}) in a plausible condition (e.g., Example
 \ref{novelplaus}) or an implausible condition (e.g., Example
 \ref{novelimplaus}). Crucially, the second noun in the compound
@@ -1729,15 +1731,17 @@ familiar items were read more quickly than novel items, and there was an
 increase in reading times in the implausible condition, the size of the
 plausibility effect was not different for familiar items (relative to
 novel items). However, if familiar items are stored holistically, one
-might expect that readers would predict the second noun upon reading the
-first, thus eliminating the local implausibility. Thus, if these items
-are stored holistically it begs the question of what the processing
-consequences of storage are. Alternatively, it may just be that these
-items are not stored. For example, it is possible that, as has been
-previewed throughout the introduction, phrasal frequency may not be the
-driving factor of storage. Instead, it may actually be predictability
-that drives storage. If this is the case, then it is possible that the
-reason for a lack of an interaction effect in Staub et al.
+might expect that readers would be able to access the holistic
+representation of the entire compound noun when reading the first noun
+(because the first noun is a cue to the holistic representation), thus
+eliminating the local implausibility. Thus, if these items are stored
+holistically it begs the question of what the processing consequences of
+storage are. Alternatively, it may just be that these items are not
+stored. For example, it is possible that, as has been previewed
+throughout the introduction, phrasal frequency may not be the driving
+factor of storage. Instead, it may actually be predictability that
+drives storage. If this is the case, then it is possible that the reason
+for a lack of an interaction effect in Staub et al.
 (\citeproc{ref-staubTimeCoursePlausibility2007}{2007})'s results is due
 to their stimuli being low-predictability compound nouns. For example,
 while \emph{mountain lion} has a high phrasal frequency, \emph{mountain}
@@ -2489,13 +2493,22 @@ corrected vision.
 The materials were identical to Experiment 1, however they also included
 comprehension questions.
 
-We recorded participants' right pupil movements using the Eyelink 1000
-Plus. Participants were seated 850mm away from the screen, which was
-531.3mm in width, 298.8mm in height, and had a resolution of 1920x1080.
+\subsubsection{Procedure}\label{procedure-2}
+
+Sentences were presented on a screen that was 531.3mm in width and
+298.8mm in height, placed 850mm away from where the participants were
+seated. The screen had a resolution of 1920x1080. For each trial, we
+recorded participants' right pupil movements using the Eyelink 1000
+Plus.
 
 Comprehension was checked for non-experimental trials and participants
 below 80\% accuracy were excluded. Out of our 46 participants, 2 were
 excluded for falling below the accuracy threshold.
+
+Participants were given 3 practice trials prior to the start of the
+experiment. Experimental and filler trials were presented randomly and
+the eye-tracker was re-calibrated every 35 trials to ensure proper
+calibration.
 
 \subsubsection{Analyses}\label{analyses}
 
@@ -2709,7 +2722,7 @@ corrected vision.
 The materials here were identical to those in Experiment 2, with the
 exception of the added comprehension questions.
 
-\subsubsection{Procedure}\label{procedure-2}
+\subsubsection{Procedure}\label{procedure-3}
 
 We recorded participants' right pupil movements using the Eyelink 1000
 Plus. Participants were seated 850mm away from the screen. Our screen
@@ -2718,6 +2731,11 @@ resolution was 1920x1080, 531.3mm in width, and 298.8mm in height.
 Comprehension was checked for non-experimental trials and participants
 below 80\% accuracy were excluded. Out of our 56 participants, 0 were
 excluded for falling below the accuracy threshold.
+
+Participants were given 3 practice trials prior to the start of the
+experiment. Experimental and filler trials were presented randomly and
+the eye-tracker was re-calibrated every 35 trials to ensure proper
+calibration.
 
 \subsubsection{Analyses}\label{analyses-1}
 
@@ -2971,9 +2989,9 @@ implausibility, the results are difficult to reconcile with the results
 we see for first-pass regressions. For first-pass regressions, we
 observe the opposite pattern: there is an effect of plausibility on
 first-pass regressions for high-predictability items but not
-low-predictability items. Thus overall it seems unlikely that
-participants are accessing the holistic representation at the first
-noun.
+low-predictability items. Thus overall it seems that either participants
+are not accessing the holistic representation at the first noun or our
+assumptions about how representations map to processing is inacurrate.
 
 We also find no effect of plausibility for gaze duration or go-past
 times, which was unexpected. It is unclear why we do not find a
@@ -2998,7 +3016,8 @@ they are stored holistically, but that processing still unfolds
 incrementally, and readers are not able to access the representation of
 the compound noun until they've heard more than just the first noun in
 the compound. Both of these results explain why we see no interaction
-effect.
+effect. In other words, the assumptions regarding the mapping between
+storage and processing measures may be incorrect.
 
 \section{Conclusion}\label{conclusion}
 
@@ -3206,7 +3225,11 @@ until they have heard sufficient evidence for that representation. That
 is, even though \emph{peanut} is predictive of \emph{butter}, there are
 still many other words that can occur after \emph{peanut}. Thus, readers
 may not access the holistic representation until they hear enough of the
-compound noun to rule out other competing possibilities.
+compound noun to rule out other competing possibilities. Finally, the
+present results may also suggest that the current assumptions regarding
+the mapping between linguistic representations and processing may be
+incorrect. It is possible that the mapping between representations and
+processing is more complex than previously thought.
 
 \bookmarksetup{startatroot}
 
@@ -3234,7 +3257,7 @@ MacWhinney, 1986},
 Throughout the years different theories have argued for different
 degrees of holistic storage, with two theories in particular dominating
 the field. On one hand, Generativist theories (e.g.,
-\citeproc{ref-chomsky1965}{Chomsky, 1965};
+\citeproc{ref-pinker1991rules}{Pinker, 1991};
 \citeproc{ref-pinker2002}{Pinker \& Ullman, 2002}) have proposed that
 only necessary items (e.g., items that can't be formed compositionally)
 are stored.\footnote{Although some theories (e.g.,
@@ -3247,7 +3270,7 @@ that many items that could in principle be formed compositionally can be
 stored under certain usage-based conditions, such as frequency of use.
 
 Traditional Generativist theories (e.g.,
-\citeproc{ref-chomsky1965}{Chomsky, 1965};
+\citeproc{ref-pinker1991rules}{Pinker, 1991};
 \citeproc{ref-pinker2002}{Pinker \& Ullman, 2002}) have argued that
 processing multi-word phrases is completely compositional: each piece is
 accessed individually and then combined to form the larger meaning. Some
@@ -3758,7 +3781,7 @@ each sentence in a random order to minimize any list effect. We
 subsequently equalized the amplitude such that every sentence was
 roughly the same loudness.
 
-\subsection{Procedure}\label{procedure-3}
+\subsection{Procedure}\label{procedure-4}
 
 Participants were presented with audio sentences via Pavlovia
 (\url{https://pavlovia.org/}), a website for presenting PsychoPy
@@ -4048,7 +4071,7 @@ frequency and predictability for phrasal vs nonphrasal verbs
 
 \caption{\label{tbl-gamModelInterTab}Model results for the Generalized
 Additive Mixed Model cotaining Frequency, Predictability, and the
-interaction between them (\textbf{?@eq-gammfull}).}
+interaction between them (Equation~\ref{eq-gammFull}).}
 
 \centering{
 
@@ -4196,7 +4219,7 @@ pick up), the right graph is the predicted effect for non-phrasal verbs
 
 \caption{\label{fig-gammodelinterplot}Plot of the predicted effect of
 log(predictability) on recongition time for the GAM model specified in
-\textbf{?@eq-gammfull}.}
+Equation~\ref{eq-gammFull}.}
 
 \centering{
 
@@ -4664,14 +4687,14 @@ preferences aren't driven exclusively by their experience with the
 binomial.
 
 Since human ordering preferences deviate from the observed preferences
-{[}i.e., humans aren't simply reproducing binomials in the same order
-they they heard them; Morgan \& Levy
-(\citeproc{ref-morgan2024}{2024}){]}, ordering preferences thus present
-a useful test case for large language models. If large language models
-learn representations beyond simply memorizing the training dataset or
-superficially reproducing word co-occurrences, they may learn abstract
-ordering preferences similar to humans, and this may be reflected in
-their binomial ordering preferences.
+(i.e., humans aren't simply reproducing binomials in the same order they
+they heard them; \citeproc{ref-morgan2024}{Morgan \& Levy, 2024}),
+ordering preferences thus present a useful test case for large language
+models. If large language models learn representations beyond simply
+memorizing the training dataset or superficially reproducing word
+co-occurrences, they may learn abstract ordering preferences similar to
+humans, and this may be reflected in their binomial ordering
+preferences.
 
 \subsection{Present Study}\label{present-study-1}
 
@@ -5630,8 +5653,8 @@ as the proportion of occurrences in alphabetical order (a neutral
 reference order) to occurrences in nonalphabetical order. Overall
 frequency is operationalized as the count of \emph{A and B} plus the
 count of \emph{B and A}. Counts for both measures were obtained using
-the Google \emph{n-}grams corpus {[}Lin et al.
-(\citeproc{ref-linSyntacticAnnotationsGoogle2012}{2012}){]}.
+the Google \emph{n-}grams corpus
+(\citeproc{ref-linSyntacticAnnotationsGoogle2012}{Lin et al., 2012}).
 
 \subsubsection{Semantic Embeddings}\label{semantic-embeddings}
 
@@ -5849,11 +5872,11 @@ what layers in the models this result holds for. For example, does this
 difference emerge early in training or does it take a large amount of
 training for these different representations to emerge? Further, since
 different layers have been proposed to correspond to different functions
-{[}e.g., earlier layers may represent more phonological knowledge while
-later layers may represent more semantic knowledge; Tenney et al.
-(\citeproc{ref-tenney2019bertrediscoversclassical}{2019}){]}, it is
-possible that these results may be vary across different layers. In
-Experiment 2 we examine both of these questions.
+(e.g., earlier layers may represent more phonological knowledge while
+later layers may represent more semantic knowledge;
+\citeproc{ref-tenney2019bertrediscoversclassical}{Tenney et al., 2019}),
+it is possible that these results may be vary across different layers.
+In Experiment 2 we examine both of these questions.
 
 \section{Experiment 2}\label{experiment-2-2}
 
@@ -6442,11 +6465,11 @@ Equation~\ref{eq-ptheta}. \(\alpha_1\) and \(\alpha_2\) are pseudocounts
 of the alphabetical and nonalphabetical forms respectively.
 
 \begin{equation}\phantomsection\label{eq-psi}{
-S_i \sim Bernoulli(p_{theta})
+S_i \sim Bernoulli(p_{\theta})
 }\end{equation}
 
 \begin{equation}\phantomsection\label{eq-ptheta}{
-p_{theta} \sim Beta(\alpha_1, \alpha_2)
+p_{\theta} \sim Beta(\alpha_1, \alpha_2)
 }\end{equation}
 
 After hearing a token, learners compute \(P(S_i = AandB|S_p)\) according
@@ -6512,8 +6535,8 @@ normalized:
 \hat{p}_{\neg\alpha} = 1 - \hat{p}_\alpha
 }\end{equation}
 
-\noindent where \(\hat{p}\alpha\) is the probability that the intended
-binomial order was the alphabetical order, and \(\hat{p}{\neg\alpha}\)
+\noindent where \(\hat{p}_\alpha\) is the probability that the intended
+binomial order was the alphabetical order, and \(\hat{p}_{\neg\alpha}\)
 is the probability that the intended binomial order was the
 nonalphabetical order.
 
@@ -6948,19 +6971,19 @@ as the item becomes more automatic, while predictability may lead to
 storage at the onset because it is learned as a single chunk.
 
 Additionally, very few theories of processing expressly account for
-multi-word storage {[}c.f., fragment grammar theories; e.g., O'Donnell
-et al. (\citeproc{ref-odonnellFragmentGrammarsExploring2009}{2009});
-Morgan et al.
-(\citeproc{ref-morganFormalizingConstructionGrammar}{2023}){]}. However,
-positing multi-word storage generates new interesting questions for the
-processing literature. For example, storing the phrase \emph{I don't
-know} holistically does not preclude the learner from generating the
-phrase compositionally. In fact, the learner is almost certainly still
-capable of generating the phrase compositionally. Thus, in what cases do
-humans access the holistic representation instead of generating it
-compositionally? Further, does this vary as a function of task (e.g.,
-production vs perception)? For example, it seems more likely that
-someone would access the phrase holistically in production than
+multi-word storage
+(\citeproc{ref-morganFormalizingConstructionGrammar}{Morgan et al.,
+2023}; c.f., fragment grammar theories; e.g.,
+\citeproc{ref-odonnellFragmentGrammarsExploring2009}{O'Donnell et al.,
+2009}). However, positing multi-word storage generates new interesting
+questions for the processing literature. For example, storing the phrase
+\emph{I don't know} holistically does not preclude the learner from
+generating the phrase compositionally. In fact, the learner is almost
+certainly still capable of generating the phrase compositionally. Thus,
+in what cases do humans access the holistic representation instead of
+generating it compositionally? Further, does this vary as a function of
+task (e.g., production vs perception)? For example, it seems more likely
+that someone would access the phrase holistically in production than
 perception, because in production the speaker has a specific meaning
 they wish to convey. However, in perception it is less clear. For
 example, when listening to a sentence, the listener must by definition
@@ -7544,6 +7567,10 @@ Pierrehumbert, J. B. (2016). Phonological Representation: Beyond
 Abstract Versus Episodic. \emph{Annual Review of Linguistics},
 \emph{2}(Volume 2, 2016), 33--52.
 \url{https://doi.org/10.1146/annurev-linguistics-030514-125050}
+
+\bibitem[\citeproctext]{ref-pinker1991rules}
+Pinker, S. (1991). Rules of language. \emph{Science}, \emph{253}(5019),
+530--535.
 
 \bibitem[\citeproctext]{ref-pinker2002}
 Pinker, S., \& Ullman, M. T. (2002). The past and future of the past
