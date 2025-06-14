@@ -144,13 +144,13 @@ data_verbs_up = read_csv('../Data/Stimuli - Phrasal verbs.csv') %>%
 
 When a listener hears the phrase *trick or treat*, do they process it compositionally, processing each word individually before combining them into a single parse? Or do they access a single holistically stored representation of the phrase from memory? This question of to what extent larger-than-word constructions can be stored and accessed holistically is one that psycholinguists have been interested in for quite some time [e.g., @bybee2001; @bybee2003; @goldbergConstructionsNewTheoretical2003; @nooteboomStorageComputationLanguage2002; @stembergerFrequencyLexicalStorage1986; @stembergerAreInflectedForms2004].
 
-Throughout the years different theories have argued for different degrees of holistic storage, with two theories in particular dominating the field. On one hand, Generativist theories [e.g., @chomsky1965; @pinker2002] have proposed that only necessary items (e.g., items that can't be formed compositionally) are stored.[^quarto-writeup-1] On the other hand, usage-based theories [e.g., @bybee2003] have proposed that many items that could in principle be formed compositionally can be stored under certain usage-based conditions, such as frequency of use.
+Throughout the years different theories have argued for different degrees of holistic storage, with two theories in particular dominating the field. On one hand, Generativist theories [e.g., @pinker1991rules; @pinker2002] have proposed that only necessary items (e.g., items that can't be formed compositionally) are stored.[^quarto-writeup-1] On the other hand, usage-based theories [e.g., @bybee2003] have proposed that many items that could in principle be formed compositionally can be stored under certain usage-based conditions, such as frequency of use.
 
 [^quarto-writeup-1]: Although some theories [e.g., @pinker2002] have accepted that some very high-frequency items may be stored due to human memory, but these theories are much more conservative about what is stored compared to usage-based theories.
 
 <!--# for dissertation, might be fun to change footnotes to asides using the [some text]{.aside} formatting -->
 
-Traditional Generativist theories [e.g., @chomsky1965; @pinker2002] have argued that processing multi-word phrases is completely compositional: each piece is accessed individually and then combined to form the larger meaning. Some exceptions are reserved for idioms and other outliers, which can't be formed compositionally. More specifically, Generativist views of storage argue that whether an item is stored is determined purely by the degree of compositionality. According to these theories, if a multi-word expression can be composed from its parts then there is no need to holistically store the expression, and thus it is not stored holistically. For example since *I don't know* can be processed compositionally, it would be processed by composing a representation from each of the individual words, *I, don't,* and *know*. On the other hand, *kicked the bucket* would be stored holistically because there's very little relationship between the meaning of the individual words and the meaning of the expression (i.e., it's non-compositional).
+Traditional Generativist theories [e.g., @pinker1991rules; @pinker2002] have argued that processing multi-word phrases is completely compositional: each piece is accessed individually and then combined to form the larger meaning. Some exceptions are reserved for idioms and other outliers, which can't be formed compositionally. More specifically, Generativist views of storage argue that whether an item is stored is determined purely by the degree of compositionality. According to these theories, if a multi-word expression can be composed from its parts then there is no need to holistically store the expression, and thus it is not stored holistically. For example since *I don't know* can be processed compositionally, it would be processed by composing a representation from each of the individual words, *I, don't,* and *know*. On the other hand, *kicked the bucket* would be stored holistically because there's very little relationship between the meaning of the individual words and the meaning of the expression (i.e., it's non-compositional).
 
 Generativist theories of storage gained popularity partly because storage was thought to be a valuable resource that was taken up only by units that necessitated storage. This was perhaps influenced by the limited storage space of sophisticated computers at the time. In recent times, however, we've learned that the brain may have dramatically more space for storage than we had previously realized, with an upper bound of 10^8432^ bits [@wangDiscoveringCapacityHuman2003]. This is magnitudes larger than any current estimate of how much storage language requires.[^quarto-writeup-2] Considering this, it might not come as a surprise that there has been a rise in support for usage-based theories of holistic storage over the past few decades [@kapatsinskiFrequencyEmergencePrefabs2009; @kapatsinski2018; @stembergerFrequencyLexicalStorage1986; @stembergerAreInflectedForms2004; @morganAbstractKnowledgeDirect2016; @bybeeEffectUsageDegrees1999; @bybee2001; @bybee2003; @baayenDutchInflectionRules2002; @ambridgeStoredAbstractionsRadical2020; @zangParafovealProcessingChinese2024].
 
@@ -441,7 +441,7 @@ summary_table2 %>%
 
 ```{r, echo = F, message = F, results='asis'}
 #| label: tbl-gamModelInterTab
-#| tbl-cap: "Model results for the Generalized Additive Mixed Model cotaining Frequency, Predictability, and the interaction between them (@eq-gammfull)."
+#| tbl-cap: "Model results for the Generalized Additive Mixed Model cotaining Frequency, Predictability, and the interaction between them (@eq-gammFull)."
 #table 3
 summary_model3 = summary(mod_bam_inter)
 summary_table3 = as.data.frame(summary_model3$s.table) %>%
@@ -689,7 +689,7 @@ gridPrint(nonphrasal_plot, phrasal_plot, ncol=2)
 
 ```{r echo = F, message = F, warning = F}
 #| label: fig-gammodelinterplot
-#| fig-cap: "Plot of the predicted effect of log(predictability) on recongition time for the GAM model specified in @eq-gammfull."
+#| fig-cap: "Plot of the predicted effect of log(predictability) on recongition time for the GAM model specified in @eq-gammFull."
 #| out-width: 80%
 
 
