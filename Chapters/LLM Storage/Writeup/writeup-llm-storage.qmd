@@ -400,7 +400,7 @@ A visualization of the embeddings at different layers and different checkpoints 
 #| fig-cap: A visualization of the cosine similarity between the holistic embeddings and the compositional embeddings for each hidden layer of each model checkpoint. Overall frequency of the binomial is on the x-axis and log odds cosine is on the y-axis. A larger value of log odds cosine indicates that the embeddings for the alphabetical ordering are more similar to the compositional embeddings than the embeddings for the nonalphabetical ordering are. The color indicates whether the alphabetical ordering is more frequent (red) or whether the nonalphabetical ordering is more frequent (blue). The layer number is indicated along the top of the graph and the checkpoint number is indicated on the right side of the graph. 
 #| label: fig-resultsalllayers
 #| fig-width: 10
-#| fig-height: 7
+#| fig-height: 6
 
 
 aggregate_data = read_csv('../Data/aggregate_data.csv')

@@ -591,7 +591,7 @@ The model results are visualized below in @fig-exp2m1.
 
 ```{r, echo = F, out.width = '70%', fig.align = 'center', warning = F, message = F}
 #| label: fig-exp2m1
-#| fig-cap: "Visualization of the model predictions for the effect of AbsPref on LogOdds(AandB) for each checkpoint."
+#| fig-cap: "Visualization of the model predictions for the effect of AbsPref on LogOdds(AandB) for each checkpoint. The x-axis corresponds to the number of tokens that the model was trained on at a given checkpoint. The y-axis corresponds to the coefficient estimate."
 
 
 fixefs_main_model = as.data.frame(fixef(Olmo_main_genpref)) %>%
@@ -639,7 +639,7 @@ Similar to Experiment 2, in our second analysis we present a breakdown of the ef
 
 ```{r echo = F, fig.width=8, fig.height=9.5, fig.align = 'center', warning = F, message = F}
 #| label: fig-exp2m2
-#| fig-cap: "Visualization of the effect of each constraint on the ordering preference at each checkpoint."
+#| fig-cap: "Visualization of the effect of each constraint on the ordering preference at each checkpoint. The x-axis corresponds to the value of the constraint and the y-axis corresponds to the model's preference for the alphabetical ordering (in log odds). The checkpoints are listed in terms of the number of tokens the model was trained on at that checkpoint  (e.g., 10B = trained on 10 billion tokens)."
 
 data_main_model2 = data_main_model %>%
   mutate(checkpoint = 'main') %>%
